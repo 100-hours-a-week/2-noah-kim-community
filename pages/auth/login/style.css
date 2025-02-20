@@ -1,0 +1,10 @@
+main {
+  align-items: center;
+  justify-content: center;
+}
+main #title {
+  text-align: center;
+
+  font-weight: 700;
+  font-size: larger;
+}
