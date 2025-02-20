@@ -16,9 +16,8 @@ DUMMY_POSTS.forEach((post) => {
       <div id="post-header-details">
         <ul>  
           <li> 좋아요 ${formatNumber(post.likeCnt)}</li>
-          <li> 댓글 ${formatNumber(
-            post.comments.length
-          )} </li> 조회수 ${formatNumber(post.hitCnt)} </li>
+          <li> 댓글 ${formatNumber(post.comments.length)} </li>
+          </li> 조회수 ${formatNumber(post.hitCnt)} </li>
         </ul>
         <span> ${parseDateToFullString(post.date)} </span>
       </div>
