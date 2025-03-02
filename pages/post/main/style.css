@@ -1,16 +1,3 @@
-body main {
-  width: 50%;
-
-  padding: 40px 0;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-
-  position: relative;
-}
-
 #title {
   display: flex;
   flex-direction: column;
@@ -21,24 +8,6 @@ body main {
   padding: 10px 0;
 
   font-size: large;
-}
-
-#write-post {
-  padding: 8px 20px;
-
-  background-color: #aca0eb;
-  color: white;
-
-  border-radius: 15px;
-  border: none;
-
-  align-self: flex-end;
-
-  cursor: pointer;
-}
-
-#write-post:hover {
-  background-color: #7f6aee; /* 마우스 호버 시 색상 */
 }
 
 #posts {
@@ -126,4 +95,10 @@ body main {
 
   background-color: #d4d4d4;
   border-radius: 50%;
+}
+
+button {
+  padding: 8px 20px;
+
+  border-radius: 15px;
 }

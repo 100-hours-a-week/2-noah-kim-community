@@ -1,8 +1,8 @@
 import { DUMMY_POSTS } from "/public/data/posts.js";
 
 // utils
-import { parseDateToFullString } from "/lib/date.js";
 import { formatNumber } from "../../../lib/number.js";
+import { parseDateToFullString } from "/lib/date.js";
 
 const writePostBtn = document.getElementById("write-post");
 const postList = document.getElementById("posts");
