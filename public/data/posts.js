@@ -39,7 +39,7 @@ export const DUMMY_COMMENTS = Array.from({ length: 3 }, (_, index) => ({
   - (댓글 수) : 댓글의 개수로 판단 가능
  */
 const DUMMY_POST = {
-  title: "제목",
+  title: "01234567890123456789012345",
   userName: "더미 작성자",
   // userImage: "",
   date: new Date(),
