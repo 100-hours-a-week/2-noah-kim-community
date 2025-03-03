@@ -1,3 +1,5 @@
+import { URL } from "/public/routes";
+
 const emailInput = document.getElementById("email-input");
 const passwordInput = document.getElementById("password-input");
 
@@ -60,13 +62,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (validateEmail() && validatePassword()) {
       loginBtn.style.backgroundColor = "#7F6AEE";
       setTimeout(() => {
-        window.location.href = "/pages/post/main/index.html"; // 메인 페이지로 이동
+        window.location.href = URL.POST.MAIN.url; // 메인 페이지로 이동
       }, 3000);
     }
   }
 
   function registerHandler() {
-    window.location.href = "/pages/auth/register/index.html"; // 메인 페이지로 이동
+    window.location.href = URL.AUTH.REGISTER.url; // 회원가입 페이지로 이동
   }
 
   emailInput.addEventListener("input", validateEmail);

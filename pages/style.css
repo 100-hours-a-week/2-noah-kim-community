@@ -61,12 +61,30 @@ button {
   color: white;
 
   border: none;
+  border-radius: 5px;
 
-  align-self: flex-end;
+  /* align-self: flex-end; */
 
   cursor: pointer;
 }
 
 button:hover {
   background-color: #7f6aee; /* 마우스 호버 시 색상 */
+}
+
+input {
+  border: 1px solid black;
+  border-radius: 4px;
+
+  padding: 8px 10px;
+}
+
+.error-message {
+  color: red;
+  font-size: small;
+}
+
+#back-button {
+  background-color: transparent;
+  color: black;
 }

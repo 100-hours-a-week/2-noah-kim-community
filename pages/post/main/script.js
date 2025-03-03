@@ -3,6 +3,7 @@ import { DUMMY_POSTS } from "/public/data/posts.js";
 // utils
 import { parseDateToFullString } from "../../../lib/date.js";
 import { formatNumber } from "../../../lib/number.js";
+import { URL } from "../../../public/routes.js";
 
 const writePostBtn = document.getElementById("write-post");
 const postList = document.getElementById("posts");
@@ -32,14 +33,14 @@ DUMMY_POSTS.forEach((post) => {
 
   // 게시글 클릭 시 상세 페이지 이동
   li.addEventListener("click", () => {
-    window.location.href = `/pages/post/detail/index.html`;
+    window.location.href = URL.POST.DETAIL.url;
   });
 
   postList.appendChild(li); // <ul>에 <li> 추가
 });
 
 writePostBtn?.addEventListener("click", () => {
-  window.location.href = `/pages/post/write/index.html`;
+  window.location.href = URL.POST.WRITE.url;
 });
 
 document.addEventListener("DOMContentLoaded", function () {
