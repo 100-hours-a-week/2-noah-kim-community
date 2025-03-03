@@ -1,4 +1,4 @@
-import { URL } from "/public/routes";
+import { URL } from "../../../public/routes.js";
 
 const emailInput = document.getElementById("email-input");
 const passwordInput = document.getElementById("password-input");
@@ -12,7 +12,6 @@ const registerBtn = document.getElementById("register-button");
 document.addEventListener("DOMContentLoaded", function () {
   function validateEmail() {
     const email = emailInput.value.trim();
-    console.log("value: ", email);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
