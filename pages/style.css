@@ -26,12 +26,12 @@ body header {
   font-weight: 600;
 
   position: relative;
+  z-index: 10;
 }
 
-body header img {
-  width: 5%;
+body header #header-image {
+  width: 30px;
   aspect-ratio: 1/1;
-  max-width: 50px;
 
   border-radius: 50%;
   border: none;
@@ -40,6 +40,52 @@ body header img {
   right: 25%;
   top: 50%;
   transform: translate(0, -50%);
+
+  cursor: pointer;
+}
+
+body header #header-image img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
+}
+
+body header #header-image #header-dropdown-menu {
+  color: black;
+
+  position: absolute;
+  z-index: 10;
+
+  top: 60px;
+  right: 10px;
+  background: #d4d4d4;
+
+  display: none;
+}
+
+#header-dropdown-menu ul {
+  width: max-content;
+  font-weight: 400;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  position: relative;
+}
+
+#header-dropdown-menu ul li {
+  width: 100%;
+
+  text-align: center;
+  font-size: small;
+  padding: 10px 10px;
+}
+#header-dropdown-menu ul li:hover {
+  background-color: #e9e9e9;
 }
 
 main {

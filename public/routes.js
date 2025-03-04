@@ -6,6 +6,12 @@ export const URL = {
     REGISTER: {
       url: "/pages/auth/register/index.html",
     },
+    PROFILE_CHANGE: {
+      url: "/pages/auth/mypage/index.html",
+    },
+    PASSWORD_CHANGE: {
+      url: "/pages/auth/password_change/index.html",
+    },
   },
   POST: {
     MAIN: {
