@@ -1,5 +1,5 @@
 import Component from "../../components/common/Component.js";
-class Login extends Component {
+class Mypage extends Component {
   setup() {
     this.loadStyles();
   }
@@ -8,10 +8,10 @@ class Login extends Component {
   }
 
   template() {
-    return `Login`;
+    return `Mypage`;
   }
 
   setEvent() {}
 }
 
-export default Login;
+export default Mypage;
