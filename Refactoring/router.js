@@ -39,8 +39,8 @@ const routes = Object.values(ROUTES)
     return acc;
   }, {});
 
-/** 초기 웹페이지 로딩 */
-navigateTo(ROUTES.POST.MAIN.url);
+/** URL에 맞춘 웹페이지 로딩 */
+router(window.location.pathname);
 
 export function navigateTo(requestedUrl) {
   history.pushState(null, "", requestedUrl);
