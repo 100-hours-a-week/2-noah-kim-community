@@ -50,13 +50,15 @@ class Component {
   /** TODO: 스타일 없을때 에러처리 */
   loadStyles(stylePath) {
     if (!stylePath) return;
-    const existingLink = document.querySelector(`link[href="${stylePath}"]`);
-    if (!existingLink) {
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      link.href = stylePath;
-      document.head.appendChild(link);
-    }
+
+    // 이미 로드된 스타일인지 확인 (중복 로드 방지)
+    if (document.querySelector(`link[href="${stylePath}"]`)) return;
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = stylePath;
+    link.setAttribute("data-dynamic-style", stylePath); // 동적 스타일 태그 관리
+    document.head.appendChild(link);
   }
 }
 

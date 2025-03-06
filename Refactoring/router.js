@@ -36,6 +36,11 @@ const routes = Object.values(ROUTES)
 router(window.location.pathname);
 
 export function navigateTo(requestedUrl) {
+  // 기존 스타일 제거
+  document.querySelectorAll("link[data-dynamic-style]").forEach((style) => {
+    style.remove();
+  });
+
   history.pushState(null, "", requestedUrl);
   router(requestedUrl);
 }
