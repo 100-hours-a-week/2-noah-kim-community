@@ -76,19 +76,12 @@ class PostList extends Component {
       navigateTo(ROUTES.POST.WRITE.url);
     });
 
-    // this.$target.querySelector("#write-post").addEventListener("click", () => {
-    //   navigateTo("/post/create");
-    // });
     // this.$target.querySelectorAll(".post-item").forEach((item) => {
     //   item.addEventListener("click", (e) => {
     //     const postId = e.target.dataset.id;
     //     navigateTo(`/post/detail?id=${postId}`);
     //   });
     // });
-  }
-
-  render() {
-    super.render();
   }
 
   writePostRoute() {

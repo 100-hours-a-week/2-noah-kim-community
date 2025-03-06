@@ -1,0 +1,69 @@
+main {
+  align-items: center;
+  justify-content: center;
+}
+main #title {
+  width: 100%;
+
+  padding: 10px 0;
+  text-align: center;
+
+  font-weight: 700;
+  font-size: larger;
+}
+
+form {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  margin: 15px 0px;
+
+  position: relative;
+}
+
+.form-field {
+  width: 100%;
+
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  position: relative;
+}
+
+.form-field label {
+  padding: 5px 0;
+
+  font-weight: 600;
+}
+
+.form-field input {
+  width: 100%;
+}
+
+.error-message {
+  align-self: flex-start;
+
+  margin-top: 10px;
+}
+
+#login-button {
+  /* override button css */
+  width: 100%;
+  border-radius: 6px;
+}
+
+#register-button {
+  /* override button css */
+  background-color: inherit;
+  color: black;
+
+  font-size: 10px;
+
+  margin: 8px 0;
+  cursor: pointer;
+}
