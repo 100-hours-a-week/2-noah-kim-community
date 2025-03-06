@@ -11,19 +11,17 @@ class Header extends Component {
 
   template() {
     return `
-      <header>
-        <span>아무 말 대잔치</span>
-        <div id="image-container">
-          <img src="/public/images/header_image.jpeg" alt="user-card-image" />
-          <div id="dropdown-menu">
-            <ul>
-              <li id="mypage-link">회원정보수정</li>
-              <li id="password-change-link">비밀번호수정</li>
-              <li id="logout-link">로그아웃</li>
-            </ul>
-          </div>
+      <span>아무 말 대잔치</span>
+      <div id="image-container">
+        <img src="/public/images/header_image.jpeg" alt="user-card-image" />
+        <div id="dropdown-menu">
+          <ul>
+            <li id="mypage-link">회원정보수정</li>
+            <li id="password-change-link">비밀번호수정</li>
+            <li id="logout-link">로그아웃</li>
+          </ul>
         </div>
-      </header>
+      </div>
     `;
   }
 
@@ -57,7 +55,7 @@ class Header extends Component {
     /** 프로필 이미지 클릭 이벤트  */
     this.addEvent("click", "#header-image", toggleDropdownMenu);
 
-    // 외부 클릭 시 메뉴 닫기
+    // TODO: 외부 클릭 시 메뉴 닫기
     // DropdownMenu.addEventListener("click", outsideClick);
 
     // this.addEvent("click", "#dropdown-menu", outsideClick);

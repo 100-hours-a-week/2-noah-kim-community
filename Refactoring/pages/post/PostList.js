@@ -52,6 +52,7 @@ class PostList extends Component {
       .join("");
 
     return `
+      <main id="main-content">
         <section id="title">
           <span>안녕하세요,</span>
           <span>아무 말 대잔치 <strong>게시판</strong>입니다.</span>
@@ -60,6 +61,7 @@ class PostList extends Component {
         <ul id="posts">
           ${postList}
         </ul>
+      </main>
     `;
   }
 

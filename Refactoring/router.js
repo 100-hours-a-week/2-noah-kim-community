@@ -7,14 +7,6 @@ import PostDetail from "./pages/post/PostDetail.js";
 import PostList from "./pages/post/PostList.js";
 import PostWrite from "./pages/post/PostWrite.js";
 
-const $app = document.querySelector("#app");
-const header = new Header($app);
-
-$app.innerHTML = `
-  ${header.template()}  <!-- 헤더는 고정 -->
-  <main id="main-content"></main>  <!-- 동적으로 변경되는 컨텐츠 -->
-`;
-
 export const ROUTES = {
   AUTH: {
     LOGIN: { url: "/auth/login", component: Login },
@@ -50,17 +42,20 @@ export function navigateTo(requestedUrl) {
 
 /** 라우팅 함수 (SPA-실제 라우팅X) */
 function router(requestedUrl) {
-  const main = document.querySelector("#main-content");
+  const $header = document.querySelector("#app-header");
+  const $app = document.querySelector("#app");
+
+  new Header($header); // 헤더 컴포넌트 생성
+  console.log("✅ header component 표시");
 
   const Component = routes[requestedUrl];
 
   if (Component) {
-    const pageInstance = new Component(main);
-    main.innerHTML = pageInstance.template();
+    console.log("👍 찾은 컴포넌트 표시");
+    new Component($app); // 알맞은 컴포넌트 생성
   } else {
     /** 정의되지 않은 컴포넌트(페이지) */
-    /** TODO: 404 페이지 제작하기 */
-    main.innerHTML = "<h1>404 - Page Not Found</h1>";
+    $app.innerHTML = "<h1>404 - Page Not Found</h1>";
   }
 }
 
@@ -68,6 +63,7 @@ window.addEventListener("popstate", () => {
   navigateTo(window.location.pathname);
 });
 
+/** TODO 삭제하기 */
 document.addEventListener("click", (e) => {
   console.log(e.target);
 });

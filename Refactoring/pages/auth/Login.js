@@ -10,31 +10,34 @@ class Login extends Component {
 
   template() {
     return `
-      <div id="title">로그인</div>
-      <form>
-        <div class="form-field">
-          <label>이메일</label>
-          <input
-            id="email-input"
-            type="email"
-            placeholder="이메일을 입력하세요"
-          />
-        </div>
-        <div class="error-message" id="email-error-message"></div>
+      <main id="main-content">
+        <div id="title">로그인</div>
+        <form>
+          <div class="form-field">
+            <label>이메일</label>
+            <input
+              id="email-input"
+              type="email"
+              placeholder="이메일을 입력하세요"
+            />
+          </div>
+          <div class="error-message" id="email-error-message"></div>
 
-        <div class="form-field">
-          <label>비밀번호</label>
-          <input
-            id="password-input"
-            type="password"
-            placeholder="비밀번호를 입력하세요"
-          />
-        </div>
-        <div class="error-message" id="password-error-message"></div>
-      </form>
+          <div class="form-field">
+            <label>비밀번호</label>
+            <input
+              id="password-input"
+              type="password"
+              placeholder="비밀번호를 입력하세요"
+            />
+          </div>
+          <div class="error-message" id="password-error-message"></div>
+        </form>
 
-      <button id="login-button">로그인</button>
-      <button id="register-button">회원가입</button>`;
+        <button id="login-button">로그인</button>
+        <button id="register-button">회원가입</button>
+      </main>
+      `;
   }
 
   setEvent() {
@@ -105,11 +108,7 @@ class Login extends Component {
   loginRoute() {
     const loginBtn = document.getElementById("login-button");
 
-    console.log(this.validateEmail());
-
     if (this.validateEmail() && this.validatePassword()) {
-      console.log("유효성 검사 통과");
-
       loginBtn.style.backgroundColor = "#7F6AEE";
 
       navigateTo(ROUTES.POST.MAIN.url);
