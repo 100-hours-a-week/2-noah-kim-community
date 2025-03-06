@@ -29,10 +29,8 @@ class Header extends Component {
 
   setEvent() {
     const ImageContainer = this.$target.querySelector("#image-container");
-    console.log(ImageContainer);
 
     const DropdownMenu = this.$target.querySelector("#dropdown-menu");
-    console.log(DropdownMenu);
 
     const mypageLink = this.$target.querySelector("#mypage-link");
 
@@ -43,21 +41,15 @@ class Header extends Component {
 
     function toggleDropdownMenu(event) {
       // event.stopPropagation(); // 클릭 이벤트 전파 방지
-      console.log("clicked1");
-
       DropdownMenu.style.display =
         DropdownMenu.style.display !== "block" ? "block" : "none";
     }
 
     function outsideClick(event) {
-      console.log(event.target);
-
       if (
         !DropdownMenu.contains(event.target) &&
         !event.target.closest("#header-image")
       ) {
-        console.log("clicked2");
-
         DropdownMenu.style.display = "none";
       }
     }

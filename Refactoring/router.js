@@ -9,6 +9,7 @@ import PostWrite from "./pages/post/PostWrite.js";
 
 const $app = document.querySelector("#app");
 const header = new Header($app);
+
 $app.innerHTML = `
   ${header.template()}  <!-- 헤더는 고정 -->
   <main id="main-content"></main>  <!-- 동적으로 변경되는 컨텐츠 -->
@@ -31,7 +32,7 @@ export const ROUTES = {
   },
 };
 
-/** ✅ ROUTES 기반으로 routes 자동 생성 */
+/** ROUTES 기반으로 routes 생성 */
 const routes = Object.values(ROUTES)
   .flatMap((group) => Object.values(group))
   .reduce((acc, { url, component }) => {
@@ -65,4 +66,8 @@ function router(requestedUrl) {
 
 window.addEventListener("popstate", () => {
   navigateTo(window.location.pathname);
+});
+
+document.addEventListener("click", (e) => {
+  console.log(e.target);
 });

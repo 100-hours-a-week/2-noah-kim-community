@@ -110,8 +110,6 @@ main {
   border-radius: 50%;
 }
 
-button {
-  padding: 8px 20px;
-
-  border-radius: 15px;
+#write-button {
+  align-self: flex-end;
 }
