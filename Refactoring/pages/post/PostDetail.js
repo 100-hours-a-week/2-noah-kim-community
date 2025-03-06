@@ -1,17 +1,17 @@
-import Component from "../../components/common/Component.js";
+import Component from '../../components/common/Component.js'
 class PostDetail extends Component {
   setup() {
-    this.loadStyles();
+    this.loadStyles()
   }
   loadStyles() {
     // super.loadStyles("/styles/post/postlist.css");
   }
 
   template() {
-    return `PostDetail`;
+    return `PostDetail`
   }
 
   setEvent() {}
 }
 
-export default PostDetail;
+export default PostDetail

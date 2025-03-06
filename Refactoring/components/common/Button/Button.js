@@ -1,27 +1,27 @@
-import InlineComponent from "../InlineComponent.js";
+import InlineComponent from '../InlineComponent.js'
 
 class Button extends InlineComponent {
   setup() {
-    this.loadStyles();
+    this.loadStyles()
   }
   loadStyles() {
-    super.loadStyles("/components/common/Button/Button.css");
+    super.loadStyles('/components/common/Button/Button.css')
   }
 
   template() {
-    const { text } = this.$props;
-    return `<button class='button-component'>${text}</button>`;
+    const { text } = this.$props
+    return `<button class='button-component'>${text}</button>`
   }
 
   setEvent() {
-    const { onClick } = this.$props;
+    const { onClick } = this.$props
 
-    const btn = document.querySelector(".button-component");
+    const btn = document.querySelector('.button-component')
 
     if (btn) {
-      btn.addEventListener("click", () => alert("hello1"));
+      btn.addEventListener('click', () => alert('hello1'))
     }
   }
 }
 
-export default Button;
+export default Button

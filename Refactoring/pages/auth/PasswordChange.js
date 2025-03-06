@@ -1,17 +1,17 @@
-import Component from "../../components/common/Component.js";
+import Component from '../../components/common/Component.js'
 class PasswordChange extends Component {
   setup() {
-    this.loadStyles();
+    this.loadStyles()
   }
   loadStyles() {
     // super.loadStyles("/styles/post/postlist.css");
   }
 
   template() {
-    return `PasswordChange`;
+    return `PasswordChange`
   }
 
   setEvent() {}
 }
 
-export default PasswordChange;
+export default PasswordChange

@@ -1,30 +1,30 @@
-import Component from "../../components/common/Component.js";
-import { parseDateToFullString } from "../../lib/date.js";
-import { formatNumber } from "../../lib/number.js";
-import { DUMMY_POSTS } from "../../public/data/dummy_posts.js";
-import { navigateTo, ROUTES } from "../../router.js";
+import Component from '../../components/common/Component.js'
+import { parseDateToFullString } from '../../lib/date.js'
+import { formatNumber } from '../../lib/number.js'
+import { DUMMY_POSTS } from '../../public/data/dummy_posts.js'
+import { navigateTo, ROUTES } from '../../router.js'
 
 class PostList extends Component {
   setup() {
     this.state = {
       posts: DUMMY_POSTS,
-    };
+    }
 
-    this.loadStyles();
+    this.loadStyles()
   }
   loadStyles() {
-    super.loadStyles("/styles/post/postlist.css");
+    super.loadStyles('/styles/post/postlist.css')
   }
 
   template() {
-    const { posts } = this.state;
+    const { posts } = this.state
     // const writePostButton = new Button({
     //   text: "게시글 작성",
     //   onClick: this.writePostRoute.bind(this),
     // });
 
     const postList = posts
-      .map((post) => {
+      .map(post => {
         // 게시글 클릭 시 상세 페이지 이동
         // li.addEventListener("click", () => {
         //   window.location.href = URL.POST.DETAIL.url;
@@ -45,9 +45,9 @@ class PostList extends Component {
           <div id="user-image"></div>
            ${post.userName}
         </div>
-      </li>`;
+      </li>`
       })
-      .join("");
+      .join('')
 
     return `
       <main id="main-content">
@@ -60,7 +60,7 @@ class PostList extends Component {
           ${postList}
         </ul>
       </main>
-    `;
+    `
   }
 
   mounted() {
@@ -71,11 +71,13 @@ class PostList extends Component {
     // });
 
     // DOM 요소 저장
-    this.$elements = {};
+    this.$elements = {
+      writePostButton: this.$target.querySelector('#write-button'),
+    }
   }
 
   setEvent() {
-    this.addEvent("click", "#write-button", this.writePostRoute.bind(this));
+    this.addEvent('click', this.$elements.writePostButton, this.writePostRoute.bind(this))
 
     // this.$target.querySelectorAll(".post-item").forEach((item) => {
     //   item.addEventListener("click", (e) => {
@@ -86,8 +88,8 @@ class PostList extends Component {
   }
 
   writePostRoute() {
-    navigateTo(ROUTES.POST.WRITE.url);
+    navigateTo(ROUTES.POST.WRITE.url)
   }
 }
 
-export default PostList;
+export default PostList
