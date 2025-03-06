@@ -1,4 +1,3 @@
-import Button from "../../components/common/Button/Button.js";
 import Component from "../../components/common/Component.js";
 import { parseDateToFullString } from "../../lib/date.js";
 import { formatNumber } from "../../lib/number.js";
@@ -19,11 +18,10 @@ class PostList extends Component {
 
   template() {
     const { posts } = this.state;
-    const writePostButton = new Button({
-      text: "게시글 작성",
-      onClick: () => alert("클릭킹"),
-      // onClick: this.writePostRoute.bind(this),
-    });
+    // const writePostButton = new Button({
+    //   text: "게시글 작성",
+    //   onClick: this.writePostRoute.bind(this),
+    // });
 
     const postList = posts
       .map((post) => {
@@ -71,12 +69,13 @@ class PostList extends Component {
     //   text: "게시글 작성",
     //   onClick: this.writePostRoute.bind(this),
     // });
+
+    // DOM 요소 저장
+    this.$elements = {};
   }
 
   setEvent() {
-    this.addEvent("click", "#write-button", () => {
-      navigateTo(ROUTES.POST.WRITE.url);
-    });
+    this.addEvent("click", "#write-button", this.writePostRoute.bind(this));
 
     // this.$target.querySelectorAll(".post-item").forEach((item) => {
     //   item.addEventListener("click", (e) => {

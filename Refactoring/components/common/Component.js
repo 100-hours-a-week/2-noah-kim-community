@@ -2,6 +2,7 @@ class Component {
   $target;
   $props;
   $state;
+  $elements; // 사용하는 DOM 요소들 (재사용성을 위해 설정)
 
   /** 컴포넌트가 표시될 타겟 지정 */
   constructor($target, $props) {
@@ -37,7 +38,7 @@ class Component {
     this.mounted();
   }
 
-  /** 자식 컴포넌트 정의 장소 */
+  /** 자식 컴포넌트 및 요소 정의 */
   mounted() {}
 
   setState(newState) {

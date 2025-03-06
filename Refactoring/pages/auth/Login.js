@@ -40,12 +40,18 @@ class Login extends Component {
       `;
   }
 
-  setEvent() {
-    const emailInput = document.getElementById("email-input");
-    const passwordInput = document.getElementById("password-input");
-    const loginBtn = document.getElementById("login-button");
-    const registerBtn = document.getElementById("register-button");
+  mounted() {
+    // DOM 요소 저장
+    this.$elements = {
+      emailInput: this.$target.querySelector("#email-input"),
+      emailErrorText: this.$target.querySelector("#email-error-message"),
+      passwordInput: this.$target.querySelector("#password-input"),
+      passwordErrorText: this.$target.querySelector("#password-error-message"),
+      loginButton: this.$target.querySelector("#login-button"),
+    };
+  }
 
+  setEvent() {
     this.addEvent("input", "#email-input", this.validateEmail.bind(this));
     this.addEvent("input", "#password-input", this.validatePassword.bind(this));
     this.addEvent("click", "#login-button", this.loginRoute.bind(this));
@@ -53,33 +59,28 @@ class Login extends Component {
   }
 
   validateEmail() {
-    const emailInput = document.getElementById("email-input");
-    const emailErrorText = document.getElementById("email-error-message");
-
-    const email = emailInput.value.trim();
+    const email = this.$elements.emailInput.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     let isValid = true;
     if (!email || !emailRegex.test(email)) {
-      emailErrorText.textContent = "* 올바른 이메일 주소 형식을 입력해주세요.";
+      this.$elements.emailErrorText.textContent =
+        "* 올바른 이메일 주소 형식을 입력해주세요.";
       isValid = false;
     }
 
     // 유효성 검사에 따른 에러 메세지 여부 결정표시
     if (!isValid) {
-      emailErrorText.style.display = "block";
+      this.$elements.emailErrorText.style.display = "block";
     } else {
-      emailErrorText.style.display = "none";
+      this.$elements.emailErrorText.style.display = "none";
     }
 
     return isValid;
   }
 
   validatePassword() {
-    const passwordInput = document.getElementById("password-input");
-    const passwordErrorText = document.getElementById("password-error-message");
-
-    const password = passwordInput.value;
+    const password = this.$elements.passwordInput.value;
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
 
@@ -95,10 +96,10 @@ class Login extends Component {
     }
 
     if (!isValid) {
-      passwordErrorText.style.display = "block";
-      passwordErrorText.textContent = errorText;
+      this.$elements.passwordErrorText.style.display = "block";
+      this.$elements.passwordErrorText.textContent = errorText;
     } else {
-      passwordErrorText.style.display = "none";
+      this.$elements.passwordErrorText.style.display = "none";
     }
 
     return isValid;
@@ -106,10 +107,8 @@ class Login extends Component {
 
   // TODO: 로그인 로직 추가 필요 (현재는 무조건 로그인됨)
   loginRoute() {
-    const loginBtn = document.getElementById("login-button");
-
     if (this.validateEmail() && this.validatePassword()) {
-      loginBtn.style.backgroundColor = "#7F6AEE";
+      this.$elements.loginButton.style.backgroundColor = "#7F6AEE";
 
       navigateTo(ROUTES.POST.MAIN.url);
     }
