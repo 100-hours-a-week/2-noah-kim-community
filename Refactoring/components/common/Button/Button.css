@@ -1,0 +1,15 @@
+.button-component {
+  background-color: #aca0eb;
+  color: white;
+
+  border: none;
+  border-radius: 15px;
+
+  padding: 6px 12px;
+
+  cursor: pointer;
+}
+
+.button-component:hover {
+  background-color: #7f6aee; /* 마우스 호버 시 색상 */
+}

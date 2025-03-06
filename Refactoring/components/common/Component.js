@@ -7,6 +7,7 @@ class Component {
   constructor($target, $props) {
     this.$target = $target;
     this.$props = $props;
+
     this.setup();
     this.setEvent();
     this.render();
@@ -36,7 +37,7 @@ class Component {
     this.mounted();
   }
 
-  /** 컴포넌트가 마운트 되었을 때 */
+  /** 자식 컴포넌트 정의 장소 */
   mounted() {}
 
   setState(newState) {
