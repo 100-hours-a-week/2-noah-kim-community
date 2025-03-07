@@ -1,12 +1,14 @@
 class InlineComponent {
-  $element
+  $target
   $props
   $state
+  $elements // 사용하는 DOM 요소들 (재사용성을 위해 설정)
 
   constructor($props) {
     this.$props = $props
     this.setup()
-    this.bindEvents()
+    this.render()
+    this.setEvent()
   }
 
   setup() {}
@@ -16,27 +18,28 @@ class InlineComponent {
     return ''
   }
 
-  /** 템플릿을 실제 요소로 변환  */
-  bindEvents() {
-    const wrapper = document.createElement('div') // 임시 요소
-    wrapper.innerHTML = this.template().trim()
-    this.$element = wrapper.firstChild
-
-    if (!this.$element) return
-
-    this.setEvent()
-  }
-
+  /** 컴포넌트에서 필요한 이벤트 설정 */
   setEvent() {}
 
-  /** 컴포넌트 표시 메소드  */
+  /** 템플릿을 실제 요소로 변환  */
   render() {
-    return this.$element?.outerHTML || ''
+    const wrapper = document.createElement('div') // 임시 요소
+    wrapper.innerHTML = this.template().trim()
+    this.$target = wrapper.firstChild
+    console.log('render target')
+    console.log(this.$target)
+
+    if (!this.$target) return
+
+    this.mounted()
   }
+
+  /** 자식 컴포넌트 및 요소 정의 */
+  mounted() {}
 
   setState(newState) {
     this.$state = { ...this.$state, ...newState }
-    this.bindEvents() // UI를 다시 그려서 상태 반영
+    this.render() // UI를 다시 그려서 상태 반영
   }
 
   /** CSS 불러오기 */
@@ -49,6 +52,14 @@ class InlineComponent {
     link.rel = 'stylesheet'
     link.href = stylePath
     document.head.appendChild(link)
+  }
+
+  /**
+   * 컴포넌트 표시 메소드
+   * - 인라인 컴포넌트는 특정 DOM 위치를 지정하지 않으므로, 요소를 반환하는 메소드가 필요
+   * */
+  getComponent() {
+    return this.$target?.outerHTML || ''
   }
 }
 

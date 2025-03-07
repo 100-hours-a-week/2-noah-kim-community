@@ -1,4 +1,5 @@
 import Component from '../../components/common/Component.js'
+import { useToast } from '../../lib/hooks/useToast.js'
 import { navigateTo, ROUTES } from '../../router.js'
 class Mypage extends Component {
   setup() {
@@ -61,7 +62,7 @@ class Mypage extends Component {
 
   setEvent() {
     this.addEvent('click', this.$elements.modifyButton, this.openToast.bind(this))
-    this.addEvent('click', this.$elements.nicknameInput, this.validateNickname.bind(this))
+    this.addEvent('input', this.$elements.nicknameInput, this.validateNickname.bind(this))
     this.addEvent('click', this.$elements.unregisterButton, this.openUnregisterModal.bind(this))
   }
 
@@ -99,28 +100,8 @@ class Mypage extends Component {
   }
 
   openToast(event) {
-    event.preventDefault() // 폼 제출 방지
-
-    // 토스트 메시지 생성
-    const toast = document.createElement('div')
-    toast.innerText = '수정완료'
-    toast.style.position = 'fixed'
-    toast.style.bottom = '20px'
-    toast.style.left = '50%'
-    toast.style.transform = 'translateX(-50%)'
-    toast.style.backgroundColor = '#bca0ff'
-    toast.style.color = '#fff'
-    toast.style.padding = '10px 20px'
-    toast.style.borderRadius = '10px'
-    toast.style.fontSize = '16px'
-    toast.style.fontWeight = 'bold'
-    toast.style.boxShadow = '0px 4px 6px rgba(0,0,0,0.1)'
-    document.body.appendChild(toast)
-
-    // 2초 후 토스트 메시지 제거
-    setTimeout(() => {
-      toast.remove()
-    }, 2000)
+    event.preventDefault() // 기본 동작 방지
+    useToast('수정완료')
   }
 
   openUnregisterModal() {

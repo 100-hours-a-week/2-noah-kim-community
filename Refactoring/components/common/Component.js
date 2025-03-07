@@ -22,7 +22,6 @@ class Component {
     return ''
   }
 
-  /** 컴포넌트에서 필요한 이벤트 설정 */
   setEvent() {}
 
   /** 이벤트 등록 추상화 */
