@@ -1,6 +1,7 @@
 import Component from '../../components/common/Component.js'
-import { useToast } from '../../lib/hooks/useToast.js'
+import Modal from '../../components/common/Modal/Modal.js'
 import { navigateTo, ROUTES } from '../../router.js'
+import Toast from '../../components/common/Toast/Toast.js'
 class Mypage extends Component {
   setup() {
     this.loadStyles()
@@ -101,49 +102,20 @@ class Mypage extends Component {
 
   openToast(event) {
     event.preventDefault() // 기본 동작 방지
-    useToast('수정완료')
+    new Toast({
+      message: '수정완료',
+    })
   }
 
   openUnregisterModal() {
-    // 모달 요소 생성
-    const modal = document.createElement('div')
-
-    modal.style.position = 'fixed'
-    modal.style.top = '50%'
-    modal.style.left = '50%'
-    modal.style.transform = 'translate(-50%, -50%)'
-    modal.style.backgroundColor = '#fff'
-    modal.style.padding = '30px 45px'
-    modal.style.borderRadius = '10px'
-    modal.style.boxShadow = '0px 4px 10px rgba(0,0,0,0.2)'
-    modal.style.zIndex = '1000'
-
-    modal.innerHTML = `
-    <p style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">
-      회원탈퇴 하시겠습니까?
-    </p>
-    <p style="font-size: 12px; margin-bottom: 20px;">
-      작성된 게시글과 댓글은 삭제됩니다.
-    </p>
-    <div style="width: 100%; display: flex; justify-content:flex-end;">
-    <button id="cancel-button" style="width:50%; background: black; color: white; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; margin-right: 10px;">
-      취소
-    </button>
-    <button id="confirm-button" style="width:50%; background: #bca0ff; color: white; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer;">
-      확인
-    </button>
-    </div>
-  `
-
-    document.body.appendChild(modal)
-
-    // 확인 버튼 클릭 시 로그인 페이지로 이동
-    document.getElementById('cancel-button').addEventListener('click', function () {
-      modal.remove()
-    })
-    document.getElementById('confirm-button').addEventListener('click', function () {
-      modal.remove()
-      navigateTo(ROUTES.AUTH.LOGIN.url)
+    new Modal({
+      title: '회원탈퇴 하시겠습니까?',
+      message: '작성된 게시글과 댓글은 삭제됩니다.',
+      confirmText: '확인',
+      cancelText: '취소',
+      onConfirm: () => {
+        navigateTo(ROUTES.AUTH.LOGIN.url)
+      },
     })
   }
 }

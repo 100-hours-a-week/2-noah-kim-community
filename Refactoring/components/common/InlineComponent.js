@@ -26,8 +26,6 @@ class InlineComponent {
     const wrapper = document.createElement('div') // 임시 요소
     wrapper.innerHTML = this.template().trim()
     this.$target = wrapper.firstChild
-    console.log('render target')
-    console.log(this.$target)
 
     if (!this.$target) return
 
