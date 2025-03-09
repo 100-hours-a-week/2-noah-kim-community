@@ -1,5 +1,6 @@
 import Component from '../../components/common/Component.js'
-import { navigateTo, ROUTES } from '../../router.js'
+import { ROUTES } from '../../public/data/routes.js'
+import { navigateTo } from '../../router.js'
 class Login extends Component {
   setup() {
     this.loadStyles()

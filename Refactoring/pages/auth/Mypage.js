@@ -1,7 +1,8 @@
 import Component from '../../components/common/Component.js'
 import Modal from '../../components/common/Modal/Modal.js'
 import Toast from '../../components/common/Toast/Toast.js'
-import { navigateTo, ROUTES } from '../../router.js'
+import { ROUTES } from '../../public/data/routes.js'
+import { navigateTo } from '../../router.js'
 class Mypage extends Component {
   setup() {
     this.loadStyles()

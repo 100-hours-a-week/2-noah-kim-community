@@ -2,7 +2,8 @@ import Component from '../../components/common/Component.js'
 import { parseDateToFullString } from '../../lib/utils/date.js'
 import { formatNumber } from '../../lib/utils/number.js'
 import { DUMMY_POSTS } from '../../public/data/dummy_posts.js'
-import { navigateTo, ROUTES } from '../../router.js'
+import { ROUTES } from '../../public/data/routes.js'
+import { navigateTo } from '../../router.js'
 
 class PostList extends Component {
   setup() {
