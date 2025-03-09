@@ -2,6 +2,10 @@ import InlineComponent from '../InlineComponent.js'
 
 class Toast extends InlineComponent {
   setup() {
+    this.$state = {
+      clearTimeout: this.$props.clearTimeout,
+    }
+
     this.loadStyles()
   }
 
@@ -24,7 +28,7 @@ class Toast extends InlineComponent {
   }
 
   setEvent() {
-    // 2초 뒤에 언마운트
+    // clearTimeout 뒤에 언마운트
     setTimeout(() => {
       const toastElements = this.$elements.toasts
       if (toastElements !== 0) {
@@ -32,7 +36,7 @@ class Toast extends InlineComponent {
       } else {
         console.error('❌ this.$target가 존재하지 않음!')
       }
-    }, 2000)
+    }, this.$state.clearTimeout)
     // DOM 요소 저장
   }
 }

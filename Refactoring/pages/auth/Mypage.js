@@ -1,7 +1,7 @@
 import Component from '../../components/common/Component.js'
 import Modal from '../../components/common/Modal/Modal.js'
-import { navigateTo, ROUTES } from '../../router.js'
 import Toast from '../../components/common/Toast/Toast.js'
+import { navigateTo, ROUTES } from '../../router.js'
 class Mypage extends Component {
   setup() {
     this.loadStyles()
@@ -104,6 +104,7 @@ class Mypage extends Component {
     event.preventDefault() // 기본 동작 방지
     new Toast({
       message: '수정완료',
+      clearTimeout: 2000,
     })
   }
 

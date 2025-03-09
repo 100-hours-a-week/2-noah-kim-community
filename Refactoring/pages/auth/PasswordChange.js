@@ -1,4 +1,5 @@
 import Component from '../../components/common/Component.js'
+import Toast from '../../components/common/Toast/Toast.js'
 class PasswordChange extends Component {
   setup() {
     this.loadStyles()
@@ -71,6 +72,7 @@ class PasswordChange extends Component {
       this.validatePasswordConfirm()
       this.updateButtonState()
     })
+    this.addEvent('click', this.$elements.submitButton, this.openToast.bind(this))
   }
 
   validatePassword() {
@@ -143,6 +145,14 @@ class PasswordChange extends Component {
       submitButton.style.backgroundColor = '#ACA0EB' // 비활성화 색상 (기본)
       submitButton.disabled = true // 버튼 비활성화
     }
+  }
+
+  openToast(event) {
+    event.preventDefault() // 기본 동작 방지
+    new Toast({
+      message: '수정 완료',
+      clearTimeout: 2000,
+    })
   }
 }
 
