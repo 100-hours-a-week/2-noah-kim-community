@@ -28,6 +28,8 @@ class Modal extends InlineComponent {
   mounted() {
     // document.body.insertAdjacentHTML('beforeend', this.getComponent())
     document.body.appendChild(this.$target)
+    document.body.style.overflow = 'hidden' //스크롤 막기
+
     // DOM 요소 저장
     this.$elements = {
       modalElement: this.$target.querySelector('.modal-overlay'),
@@ -58,6 +60,8 @@ class Modal extends InlineComponent {
   close() {
     if (this.$target) {
       this.$target.remove()
+
+      document.body.style.overflow = '' // 스크롤 다시 가능
     }
   }
 }

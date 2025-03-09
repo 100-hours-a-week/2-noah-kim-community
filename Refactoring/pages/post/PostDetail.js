@@ -1,4 +1,7 @@
 import Component from '../../components/common/Component.js'
+import Modal from '../../components/common/Modal/Modal.js'
+import { ROUTES } from '../../public/data/routes.js'
+import { navigateTo } from '../../router.js'
 class PostDetail extends Component {
   setup() {
     this.loadStyles()
@@ -54,7 +57,7 @@ class PostDetail extends Component {
    
 
       <section id="comment-box">
-        <textarea placeholder="댓글을 남겨주세요!"></textarea>
+        <textarea placeholder="댓글을 남겨주세요!" id="comment-input"></textarea>
         <button id="comment-button">댓글 등록</button>
       </section>
 
@@ -116,7 +119,82 @@ class PostDetail extends Component {
     </main>`
   }
 
-  setEvent() {}
+  mounted() {
+    // DOM 요소 저장
+    this.$elements = {
+      modifyPostButton: this.$target.querySelector('#modify-post'),
+      deletePostButton: this.$target.querySelector('#delete-post'),
+      commentInput: this.$target.querySelector('#comment-input'),
+      commentAddButton: this.$target.querySelector('#comment-button'),
+
+      commentDeleteButton: this.$target.querySelector('#comment-delete'),
+    }
+  }
+
+  setEvent() {
+    this.addEvent('click', this.$elements.modifyPostButton, this.modifyPost.bind(this))
+    this.addEvent('click', this.$elements.deletePostButton, this.deletePost.bind(this))
+
+    this.addEvent('input', this.$elements.commentInput, this.commentChange.bind(this))
+    this.addEvent('click', this.$elements.commentAddButton, this.postComment.bind(this))
+    this.addEvent('click', this.$elements.commentDeleteButton, this.deleteComment.bind(this))
+  }
+
+  modifyPost() {
+    // TODO: 수정으로 이동할때 데이터도 이동한다.
+    navigateTo(ROUTES.POST.MODIFY.url)
+  }
+
+  deletePost() {
+    new Modal({
+      title: '게시글을 삭제하시겠습니까?',
+      message: '삭제한 내용은 복구 할 수 없습니다.',
+      confirmText: '확인',
+      cancelText: '취소',
+      onConfirm: () => {
+        // TODO: 게시글 삭제 로직 구현
+        // navigateTo(ROUTES.AUTH.LOGIN.url)
+      },
+    })
+  }
+
+  commentChange() {
+    const comment = this.$elements.commentInput
+    const commentAddButton = this.$elements.commentAddButton
+
+    const commentValue = comment.value
+
+    // 유효성 검사
+    let isValid = true
+    if (!commentValue) {
+      isValid = false
+    }
+
+    // UI 업데이트
+    if (!isValid) {
+      commentAddButton.style.backgroundColor = '#ACA0EB' // 비활성화 색상
+      commentAddButton.disabled = false
+    } else {
+      commentAddButton.style.backgroundColor = '#7F6AEE' // 활성화 색상
+
+      commentAddButton.disabled = true
+    }
+  }
+
+  postComment() {}
+
+  deleteComment() {
+    new Modal({
+      title: '댓글을 삭제하시겠습니까?',
+      message: '삭제한 내용은 복구 할 수 없습니다.',
+      confirmText: '확인',
+      cancelText: '취소',
+      onConfirm: () => {
+        // TODO: 댓글 삭제 로직 구현
+        // navigateTo(ROUTES.AUTH.LOGIN.url)
+      },
+    })
+  }
 }
 
 export default PostDetail
