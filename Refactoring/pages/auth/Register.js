@@ -200,11 +200,19 @@ class Register extends Component {
     const password = this.$elements.passwordInput
     const passwordErrorText = this.$elements.passwordErrorText
 
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/
+
     // 유효성 검사
     let isValid = true
     let errorText = ''
+
     if (!password.value) {
       errorText = '* 비밀번호를 입력해주세요.'
+      isValid = false
+    }
+    // (2) 유효성 검증
+    else if (!passwordRegex.test(password.value)) {
+      errorText = '* 비밀번호 형식이 올바르지 않습니다. (8~20자, 대문자, 소문자, 숫자, 특수문자 최소 1개 이상)'
       isValid = false
     }
 
@@ -231,6 +239,7 @@ class Register extends Component {
       isValid = false
     } else if (passwordConfirm.value !== password.value) {
       errorText = '* 비밀번호가 다릅니다.'
+      isValid = false
     }
 
     // UI 업데이트
@@ -315,7 +324,7 @@ class Register extends Component {
       registerBtn.style.backgroundColor = '#7F6AEE' // 활성화 색상
       registerBtn.disabled = false // 버튼 활성화
     } else {
-      registerBtn.style.backgroundColor = '#ccc' // 비활성화 색상 (기본)
+      registerBtn.style.backgroundColor = '#ACA0EB' // 비활성화 색상 (기본)
       registerBtn.disabled = true // 버튼 비활성화
     }
   }
