@@ -42,7 +42,7 @@ class Header extends Component {
 
   template() {
     return `
-      <button id="back-button">&lt;</button>
+      <div id="back-button">&lt;</div>
       <span>아무 말 대잔치</span>
       <div id="image-container">
         <img src="/public/images/header_image.jpeg" alt="user-card-image" id="header-image"/>

@@ -47,7 +47,7 @@ class PostModify extends Component {
     // DOM 요소 저장
     this.$elements = {
       // 인풋 요소
-      titleInput: this.$target.querySelector('#passwordtitle-input'),
+      titleInput: this.$target.querySelector('#title-input'),
       textareaInput: this.$target.querySelector('#content-input'),
 
       // 버튼 요소
