@@ -15,7 +15,7 @@ export function navigateTo(requestedUrl) {
   router(requestedUrl)
 }
 
-/** 라우팅 함수 (SPA-실제 라우팅X) */
+/** 라우팅 함수 (SPA) */
 function router(requestedUrl) {
   const $header = document.querySelector('#app-header')
   const $app = document.querySelector('#app')
@@ -23,11 +23,12 @@ function router(requestedUrl) {
   const Component = RouteComponent[requestedUrl]
 
   if (Component) {
+    // #1. 헤더 컴포넌트 생성
     new Header($header, {
       route: requestedUrl,
-    }) // 헤더 컴포넌트 생성
-    console.log('👍 찾은 컴포넌트 표시')
-    new Component($app) // 알맞은 컴포넌트 생성
+    })
+    // #2. 페이지 컴포넌트 생성
+    new Component($app)
   } else {
     /** 정의되지 않은 컴포넌트(페이지) */
     $app.innerHTML = '<h1>404 - Page Not Found</h1>'
@@ -36,9 +37,4 @@ function router(requestedUrl) {
 
 window.addEventListener('popstate', () => {
   navigateTo(window.location.pathname)
-})
-
-/** TODO 삭제하기 */
-document.addEventListener('click', e => {
-  console.log(e.target)
 })

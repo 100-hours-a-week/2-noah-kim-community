@@ -1,5 +1,6 @@
 import Component from '../../components/common/Component.js'
 import Modal from '../../components/common/Modal/Modal.js'
+import { formatNumber } from '../../lib/utils/number.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 class PostDetail extends Component {
@@ -27,8 +28,6 @@ class PostDetail extends Component {
         </div>
       </section>
 
-
-
       <section id="post-content">
         <div id="image"></div>
         <span>
@@ -40,21 +39,19 @@ class PostDetail extends Component {
 
         <div id="post-stats">
           <div class="stats">
-            <span class="number">123</span> 
+            <span class="number">${formatNumber(123)}</span> 
             <span class="text">좋아요수</span>
           </div>
           <div class="stats">
-            <span class="number">123</span> 
+            <span class="number">${formatNumber(123)}</span> 
             <span class="text">조회수</span>
           </div>
           <div class="stats">
-            <span class="number">123</span> 
+            <span class="number">${formatNumber(123)}</span> 
             <span class="text">댓글</span>
           </div>
         </div>
       </section>  
-
-   
 
       <section id="comment-box">
         <textarea placeholder="댓글을 남겨주세요!" id="comment-input"></textarea>
@@ -141,7 +138,7 @@ class PostDetail extends Component {
   }
 
   modifyPost() {
-    // TODO: 수정으로 이동할때 데이터도 이동한다.
+    // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
     navigateTo(ROUTES.POST.MODIFY.url)
   }
 

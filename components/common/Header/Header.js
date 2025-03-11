@@ -26,12 +26,11 @@ const generateBackRoutes = routes => {
 }
 
 export const BACK_ROUTE = generateBackRoutes(ROUTES)
-console.log(BACK_ROUTE)
 
 class Header extends Component {
   setup() {
     this.$state = {
-      route: this.$props.route,
+      backRoute: BACK_ROUTE[this.$props.route],
     }
 
     this.loadStyles()
@@ -41,8 +40,10 @@ class Header extends Component {
   }
 
   template() {
+    const backButton = this.$state.backRoute ? `<div id="back-button">&lt;</div>` : ''
+
     return `
-      <div id="back-button">&lt;</div>
+      ${backButton}
       <span>아무 말 대잔치</span>
       <div id="image-container">
         <img src="/public/images/header_image.jpeg" alt="user-card-image" id="header-image"/>
@@ -67,7 +68,7 @@ class Header extends Component {
       passwordChangeLink: this.$target.querySelector('#password-change-link'),
       logoutLink: this.$target.querySelector('#logout-link'),
     }
-    if (this.$state.route) {
+    if (this.$state.backRoute) {
       this.$elements = {
         ...this.$elements,
         backButton: this.$target.querySelector('#back-button'),
@@ -97,9 +98,9 @@ class Header extends Component {
       // navigateTo(ROUTES.AUTH.PASSWORD_CHANGE.url);
     })
 
-    if (this.$state.route) {
+    if (this.$state.backRoute) {
       this.addEvent('click', this.$elements.backButton, event => {
-        navigateTo(BACK_ROUTE[this.$state.route])
+        navigateTo(this.$state.backRoute)
       })
     }
   }

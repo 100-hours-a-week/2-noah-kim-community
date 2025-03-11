@@ -110,7 +110,6 @@ class Register extends Component {
       nicknameErrorText: this.$target.querySelector('#nickname-error'),
 
       // 버튼 요소
-      backButton: this.$target.querySelector('#back-button'),
       registerButton: this.$target.querySelector('#register-button'),
       loginButton: this.$target.querySelector('#login-button'),
     }
@@ -143,8 +142,7 @@ class Register extends Component {
     })
 
     // 클릭 이벤트
-    this.addEvent('click', this.$elements.backButton, this.backRouteHandler.bind(this))
-    this.addEvent('click', this.$elements.registerButton, this.registerRouteHandler.bind(this))
+    this.addEvent('click', this.$elements.registerButton, this.registerHandler.bind(this))
     this.addEvent('click', this.$elements.loginButton, this.loginRouteHandler.bind(this))
   }
 
@@ -246,30 +244,13 @@ class Register extends Component {
     }
   }
 
-  /** TODO: 히스토리 뒤로가기 */
-  backRouteHandler() {
-    // window.location.href = URL.POST.MAIN.url; // 메인 페이지로 이동
-    // navigateTo(ROUTES)
-  }
-
   loginRouteHandler() {
     navigateTo(ROUTES.AUTH.LOGIN.url)
   }
 
-  /** TODO: 회원가입 로직 구현 필요 */
-  registerRouteHandler() {
-    navigateTo(ROUTES.POST.MAIN.url)
-    // setTimeout(() => {
-    //   navigateTo(ROUTES.POST.MAIN.url);
-    // }, 3000);
-
-    // if (registerButton.disabled === false) {
-    //   setTimeout(() => {
-    //     window.location.href = `/pages/auth/login/index.html`; // 메인 페이지로 이동
-    //   }, 3000);
-    // } else {
-    //   console.log("error");
-    // }
+  registerHandler() {
+    /** TODO: 회원가입 로직 구현 필요 */
+    navigateTo(ROUTES.AUTH.LOGIN.url)
   }
 }
 

@@ -39,7 +39,7 @@ class PostWrite extends Component {
             <input type="file" id="image-input" accept="image/*" />
           </div>
         </form>
-        <button id="modify-button">수정하기</button>
+        <button id="submit-button">완료</button>
       </main>
     `
   }
@@ -55,7 +55,7 @@ class PostWrite extends Component {
       errorText: this.$target.querySelector('.error-message'),
 
       // 버튼 요소
-      modifyButton: this.$target.querySelector('#modify-button'),
+      submitButton: this.$target.querySelector('#submit-button'),
     }
   }
 
@@ -69,7 +69,7 @@ class PostWrite extends Component {
       this.validateForm()
     })
 
-    this.addEvent('click', this.$elements.modifyButton, this.modifyPostHandler.bind(this))
+    this.addEvent('click', this.$elements.submitButton, this.submitPostHandler.bind(this))
   }
 
   /** 제목은 최대 26자 */
@@ -103,7 +103,8 @@ class PostWrite extends Component {
     }
   }
 
-  modifyPostHandler() {
+  /** 수정하러 가기 */
+  submitPostHandler() {
     navigateTo(ROUTES.POST.DETAIL.url)
   }
 }

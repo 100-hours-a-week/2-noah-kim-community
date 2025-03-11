@@ -40,13 +40,8 @@ class Modal extends InlineComponent {
 
   setEvent() {
     const { onConfirm, onCancel } = this.$props
-    console.log('Modal SetEvent✅')
-    console.log('cancelButton')
-    console.log(this.$elements.cancelButton)
 
     this.$elements.cancelButton.addEventListener('click', () => {
-      console.log('cancel button clicked')
-
       if (onCancel) onCancel()
       this.close()
     })

@@ -104,7 +104,7 @@ class PasswordChange extends Component {
     }
   }
 
-  // TODO: 수정하기 로직
+  // TODO: 수정하기 API
   modifyHandler(event) {
     event.preventDefault()
     new Toast({
