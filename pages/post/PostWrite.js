@@ -33,6 +33,7 @@ class PostWrite extends Component {
             ></textarea>
           </div>
 
+          <span class="error-message"></span>
           <div id="post-image">
             <label>이미지</label>
             <input type="file" id="image-input" accept="image/*" />
@@ -50,17 +51,28 @@ class PostWrite extends Component {
       titleInput: this.$target.querySelector('#title-input'),
       textareaInput: this.$target.querySelector('#content-input'),
 
+      // 에러 요소
+      errorText: this.$target.querySelector('.error-message'),
+
       // 버튼 요소
       modifyButton: this.$target.querySelector('#modify-button'),
     }
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.titleInput, this.validateTitle.bind(this))
+    this.addEvent('input', this.$elements.titleInput, event => {
+      this.validateTitle()
+      this.validateForm()
+    })
 
-    this.addEvent('click', this.$elements.modifyButton, this.modifyPost.bind(this))
+    this.addEvent('input', this.$elements.textareaInput, event => {
+      this.validateForm()
+    })
+
+    this.addEvent('click', this.$elements.modifyButton, this.modifyPostHandler.bind(this))
   }
 
+  /** 제목은 최대 26자 */
   validateTitle() {
     const titleInput = this.$elements.titleInput
 
@@ -70,7 +82,28 @@ class PostWrite extends Component {
     }
   }
 
-  modifyPost() {
+  /** 폼 전체 유효성 검사 */
+  validateForm() {
+    const modifyButton = this.$elements.modifyButton
+    const errorTextElement = this.$elements.errorText
+
+    const isFormValid = this.$elements.titleInput.value && this.$elements.textareaInput.value
+
+    if (!isFormValid) {
+      errorTextElement.style.visibility = 'visible'
+      errorTextElement.textContent = `* 제목, 내용을 모두 작성해주세요.`
+
+      modifyButton.style.backgroundColor = '#ACA0EB' // 비활성화 색상 (기본)
+      modifyButton.disabled = true // 버튼 비활성화
+    } else {
+      errorTextElement.style.visibility = 'hidden'
+
+      modifyButton.style.backgroundColor = '#7F6AEE' // 활성화 색상
+      modifyButton.disabled = false // 버튼 활성화
+    }
+  }
+
+  modifyPostHandler() {
     navigateTo(ROUTES.POST.DETAIL.url)
   }
 }
