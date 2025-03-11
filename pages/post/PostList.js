@@ -19,14 +19,10 @@ class PostList extends Component {
 
   template() {
     const { posts } = this.state
-    // const writePostButton = new Button({
-    //   text: "게시글 작성",
-    //   onClick: this.writePostRoute.bind(this),
-    // });
 
     const postList = posts
       .map(post => {
-        // 게시글 클릭 시 상세 페이지 이동
+        // TODO: 게시글 클릭 시 상세 페이지 이동
         // li.addEventListener("click", () => {
         //   window.location.href = URL.POST.DETAIL.url;
         // });
@@ -65,12 +61,6 @@ class PostList extends Component {
   }
 
   mounted() {
-    // const $writePostButton = this.$target.querySelector("#write-button");
-    // new Button($writePostButton, {
-    //   text: "게시글 작성",
-    //   onClick: this.writePostRoute.bind(this),
-    // });
-
     // DOM 요소 저장
     this.$elements = {
       writePostButton: this.$target.querySelector('#write-button'),
@@ -79,13 +69,6 @@ class PostList extends Component {
 
   setEvent() {
     this.addEvent('click', this.$elements.writePostButton, this.writePostRoute.bind(this))
-
-    // this.$target.querySelectorAll(".post-item").forEach((item) => {
-    //   item.addEventListener("click", (e) => {
-    //     const postId = e.target.dataset.id;
-    //     navigateTo(`/post/detail?id=${postId}`);
-    //   });
-    // });
   }
 
   writePostRoute() {

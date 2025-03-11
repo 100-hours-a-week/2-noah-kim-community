@@ -1,4 +1,5 @@
 import Component from '../../components/common/Component.js'
+import { validateEmailInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 class Login extends Component {
@@ -49,68 +50,51 @@ class Login extends Component {
       passwordInput: this.$target.querySelector('#password-input'),
       passwordErrorText: this.$target.querySelector('#password-error-message'),
       loginButton: this.$target.querySelector('#login-button'),
-      unregisterButton: this.$target.querySelector('#register-button'),
+      registerButton: this.$target.querySelector('#register-button'),
     }
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.emailInput, this.validateEmail.bind(this))
-    this.addEvent('input', this.$elements.passwordInput, this.validatePassword.bind(this))
+    this.addEvent('input', this.$elements.emailInput, event => {
+      this.validateEmail()
+      this.validateForm()
+    })
+    this.addEvent('input', this.$elements.passwordInput, event => {
+      this.validatePassword()
+      this.validateForm()
+    })
     this.addEvent('click', this.$elements.loginButton, this.loginRoute.bind(this))
-    this.addEvent('click', this.$elements.unregisterButton, this.registerRoute.bind(this))
+    this.addEvent('click', this.$elements.registerButton, this.registerRoute.bind(this))
   }
 
+  /** 이메일 유효성 검사 */
   validateEmail() {
-    const email = this.$elements.emailInput.value.trim()
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-    let isValid = true
-    if (!email || !emailRegex.test(email)) {
-      this.$elements.emailErrorText.textContent = '* 올바른 이메일 주소 형식을 입력해주세요.'
-      isValid = false
-    }
-
-    // 유효성 검사에 따른 에러 메세지 여부 결정표시
-    if (!isValid) {
-      this.$elements.emailErrorText.style.display = 'block'
-    } else {
-      this.$elements.emailErrorText.style.display = 'none'
-    }
-
-    return isValid
+    return validateEmailInput(this.$elements.emailInput, this.$elements.emailErrorText)
   }
 
+  /** 비밀번호 유효성 검사 */
   validatePassword() {
-    const password = this.$elements.passwordInput.value
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/
-
-    let isValid = true
-    let errorText = ''
-    if (!password) {
-      errorText = '* 비밀번호를 입력해주세요.'
-      isValid = false
-    } else if (!passwordRegex.test(password)) {
-      errorText = '* 8자 이상, 20자 이하, 대문자, 소문자, 숫자, 특수문자를 포함해야 합니다.'
-      isValid = false
-    }
-
-    if (!isValid) {
-      this.$elements.passwordErrorText.style.display = 'block'
-      this.$elements.passwordErrorText.textContent = errorText
-    } else {
-      this.$elements.passwordErrorText.style.display = 'none'
-    }
-
-    return isValid
+    return validatePasswordInput(this.$elements.passwordInput, this.$elements.passwordErrorText)
   }
 
-  // TODO: 로그인 로직 추가 필요 (현재는 무조건 로그인됨)
-  loginRoute() {
-    if (this.validateEmail() && this.validatePassword()) {
-      this.$elements.loginButton.style.backgroundColor = '#7F6AEE'
+  /** 폼 전체 유효성 검사 */
+  validateForm() {
+    const loginButton = this.$elements.loginButton
 
-      navigateTo(ROUTES.POST.MAIN.url)
+    const isFormValid = this.validateEmail() && this.validatePassword()
+
+    if (!isFormValid) {
+      loginButton.style.backgroundColor = '#ACA0EB' // 비활성화 색상 (기본)
+      loginButton.disabled = true // 버튼 비활성화
+    } else {
+      loginButton.style.backgroundColor = '#7F6AEE' // 활성화 색상
+      loginButton.disabled = false // 버튼 활성화
     }
+  }
+
+  loginRoute() {
+    // TODO: 로그인 API 필요 (현재는 더미 데이터 확인 후 로그인)
+    navigateTo(ROUTES.POST.MAIN.url)
   }
 
   registerRoute() {

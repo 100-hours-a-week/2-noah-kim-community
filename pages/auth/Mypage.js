@@ -1,6 +1,7 @@
 import Component from '../../components/common/Component.js'
 import Modal from '../../components/common/Modal/Modal.js'
 import Toast from '../../components/common/Toast/Toast.js'
+import { validateNicknameInput } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 class Mypage extends Component {
@@ -63,45 +64,19 @@ class Mypage extends Component {
   }
 
   setEvent() {
-    this.addEvent('click', this.$elements.modifyButton, this.openToast.bind(this))
+    this.addEvent('click', this.$elements.modifyButton, this.modifyHandler.bind(this))
     this.addEvent('input', this.$elements.nicknameInput, this.validateNickname.bind(this))
-    this.addEvent('click', this.$elements.unregisterButton, this.openUnregisterModal.bind(this))
+    this.addEvent('click', this.$elements.unregisterButton, this.unregisterHandler.bind(this))
   }
 
+  /** 닉네임 유효성 검사 */
   validateNickname() {
-    const nickname = this.$elements.nicknameInput
-    const nicknameErrorText = this.$elements.nicknameErrorText
-
-    const nicknameValue = nickname.value
-
-    // 유효성 검사
-    let isValid = true
-    let errorText = ''
-    if (!nicknameValue) {
-      errorText = '* 닉네임을 입력해주세요.'
-      isValid = false
-    }
-    // 중복된 닉네임 확인 로직
-    // else if (nicknameValue.includes(" ")) {
-    //   errorText = "* 띄어쓰기를 없애주세요.";
-    //   isValid = false;
-    // }
-    else if (nicknameValue.length > 10) {
-      errorText = '* 닉네임은 최대 10자까지 작성 가능합니다.'
-      isValid = false
-    }
-
-    // UI 업데이트
-    if (!isValid) {
-      nicknameErrorText.style.visibility = 'visible'
-      nicknameErrorText.textContent = errorText
-    } else {
-      nicknameErrorText.style.visibility = 'hidden'
-    }
-    return isValid
+    return validateNicknameInput(this.$elements.nicknameInput, this.$elements.nicknameErrorText)
   }
 
-  openToast(event) {
+  /** 수정하기 로직 */
+  modifyHandler(event) {
+    // TODO: 중복 닉네임 확인 API 로직
     event.preventDefault() // 기본 동작 방지
     new Toast({
       message: '수정완료',
@@ -109,13 +84,15 @@ class Mypage extends Component {
     })
   }
 
-  openUnregisterModal() {
+  /** 회원탈퇴 로직 */
+  unregisterHandler() {
     new Modal({
       title: '회원탈퇴 하시겠습니까?',
       message: '작성된 게시글과 댓글은 삭제됩니다.',
       confirmText: '확인',
       cancelText: '취소',
       onConfirm: () => {
+        // TODO: 회원 탈퇴 API 로직
         navigateTo(ROUTES.AUTH.LOGIN.url)
       },
     })

@@ -1,4 +1,10 @@
 import Component from '../../components/common/Component.js'
+import {
+  validateEmailInput,
+  validateNicknameInput,
+  validatePasswordConfirmInput,
+  validatePasswordInput,
+} from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 class Register extends Component {
@@ -84,9 +90,13 @@ class Register extends Component {
   mounted() {
     // DOM 요소 저장
     this.$elements = {
-      registerForm: this.$target.querySelector('#register-form'),
-
       // 인풋 요소
+      // 이미지 입력 관련 요소
+      profileInput: this.$target.querySelector('#profile-val'),
+      profilePreview: this.$target.querySelector('#profile-preview'),
+      profileImage: this.$target.querySelector('#profile-image'),
+      profilePlaceholder: this.$target.querySelector('#profile-placeholder'),
+
       emailInput: this.$target.querySelector('#email-val'),
       passwordInput: this.$target.querySelector('#password-val'),
       passwordConfirmInput: this.$target.querySelector('#password-confirm-val'),
@@ -99,12 +109,6 @@ class Register extends Component {
       passwordConfirmErrorText: this.$target.querySelector('#password-confirm-error'),
       nicknameErrorText: this.$target.querySelector('#nickname-error'),
 
-      // 이미지 입력 관련 요소
-      profileInput: this.$target.querySelector('#profile-val'),
-      profilePreview: this.$target.querySelector('#profile-preview'),
-      profileImage: this.$target.querySelector('#profile-image'),
-      profilePlaceholder: this.$target.querySelector('#profile-placeholder'),
-
       // 버튼 요소
       backButton: this.$target.querySelector('#back-button'),
       registerButton: this.$target.querySelector('#register-button'),
@@ -113,36 +117,71 @@ class Register extends Component {
   }
 
   setEvent() {
+    this.addEvent('input', this.$elements.profileInput, event => {
+      this.validateProfile()
+      this.validateForm()
+    })
+    this.addEvent('change', this.$elements.profileInput, this.profileChangeHandler.bind(this))
+
+    this.addEvent('click', this.$elements.profilePreview, this.getProfileImage.bind(this))
     // 입력 이벤트
     this.addEvent('input', this.$elements.emailInput, event => {
       this.validateEmail()
-      this.updateButtonState()
+      this.validateForm()
     })
     this.addEvent('input', this.$elements.passwordInput, event => {
       this.validatePassword()
-      this.updateButtonState()
+      this.validateForm()
     })
     this.addEvent('input', this.$elements.passwordConfirmInput, event => {
       this.validatePasswordConfirm()
-      this.updateButtonState()
+      this.validateForm()
     })
     this.addEvent('input', this.$elements.nicknameInput, event => {
       this.validateNickname()
-      this.updateButtonState()
+      this.validateForm()
     })
-    this.addEvent('change', this.$elements.profileInput, event => {
-      this.validateProfile()
-      this.updateButtonState()
-    })
-    this.addEvent('change', this.$elements.profileInput, this.onProfileChangeHandler.bind(this))
-
-    this.addEvent('click', this.$elements.profilePreview, this.getProfileImage.bind(this))
 
     // 클릭 이벤트
     this.addEvent('click', this.$elements.backButton, this.backRouteHandler.bind(this))
     this.addEvent('click', this.$elements.registerButton, this.registerRouteHandler.bind(this))
     this.addEvent('click', this.$elements.loginButton, this.loginRouteHandler.bind(this))
   }
+
+  // 이미지가 입력받아지면 수행할 일
+  profileChangeHandler() {
+    const profileInput = this.$elements.profileInput
+    const profileImage = this.$elements.profileImage
+    const profilePlaceholder = this.$elements.profilePlaceholder
+
+    // 2. 새로운 이미지 받기
+    if (profileInput.files && profileInput.files[0]) {
+      const reader = new FileReader()
+      reader.onload = function (e) {
+        profileImage.src = e.target.result
+        profileImage.style.display = 'block'
+        profilePlaceholder.style.display = 'none'
+      }
+      reader.readAsDataURL(profileInput.files[0])
+    }
+  }
+
+  getProfileImage() {
+    const profileInput = this.$elements.profileInput
+    const profileImage = this.$elements.profileImage
+    const profilePlaceholder = this.$elements.profilePlaceholder
+    // 1. 새로운 이미지 입력 받기
+    profileInput?.click()
+
+    // 2. 기존 이미지 있다면 삭제
+    if (profileImage.style.display === 'block') {
+      profileInput.value = ''
+      profileImage.style.display = 'none'
+      profilePlaceholder.style.display = 'block'
+    }
+    this.validateProfile()
+  }
+
   validateProfile() {
     const profileInput = this.$elements.profileInput
     const profileErrorText = this.$elements.profileErrorText
@@ -166,167 +205,44 @@ class Register extends Component {
     return isValid
   }
 
+  // TODO: 중복 이메일 검사 (회원가입)
+  /** 이메일 유효성 검사 + 중복 이메일 검사 */
   validateEmail() {
-    const emailInput = this.$elements.emailInput
-    const emailErrorText = this.$elements.emailErrorText
-
-    const email = emailInput.value.trim()
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    // 유효성 검사
-    let isValid = true
-    let errorText = ''
-    if (!email) {
-      errorText = '* 이메일을 입력해주세요.'
-      isValid = false
-    } else if (!emailRegex.test(email)) {
-      errorText = '* 올바른 이메일 주소 형식을 입력해주세요.'
-      isValid = false
-    }
-    // // 중복 이메일 검사
-    // else if (existingEmails.includes(email)) {
-    //   errorText = "* 중복된 이메일입니다.";
-    // }
-
-    // UI 업데이트
-    if (!isValid) {
-      emailErrorText.style.visibility = 'visible'
-      emailErrorText.textContent = errorText
-    } else {
-      emailErrorText.style.visibility = 'hidden'
-    }
-    return isValid
+    return validateEmailInput(this.$elements.emailInput, this.$elements.emailErrorText)
   }
 
+  /** 비밀번호 유효성 검사 */
   validatePassword() {
-    const password = this.$elements.passwordInput
-    const passwordErrorText = this.$elements.passwordErrorText
-
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/
-
-    // 유효성 검사
-    let isValid = true
-    let errorText = ''
-
-    if (!password.value) {
-      errorText = '* 비밀번호를 입력해주세요.'
-      isValid = false
-    }
-    // (2) 유효성 검증
-    else if (!passwordRegex.test(password.value)) {
-      errorText = '* 비밀번호 형식이 올바르지 않습니다. (8~20자, 대문자, 소문자, 숫자, 특수문자 최소 1개 이상)'
-      isValid = false
-    }
-
-    // UI 업데이트
-    if (!isValid) {
-      passwordErrorText.style.visibility = 'visible'
-      passwordErrorText.textContent = errorText
-    } else {
-      passwordErrorText.style.visibility = 'hidden'
-    }
-    return isValid
+    return validatePasswordInput(this.$elements.passwordInput, this.$elements.passwordErrorText)
   }
 
+  /** 비밀번호 확인 유효성 검사 */
   validatePasswordConfirm() {
-    const password = this.$elements.passwordInput
-    const passwordConfirm = this.$elements.passwordConfirmInput
-    const passwordConfirmErrorText = this.$elements.passwordConfirmErrorText
-
-    // 유효성 검사
-    let isValid = true
-    let errorText = ''
-    if (!passwordConfirm.value) {
-      errorText = '* 비밀번호를 한번더 입력해주세요.'
-      isValid = false
-    } else if (passwordConfirm.value !== password.value) {
-      errorText = '* 비밀번호가 다릅니다.'
-      isValid = false
-    }
-
-    // UI 업데이트
-    if (!isValid) {
-      passwordConfirmErrorText.style.visibility = 'visible'
-      passwordConfirmErrorText.textContent = errorText
-    } else {
-      passwordConfirmErrorText.style.visibility = 'hidden'
-    }
-    return isValid
+    return validatePasswordConfirmInput(
+      this.$elements.passwordInput,
+      this.$elements.passwordConfirmInput,
+      this.$elements.passwordConfirmErrorText,
+    )
   }
 
+  /** 닉네임 유효성 검사 */
   validateNickname() {
-    const nickname = this.$elements.nicknameInput
-    const nicknameErrorText = this.$elements.nicknameErrorText
-
-    // 유효성 검사
-    let isValid = true
-    let errorText = ''
-    if (!nickname.value) {
-      errorText = '* 닉네임을 입력해주세요.'
-      isValid = false
-    } else if (nickname.value.includes(' ')) {
-      errorText = '* 띄어쓰기를 없애주세요.'
-      isValid = false
-    } else if (nickname.value.length > 10) {
-      errorText = '* 닉네임은 최대 10자까지 작성 가능합니다.'
-      isValid = false
-    }
-
-    // UI 업데이트
-    if (!isValid) {
-      nicknameErrorText.style.visibility = 'visible'
-      nicknameErrorText.textContent = errorText
-    } else {
-      nicknameErrorText.style.visibility = 'hidden'
-    }
-    return isValid
+    return validateNicknameInput(this.$elements.nicknameInput, this.$elements.nicknameErrorText)
   }
 
-  getProfileImage() {
-    const profileInput = this.$elements.profileInput
-    const profileImage = this.$elements.profileImage
-    const profilePlaceholder = this.$elements.profilePlaceholder
-    // 1. 새로운 이미지 입력 받기
-    profileInput?.click()
-
-    // 2. 기존 이미지 있다면 삭제
-    if (profileImage.style.display === 'block') {
-      profileInput.value = ''
-      profileImage.style.display = 'none'
-      profilePlaceholder.style.display = 'block'
-    }
-    this.validateProfile()
-  }
-
-  // 이미지가 입력받아지면 수행할 일
-  onProfileChangeHandler() {
-    const profileInput = this.$elements.profileInput
-    const profileImage = this.$elements.profileImage
-    const profilePlaceholder = this.$elements.profilePlaceholder
-
-    // 2. 새로운 이미지 받기
-    if (profileInput.files && profileInput.files[0]) {
-      const reader = new FileReader()
-      reader.onload = function (e) {
-        profileImage.src = e.target.result
-        profileImage.style.display = 'block'
-        profilePlaceholder.style.display = 'none'
-      }
-      reader.readAsDataURL(profileInput.files[0])
-    }
-  }
-
-  updateButtonState() {
-    const registerBtn = this.$elements.registerBtn
+  /** 폼 전체 유효성 검사 */
+  validateForm() {
+    const registerButton = this.$elements.registerButton
 
     const isFormValid =
       this.validateEmail() && this.validatePassword() && this.validatePasswordConfirm() && this.validateNickname() && this.validateProfile()
 
-    if (isFormValid) {
-      registerBtn.style.backgroundColor = '#7F6AEE' // 활성화 색상
-      registerBtn.disabled = false // 버튼 활성화
+    if (!isFormValid) {
+      registerButton.style.backgroundColor = '#ACA0EB' // 비활성화 색상 (기본)
+      registerButton.disabled = true // 버튼 비활성화
     } else {
-      registerBtn.style.backgroundColor = '#ACA0EB' // 비활성화 색상 (기본)
-      registerBtn.disabled = true // 버튼 비활성화
+      registerButton.style.backgroundColor = '#7F6AEE' // 활성화 색상
+      registerButton.disabled = false // 버튼 활성화
     }
   }
 
@@ -347,7 +263,7 @@ class Register extends Component {
     //   navigateTo(ROUTES.POST.MAIN.url);
     // }, 3000);
 
-    // if (registerBtn.disabled === false) {
+    // if (registerButton.disabled === false) {
     //   setTimeout(() => {
     //     window.location.href = `/pages/auth/login/index.html`; // 메인 페이지로 이동
     //   }, 3000);

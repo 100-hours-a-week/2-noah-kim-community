@@ -80,4 +80,6 @@ header #image-container #dropdown-menu {
   font-size: large;
   background-color: inherit;
   color: black;
+
+  cursor: pointer;
 }

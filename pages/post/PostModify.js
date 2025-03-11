@@ -56,21 +56,23 @@ class PostModify extends Component {
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.titleInput, this.validateTitle.bind(this))
+    this.addEvent('input', this.$elements.titleInput, this.sliceTitle.bind(this))
 
-    this.addEvent('click', this.$elements.modifyButton, this.modifyPost.bind(this))
+    this.addEvent('click', this.$elements.modifyButton, this.modifyPostHandler.bind(this))
   }
 
-  validateTitle() {
+  /** 제목은 최대 26자 */
+  sliceTitle() {
     const titleInput = this.$elements.titleInput
 
-    // UI 업데이트
+    // 자르기
     if (titleInput.value.length > 26) {
       titleInput.value = titleInput.value.slice(0, 26)
     }
   }
 
-  modifyPost() {
+  // TODO: 게시글 수정 API
+  modifyPostHandler() {
     navigateTo(ROUTES.POST.DETAIL.url)
   }
 }

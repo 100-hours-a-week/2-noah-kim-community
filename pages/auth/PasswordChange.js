@@ -1,5 +1,6 @@
 import Component from '../../components/common/Component.js'
 import Toast from '../../components/common/Toast/Toast.js'
+import { validatePasswordConfirmInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
 class PasswordChange extends Component {
   setup() {
     this.loadStyles()
@@ -66,89 +67,46 @@ class PasswordChange extends Component {
   setEvent() {
     this.addEvent('input', this.$elements.passwordInput, event => {
       this.validatePassword()
-      this.updateButtonState()
+      this.validateForm()
     })
     this.addEvent('input', this.$elements.passwordConfirmInput, event => {
       this.validatePasswordConfirm()
-      this.updateButtonState()
+      this.validateForm()
     })
-    this.addEvent('click', this.$elements.submitButton, this.openToast.bind(this))
+    this.addEvent('click', this.$elements.submitButton, this.modifyHandler.bind(this))
   }
 
+  /** 비밀번호 유효성 검사 */
   validatePassword() {
-    const password = this.$elements.passwordInput
-    const passwordErrorText = this.$elements.passwordErrorText
-
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/
-
-    // 유효성 검사
-    let isValid = true
-    let errorText = ''
-
-    // (1) 빈 값 체크
-    if (!password.value) {
-      errorText = '* 비밀번호를 입력해주세요.'
-      isValid = false
-    }
-    // (2) 유효성 검증
-    else if (!passwordRegex.test(password.value)) {
-      errorText = '* 비밀번호 형식이 올바르지 않습니다. (8~20자, 대문자, 소문자, 숫자, 특수문자 최소 1개 이상)'
-      isValid = false
-    }
-
-    // UI 업데이트
-    if (!isValid) {
-      passwordErrorText.style.visibility = 'visible'
-      passwordErrorText.textContent = errorText
-    } else {
-      passwordErrorText.style.visibility = 'hidden'
-    }
-
-    return isValid
+    return validatePasswordInput(this.$elements.passwordInput, this.$elements.passwordErrorText)
   }
 
+  /** 비밀번호 확인 유효성 검사 */
   validatePasswordConfirm() {
-    const password = this.$elements.passwordInput
-    const passwordConfirm = this.$elements.passwordConfirmInput
-    const passwordConfirmErrorText = this.$elements.passwordConfirmErrorText
-
-    // 유효성 검사
-    let isValid = true
-    let errorText = ''
-    if (!passwordConfirm.value) {
-      errorText = '* 비밀번호를 한번더 입력해주세요.'
-      isValid = false
-    } else if (passwordConfirm.value !== password.value) {
-      errorText = '* 비밀번호가 다릅니다.'
-      isValid = false
-    }
-
-    // UI 업데이트
-    if (!isValid) {
-      passwordConfirmErrorText.style.visibility = 'visible'
-      passwordConfirmErrorText.textContent = errorText
-    } else {
-      passwordConfirmErrorText.style.visibility = 'hidden'
-    }
-    return isValid
+    return validatePasswordConfirmInput(
+      this.$elements.passwordInput,
+      this.$elements.passwordConfirmInput,
+      this.$elements.passwordConfirmErrorText,
+    )
   }
 
-  updateButtonState() {
+  validateForm() {
     const submitButton = this.$elements.submitButton
 
     const isFormValid = this.validatePassword() && this.validatePasswordConfirm()
 
-    if (isFormValid) {
-      submitButton.style.backgroundColor = '#7F6AEE' // 활성화 색상
-      submitButton.disabled = false // 버튼 활성화
-    } else {
+    if (!isFormValid) {
       submitButton.style.backgroundColor = '#ACA0EB' // 비활성화 색상 (기본)
       submitButton.disabled = true // 버튼 비활성화
+    } else {
+      submitButton.style.backgroundColor = '#7F6AEE' // 활성화 색상
+      submitButton.disabled = false // 버튼 활성화
     }
   }
 
-  openToast(event) {
-    event.preventDefault() // 기본 동작 방지
+  // TODO: 수정하기 로직
+  modifyHandler(event) {
+    event.preventDefault()
     new Toast({
       message: '수정 완료',
       clearTimeout: 2000,
