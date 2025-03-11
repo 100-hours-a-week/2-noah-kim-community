@@ -7,7 +7,7 @@ class PostDetail extends Component {
     this.loadStyles()
   }
   loadStyles() {
-    super.loadStyles('/styles/post/postdetail.css')
+    super.loadStyles('/styles/post/detail.css')
   }
 
   template() {

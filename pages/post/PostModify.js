@@ -6,7 +6,7 @@ class PostModify extends Component {
     this.loadStyles()
   }
   loadStyles() {
-    super.loadStyles('/styles/post/postmodify.css')
+    super.loadStyles('/styles/post/modify.css')
   }
 
   template() {

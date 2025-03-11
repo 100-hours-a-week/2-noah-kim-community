@@ -14,7 +14,7 @@ class PostList extends Component {
     this.loadStyles()
   }
   loadStyles() {
-    super.loadStyles('/styles/post/postlist.css')
+    super.loadStyles('/styles/post/list.css')
   }
 
   template() {

@@ -6,7 +6,7 @@ class PostWrite extends Component {
     this.loadStyles()
   }
   loadStyles() {
-    super.loadStyles('/styles/post/postwrite.css')
+    super.loadStyles('/styles/post/write.css')
   }
 
   template() {
