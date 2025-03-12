@@ -77,7 +77,7 @@ VSCode의 Live Server로 실행됩니다.
 │   └── images
 │       └── header_image.jpeg
 ├── reset.css (기본 스타일 리셋)
-├── router.js (라우팅 구현 함수(
+├── router.js (라우팅 구현 함수)
 ├── style.css
 └── styles (스타일링 코드)
     ├── auth
