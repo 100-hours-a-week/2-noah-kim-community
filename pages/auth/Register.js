@@ -123,7 +123,7 @@ class Register extends Component {
     })
     new Button(this.$elements.loginButton, {
       text: '로그인하러 가기',
-      onClick: this.loginRouteHandler.bind(this),
+      onClick: this.navigateToLoginRoute.bind(this),
       idName: 'login-button',
     })
   }
@@ -253,12 +253,12 @@ class Register extends Component {
     }
   }
 
-  loginRouteHandler() {
+  navigateToLoginRoute() {
     navigateTo(ROUTES.AUTH.LOGIN.url)
   }
 
+  /** TODO: 회원가입 로직 구현 필요 */
   registerHandler() {
-    /** TODO: 회원가입 로직 구현 필요 */
     navigateTo(ROUTES.AUTH.LOGIN.url)
   }
 }

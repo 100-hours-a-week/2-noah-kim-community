@@ -13,18 +13,11 @@ class Button extends InlineComponent {
     return `<button class='button-component'>${text}</button>`
   }
 
-  mounted() {
-    // DOM 요소 저장
-    // this.$elements = {
-    //   button: 소ㅑㄴ,
-    // }
-    // console.log(this.$elements.button)
-  }
+  mounted() {}
 
   setEvent() {
     const { onClick } = this.$props
 
-    /** 클릭 이벤트 전달 */
     this.addEvent('click', this.$target, onClick)
   }
 }

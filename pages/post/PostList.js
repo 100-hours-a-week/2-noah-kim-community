@@ -70,12 +70,12 @@ class PostList extends Component {
     // 자식 요소 정의
     new Button(this.$elements.writePostButton, {
       text: '게시글 작성',
-      onClick: this.writePostRoute.bind(this),
+      onClick: this.navigateToWritePostRoute.bind(this),
       idName: 'write-button',
     })
   }
 
-  writePostRoute() {
+  navigateToWritePostRoute() {
     navigateTo(ROUTES.POST.WRITE.url)
   }
 }

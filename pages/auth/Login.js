@@ -57,13 +57,13 @@ class Login extends Component {
     // 자식 요소 정의
     new Button(this.$elements.loginButton, {
       text: '로그인',
-      onClick: this.loginRoute.bind(this),
+      onClick: this.loginHandler.bind(this),
       idName: 'login-button',
     })
 
     new Button(this.$elements.registerButton, {
       text: '회원가입',
-      onClick: this.registerRoute.bind(this),
+      onClick: this.navigateToRegister.bind(this),
       idName: 'register-button',
     })
   }
@@ -77,8 +77,8 @@ class Login extends Component {
       this.validatePassword()
       this.validateForm()
     })
-    this.addEvent('click', this.$elements.loginButton, this.loginRoute.bind(this))
-    this.addEvent('click', this.$elements.registerButton, this.registerRoute.bind(this))
+    this.addEvent('click', this.$elements.loginButton, this.loginHandler.bind(this))
+    this.addEvent('click', this.$elements.registerButton, this.navigateToRegister.bind(this))
   }
 
   /** 이메일 유효성 검사 */
@@ -105,13 +105,12 @@ class Login extends Component {
       loginButton.disabled = false // 버튼 활성화
     }
   }
-
-  loginRoute() {
-    // TODO: 로그인 API 필요 (현재는 더미 데이터 확인 후 로그인)
+  // TODO: 로그인 API 필요 (현재는 더미 데이터 확인 후 로그인)
+  loginHandler() {
     navigateTo(ROUTES.POST.MAIN.url)
   }
 
-  registerRoute() {
+  navigateToRegister() {
     navigateTo(ROUTES.AUTH.REGISTER.url)
   }
 }

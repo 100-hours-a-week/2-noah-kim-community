@@ -136,19 +136,19 @@ class PostDetail extends Component {
     // 자식 요소 정의
     new Button(this.$elements.modifyPostButton, {
       text: '수정',
-      onClick: this.modifyPost.bind(this),
+      onClick: this.navigateToModifyPost.bind(this),
       idName: 'modify-post',
     })
     new Button(this.$elements.deletePostButton, {
       text: '삭제',
-      onClick: this.deletePost.bind(this),
+      onClick: this.deletePostHandler.bind(this),
       idName: 'delete-post',
     })
     console.log(this.$elements.commentAddButton)
 
     new Button(this.$elements.commentAddButton, {
       text: '댓글 등록',
-      onClick: this.postComment.bind(this),
+      onClick: this.postCommentHandler.bind(this),
       idName: 'comment-button',
     })
 
@@ -157,7 +157,7 @@ class PostDetail extends Component {
     this.$elements.commentModifyButtons.forEach((button, index) => {
       new Button(button, {
         text: '수정',
-        onClick: this.modifyComment.bind(this),
+        onClick: this.modifyCommentHandler.bind(this),
         className: 'comment-modify',
       })
     })
@@ -168,22 +168,22 @@ class PostDetail extends Component {
 
       new Button(button, {
         text: '삭제',
-        onClick: this.deleteComment.bind(this),
+        onClick: this.deleteCommentHandler.bind(this),
         className: 'comment-delete',
       })
     })
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.commentInput, this.commentChange.bind(this))
+    this.addEvent('input', this.$elements.commentInput, this.inputCommentHandler.bind(this))
   }
 
-  modifyPost() {
-    // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
+  // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
+  navigateToModifyPost() {
     navigateTo(ROUTES.POST.MODIFY.url)
   }
 
-  deletePost() {
+  deletePostHandler() {
     new Modal({
       title: '게시글을 삭제하시겠습니까?',
       message: '삭제한 내용은 복구 할 수 없습니다.',
@@ -196,7 +196,7 @@ class PostDetail extends Component {
     })
   }
 
-  commentChange() {
+  inputCommentHandler() {
     const comment = this.$elements.commentInput
     const commentAddButton = this.$elements.commentAddButton
 
@@ -219,14 +219,14 @@ class PostDetail extends Component {
     }
   }
 
-  postComment() {
+  postCommentHandler() {
     alert('Post Comment')
   }
-  modifyComment() {
+  modifyCommentHandler() {
     alert('Modify Comment')
   }
 
-  deleteComment() {
+  deleteCommentHandler() {
     new Modal({
       title: '댓글을 삭제하시겠습니까?',
       message: '삭제한 내용은 복구 할 수 없습니다.',
