@@ -1,3 +1,4 @@
+import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import { parseDateToFullString } from '../../lib/utils/date.js'
 import { formatNumber } from '../../lib/utils/number.js'
@@ -52,7 +53,7 @@ class PostList extends Component {
           <span>안녕하세요,</span>
           <span>아무 말 대잔치 <strong>게시판</strong>입니다.</span>
         </section>
-        <button id="write-button">게시글 작성</button>
+        <button id="write-button"></button>
         <ul id="posts">
           ${postList}
         </ul>
@@ -65,13 +66,16 @@ class PostList extends Component {
     this.$elements = {
       writePostButton: this.$target.querySelector('#write-button'),
     }
+
+    // 자식 요소 정의
+    new Button(this.$elements.writePostButton, {
+      text: '게시글 작성',
+      onClick: this.navigateToWritePostRoute.bind(this),
+      idName: 'write-button',
+    })
   }
 
-  setEvent() {
-    this.addEvent('click', this.$elements.writePostButton, this.writePostRoute.bind(this))
-  }
-
-  writePostRoute() {
+  navigateToWritePostRoute() {
     navigateTo(ROUTES.POST.WRITE.url)
   }
 }

@@ -27,14 +27,16 @@ function router(requestedUrl) {
     new Header($header, {
       route: requestedUrl,
     })
+
     // #2. 페이지 컴포넌트 생성
-    new Component($app)
+    new Component($app, {})
   } else {
     /** 정의되지 않은 컴포넌트(페이지) */
     $app.innerHTML = '<h1>404 - Page Not Found</h1>'
   }
 }
 
-window.addEventListener('popstate', () => {
+window.addEventListener('popstate', event => {
+  event.preventDefault()
   navigateTo(window.location.pathname)
 })

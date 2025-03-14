@@ -1,6 +1,6 @@
-import InlineComponent from '../InlineComponent.js'
+import PortalComponent from '../PortalComponent.js'
 
-class Toast extends InlineComponent {
+class Toast extends PortalComponent {
   setup() {
     this.$state = {
       clearTimeout: this.$props.clearTimeout,

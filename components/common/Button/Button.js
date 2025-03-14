@@ -13,14 +13,12 @@ class Button extends InlineComponent {
     return `<button class='button-component'>${text}</button>`
   }
 
+  mounted() {}
+
   setEvent() {
     const { onClick } = this.$props
 
-    const btn = document.querySelector('.button-component')
-
-    if (btn) {
-      btn.addEventListener('click', () => alert('hello1'))
-    }
+    this.addEvent(this.$target, 'click', onClick)
   }
 }
 

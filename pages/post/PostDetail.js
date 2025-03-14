@@ -1,3 +1,4 @@
+import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import Modal from '../../components/common/Modal/Modal.js'
 import { formatNumber } from '../../lib/utils/number.js'
@@ -22,8 +23,8 @@ class PostDetail extends Component {
           <span class="time">2021-01-01 00:00:00</span>
 
           <div class="buttons" id="header-buttons">
-            <button id="modify-post">수정</button>
-            <button id="delete-post">삭제</button>
+            <button id="modify-post"></button>
+            <button id="delete-post"></button>
           </div>
         </div>
       </section>
@@ -55,7 +56,7 @@ class PostDetail extends Component {
 
       <section id="comment-box">
         <textarea placeholder="댓글을 남겨주세요!" id="comment-input"></textarea>
-        <button id="comment-button">댓글 등록</button>
+        <button id="comment-button"></button>
       </section>
 
       <section id="comment-list">
@@ -72,8 +73,8 @@ class PostDetail extends Component {
           </div>
           
           <div class="buttons" id="comment-buttons">
-            <button id="comment-modify">수정</button>
-            <button id="comment-delete">삭제</button>
+            <button class="comment-modify"></button>
+            <button class="comment-delete"></button>
           </div>
         </div>
 
@@ -90,8 +91,8 @@ class PostDetail extends Component {
           </div>
           
           <div class="buttons" id="comment-buttons">
-            <button id="comment-modify">수정</button>
-            <button id="comment-delete">삭제</button>
+            <button class="comment-modify"></button>
+            <button class="comment-delete"></button>
           </div>
         </div>
 
@@ -108,8 +109,8 @@ class PostDetail extends Component {
           </div>
           
           <div class="buttons" id="comment-buttons">
-            <button id="comment-modify">수정</button>
-            <button id="comment-delete">삭제</button>
+            <button class="comment-modify"></button>
+            <button class="comment-delete"></button>
           </div>
         </div>
       </section>
@@ -121,28 +122,62 @@ class PostDetail extends Component {
     this.$elements = {
       modifyPostButton: this.$target.querySelector('#modify-post'),
       deletePostButton: this.$target.querySelector('#delete-post'),
-      commentInput: this.$target.querySelector('#comment-input'),
-      commentAddButton: this.$target.querySelector('#comment-button'),
 
-      commentDeleteButton: this.$target.querySelector('#comment-delete'),
+      commentInput: this.$target.querySelector('#comment-input'),
+
+      commentAddButton: this.$target.querySelector('#comment-button'),
+      commentModifyButtons: [...this.$target.querySelectorAll('.comment-modify')],
+      commentDeleteButtons: [...this.$target.querySelectorAll('.comment-delete')],
     }
+
+    // 자식 요소 정의
+    new Button(this.$elements.modifyPostButton, {
+      text: '수정',
+      onClick: this.navigateToModifyPost.bind(this),
+      idName: 'modify-post',
+    })
+    new Button(this.$elements.deletePostButton, {
+      text: '삭제',
+      onClick: this.deletePostHandler.bind(this),
+      idName: 'delete-post',
+    })
+
+    new Button(this.$elements.commentAddButton, {
+      text: '댓글 등록',
+      onClick: this.postCommentHandler.bind(this),
+      idName: 'comment-button',
+    })
+
+    // TODO: 댓글 수정 로직 구현
+    // 모든 댓글 수정 버튼에 대해 Button 컴포넌트 생성
+    this.$elements.commentModifyButtons.forEach((button, index) => {
+      new Button(button, {
+        text: '수정',
+        onClick: this.modifyCommentHandler.bind(this),
+        className: 'comment-modify',
+      })
+    })
+
+    // 모든 댓글 삭제 버튼에 대해 Button 컴포넌트 생성
+    this.$elements.commentDeleteButtons.forEach((button, index) => {
+      new Button(button, {
+        text: '삭제',
+        onClick: this.deleteCommentHandler.bind(this),
+        className: 'comment-delete',
+      })
+    })
   }
 
   setEvent() {
-    this.addEvent('click', this.$elements.modifyPostButton, this.modifyPost.bind(this))
-    this.addEvent('click', this.$elements.deletePostButton, this.deletePost.bind(this))
-
-    this.addEvent('input', this.$elements.commentInput, this.commentChange.bind(this))
-    this.addEvent('click', this.$elements.commentAddButton, this.postComment.bind(this))
-    this.addEvent('click', this.$elements.commentDeleteButton, this.deleteComment.bind(this))
+    this.addEvent(this.$elements.commentInput, 'input', this.inputCommentHandler.bind(this))
   }
 
-  modifyPost() {
-    // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
+  // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
+  navigateToModifyPost() {
     navigateTo(ROUTES.POST.MODIFY.url)
   }
 
-  deletePost() {
+  deletePostHandler() {
     new Modal({
       title: '게시글을 삭제하시겠습니까?',
       message: '삭제한 내용은 복구 할 수 없습니다.',
@@ -155,7 +190,7 @@ class PostDetail extends Component {
     })
   }
 
-  commentChange() {
+  inputCommentHandler() {
     const comment = this.$elements.commentInput
     const commentAddButton = this.$elements.commentAddButton
 
@@ -178,9 +213,14 @@ class PostDetail extends Component {
     }
   }
 
-  postComment() {}
+  postCommentHandler() {
+    alert('Post Comment')
+  }
+  modifyCommentHandler() {
+    alert('Modify Comment')
+  }
 
-  deleteComment() {
+  deleteCommentHandler() {
     new Modal({
       title: '댓글을 삭제하시겠습니까?',
       message: '삭제한 내용은 복구 할 수 없습니다.',
