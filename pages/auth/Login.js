@@ -1,3 +1,4 @@
+import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import { validateEmailInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
@@ -36,8 +37,8 @@ class Login extends Component {
           <div class="error-message" id="password-error-message"></div>
         </form>
 
-        <button id="login-button">로그인</button>
-        <button id="register-button">회원가입</button>
+        <button id="login-button"></button>
+        <button id="register-button"></button>
       </main>
       `
   }
@@ -52,6 +53,19 @@ class Login extends Component {
       loginButton: this.$target.querySelector('#login-button'),
       registerButton: this.$target.querySelector('#register-button'),
     }
+
+    // 자식 요소 정의
+    new Button(this.$elements.loginButton, {
+      text: '로그인',
+      onClick: this.loginRoute.bind(this),
+      idName: 'login-button',
+    })
+
+    new Button(this.$elements.registerButton, {
+      text: '회원가입',
+      onClick: this.registerRoute.bind(this),
+      idName: 'register-button',
+    })
   }
 
   setEvent() {

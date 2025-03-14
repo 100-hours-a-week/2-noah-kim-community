@@ -1,3 +1,4 @@
+import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import Toast from '../../components/common/Toast/Toast.js'
 import { validatePasswordConfirmInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
@@ -40,7 +41,7 @@ class PasswordChange extends Component {
           </div>
           
 
-          <button id="submit-button">수정하기</button>
+          <button id="submit-button"></button>
         </form>
       </main>
     `
@@ -62,6 +63,13 @@ class PasswordChange extends Component {
       // 버튼 요소
       submitButton: this.$target.querySelector('#submit-button'),
     }
+
+    // 자식 요소 정의
+    new Button(this.$elements.submitButton, {
+      text: '수정하기',
+      onClick: this.modifyHandler.bind(this),
+      idName: 'submit-button',
+    })
   }
 
   setEvent() {
@@ -73,7 +81,6 @@ class PasswordChange extends Component {
       this.validatePasswordConfirm()
       this.validateForm()
     })
-    this.addEvent('click', this.$elements.submitButton, this.modifyHandler.bind(this))
   }
 
   /** 비밀번호 유효성 검사 */

@@ -1,3 +1,4 @@
+import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
@@ -38,7 +39,7 @@ class PostModify extends Component {
             <input type="file" id="image-input" accept="image/*" />
           </div>
         </form>
-        <button id="modify-button">수정하기</button>
+        <button id="modify-button"></button>
       </main>
     `
   }
@@ -53,12 +54,17 @@ class PostModify extends Component {
       // 버튼 요소
       modifyButton: this.$target.querySelector('#modify-button'),
     }
+
+    // 자식 요소 정의
+    new Button(this.$elements.modifyButton, {
+      text: '수정하기',
+      onClick: this.modifyPostHandler.bind(this),
+      idName: 'modify-button',
+    })
   }
 
   setEvent() {
     this.addEvent('input', this.$elements.titleInput, this.sliceTitle.bind(this))
-
-    this.addEvent('click', this.$elements.modifyButton, this.modifyPostHandler.bind(this))
   }
 
   /** 제목은 최대 26자 */

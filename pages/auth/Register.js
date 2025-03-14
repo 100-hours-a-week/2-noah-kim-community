@@ -1,3 +1,4 @@
+import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import {
   validateEmailInput,
@@ -79,10 +80,10 @@ class Register extends Component {
             <div class="error-message" id="nickname-error">* helper text</div>
           </div>
 
-          <button id="register-button">회원가입</button>
+          <button id="register-button"></button>
         </form>
 
-        <button id="login-button">로그인하러 가기</button>
+        <button id="login-button"></button>
       </main>
     `
   }
@@ -113,6 +114,18 @@ class Register extends Component {
       registerButton: this.$target.querySelector('#register-button'),
       loginButton: this.$target.querySelector('#login-button'),
     }
+
+    // 자식 요소 정의
+    new Button(this.$elements.registerButton, {
+      text: '회원가입',
+      onClick: this.registerHandler.bind(this),
+      idName: 'register-button',
+    })
+    new Button(this.$elements.loginButton, {
+      text: '로그인하러 가기',
+      onClick: this.loginRouteHandler.bind(this),
+      idName: 'login-button',
+    })
   }
 
   setEvent() {
@@ -140,10 +153,6 @@ class Register extends Component {
       this.validateNickname()
       this.validateForm()
     })
-
-    // 클릭 이벤트
-    this.addEvent('click', this.$elements.registerButton, this.registerHandler.bind(this))
-    this.addEvent('click', this.$elements.loginButton, this.loginRouteHandler.bind(this))
   }
 
   // 이미지가 입력받아지면 수행할 일
@@ -156,7 +165,7 @@ class Register extends Component {
     if (profileInput.files && profileInput.files[0]) {
       const reader = new FileReader()
       reader.onload = function (e) {
-        profileImage.src = e.target.result
+        profileImage.src = e.target?.result
         profileImage.style.display = 'block'
         profilePlaceholder.style.display = 'none'
       }

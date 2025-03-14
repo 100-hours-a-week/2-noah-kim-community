@@ -1,3 +1,4 @@
+import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
@@ -39,7 +40,7 @@ class PostWrite extends Component {
             <input type="file" id="image-input" accept="image/*" />
           </div>
         </form>
-        <button id="submit-button">완료</button>
+        <button id="submit-button"></button>
       </main>
     `
   }
@@ -57,6 +58,13 @@ class PostWrite extends Component {
       // 버튼 요소
       submitButton: this.$target.querySelector('#submit-button'),
     }
+
+    // 자식 요소 정의
+    new Button(this.$elements.submitButton, {
+      text: '완료',
+      onClick: this.submitPostHandler.bind(this),
+      idName: 'submit-button',
+    })
   }
 
   setEvent() {
@@ -68,8 +76,6 @@ class PostWrite extends Component {
     this.addEvent('input', this.$elements.textareaInput, event => {
       this.validateForm()
     })
-
-    this.addEvent('click', this.$elements.submitButton, this.submitPostHandler.bind(this))
   }
 
   /** 제목은 최대 26자 */

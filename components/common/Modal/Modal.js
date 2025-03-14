@@ -1,6 +1,7 @@
-import InlineComponent from '../InlineComponent.js'
+import Button from '../Button/Button.js'
+import PortalComponent from '../PortalComponent.js'
 
-class Modal extends InlineComponent {
+class Modal extends PortalComponent {
   setup() {
     this.loadStyles()
   }
@@ -17,8 +18,8 @@ class Modal extends InlineComponent {
           <p class="modal-title">${title}</p>
           <p class="modal-message">${message}</p>
           <div class="modal-buttons">
-            <button class="modal-cancel">${cancelText || '취소'}</button>
-            <button class="modal-confirm">${confirmText || '확인'}</button>
+            <button id="modal-cancel"></button>
+            <button id="modal-confirm"></button>
           </div>
         </div>
       </div>
@@ -32,25 +33,29 @@ class Modal extends InlineComponent {
 
     // DOM 요소 저장
     this.$elements = {
-      modalElement: this.$target.querySelector('.modal-overlay'),
-      cancelButton: this.$target.querySelector('.modal-cancel'),
-      confirmButton: this.$target.querySelector('.modal-confirm'),
+      cancelButton: this.$target.querySelector('#modal-cancel'),
+      confirmButton: this.$target.querySelector('#modal-confirm'),
     }
-  }
 
-  setEvent() {
-    const { onConfirm, onCancel } = this.$props
+    // 자식 요소 정의
+    const { confirmText, cancelText } = this.$props
 
-    this.$elements.cancelButton.addEventListener('click', () => {
-      if (onCancel) onCancel()
-      this.close()
+    console.log(this.$elements.cancelButton)
+
+    new Button(this.$elements.cancelButton, {
+      text: cancelText || '취소',
+      onClick: this.cancelHandler.bind(this),
+      idName: 'modal-cancel',
     })
 
-    this.$elements.confirmButton.addEventListener('click', () => {
-      if (onConfirm) onConfirm()
-      this.close()
+    new Button(this.$elements.confirmButton, {
+      text: confirmText || '확인',
+      onClick: this.confirmHandler.bind(this),
+      idName: 'modal-confirm',
     })
   }
+
+  setEvent() {}
 
   close() {
     if (this.$target) {
@@ -58,6 +63,20 @@ class Modal extends InlineComponent {
 
       document.body.style.overflow = '' // 스크롤 다시 가능
     }
+  }
+
+  cancelHandler() {
+    const { onCancel } = this.$props
+
+    if (onCancel) onCancel()
+    this.close()
+  }
+
+  confirmHandler() {
+    const { onConfirm } = this.$props
+
+    if (this.$props.onConfirm) onConfirm()
+    this.close()
   }
 }
 

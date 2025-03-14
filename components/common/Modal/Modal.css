@@ -54,12 +54,12 @@
   cursor: pointer;
 }
 
-.modal-cancel {
+#modal-cancel {
   background: black;
   color: white;
 }
 
-.modal-confirm {
+#modal-confirm {
   background: #bca0ff;
   color: white;
 }
