@@ -25,7 +25,7 @@ class InlineComponent {
 
   /** 이벤트 등록 추상화 */
   /** 이벤트 등록 추상화 (이제 selector 대신 요소를 직접 받음) */
-  addEvent(eventType, element, callback) {
+  addEvent(element, eventType, callback) {
     if (!element) {
       console.error(`❌ 이벤트를 추가할 요소가 존재하지 않습니다.`)
       return

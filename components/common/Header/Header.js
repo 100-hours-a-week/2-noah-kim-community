@@ -78,28 +78,28 @@ class Header extends Component {
 
   setEvent() {
     /** 프로필 이미지 클릭 이벤트  */
-    this.addEvent('click', this.$elements.Image, this.toggleDropdownMenu.bind(this))
+    this.addEvent(this.$elements.Image, 'click', this.toggleDropdownMenu.bind(this))
 
     // TODO: 외부 클릭 시 메뉴 닫기
     // DropdownMenu.addEventListener("click", outsideClick);
-    // this.addEvent("click", "#dropdown-menu", outsideClick);
+    // this.addEvent( "#dropdown-menu", "click",outsideClick);
 
-    this.addEvent('click', this.$elements.mypageLink, event => {
+    this.addEvent(this.$elements.mypageLink, 'click', event => {
       navigateTo(ROUTES.AUTH.MYPAGE.url)
     })
-    this.addEvent('click', this.$elements.passwordChangeLink, event => {
+    this.addEvent(this.$elements.passwordChangeLink, 'click', event => {
       navigateTo(ROUTES.AUTH.PASSWORD_CHANGE.url)
     })
 
     // TODO: 로그아웃 로직 이벤트 구현
-    this.addEvent('click', this.$elements.logoutLink, event => {
+    this.addEvent(this.$elements.logoutLink, 'click', event => {
       alert('로그아웃 성공')
 
       // navigateTo(ROUTES.AUTH.PASSWORD_CHANGE.url);
     })
 
     if (this.$state.backRoute) {
-      this.addEvent('click', this.$elements.backButton, event => {
+      this.addEvent(this.$elements.backButton, 'click', event => {
         navigateTo(this.$state.backRoute)
       })
     }

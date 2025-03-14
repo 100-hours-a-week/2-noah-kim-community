@@ -129,27 +129,27 @@ class Register extends Component {
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.profileInput, event => {
+    this.addEvent(this.$elements.profileInput, 'input', event => {
       this.validateProfile()
       this.validateForm()
     })
-    this.addEvent('change', this.$elements.profileInput, this.profileChangeHandler.bind(this))
+    this.addEvent(this.$elements.profileInput, 'change', this.profileChangeHandler.bind(this))
 
-    this.addEvent('click', this.$elements.profilePreview, this.getProfileImage.bind(this))
+    this.addEvent(this.$elements.profilePreview, 'click', this.getProfileImage.bind(this))
     // 입력 이벤트
-    this.addEvent('input', this.$elements.emailInput, event => {
+    this.addEvent(this.$elements.emailInput, 'input', event => {
       this.validateEmail()
       this.validateForm()
     })
-    this.addEvent('input', this.$elements.passwordInput, event => {
+    this.addEvent(this.$elements.passwordInput, 'input', event => {
       this.validatePassword()
       this.validateForm()
     })
-    this.addEvent('input', this.$elements.passwordConfirmInput, event => {
+    this.addEvent(this.$elements.passwordConfirmInput, 'input', event => {
       this.validatePasswordConfirm()
       this.validateForm()
     })
-    this.addEvent('input', this.$elements.nicknameInput, event => {
+    this.addEvent(this.$elements.nicknameInput, 'input', event => {
       this.validateNickname()
       this.validateForm()
     })

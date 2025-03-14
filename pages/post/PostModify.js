@@ -64,7 +64,7 @@ class PostModify extends Component {
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.titleInput, this.sliceTitle.bind(this))
+    this.addEvent(this.$elements.titleInput, 'input', this.sliceTitle.bind(this))
   }
 
   /** 제목은 최대 26자 */

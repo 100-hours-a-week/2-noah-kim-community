@@ -73,11 +73,11 @@ class PasswordChange extends Component {
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.passwordInput, event => {
+    this.addEvent(this.$elements.passwordInput, 'input', event => {
       this.validatePassword()
       this.validateForm()
     })
-    this.addEvent('input', this.$elements.passwordConfirmInput, event => {
+    this.addEvent(this.$elements.passwordConfirmInput, 'input', event => {
       this.validatePasswordConfirm()
       this.validateForm()
     })

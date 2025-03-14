@@ -69,16 +69,16 @@ class Login extends Component {
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.emailInput, event => {
+    this.addEvent(this.$elements.emailInput, 'input', event => {
       this.validateEmail()
       this.validateForm()
     })
-    this.addEvent('input', this.$elements.passwordInput, event => {
+    this.addEvent(this.$elements.passwordInput, 'input', event => {
       this.validatePassword()
       this.validateForm()
     })
-    this.addEvent('click', this.$elements.loginButton, this.loginHandler.bind(this))
-    this.addEvent('click', this.$elements.registerButton, this.navigateToRegister.bind(this))
+    this.addEvent(this.$elements.loginButton, 'click', this.loginHandler.bind(this))
+    this.addEvent(this.$elements.registerButton, 'click', this.navigateToRegister.bind(this))
   }
 
   /** 이메일 유효성 검사 */

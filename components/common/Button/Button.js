@@ -18,7 +18,7 @@ class Button extends InlineComponent {
   setEvent() {
     const { onClick } = this.$props
 
-    this.addEvent('click', this.$target, onClick)
+    this.addEvent(this.$target, 'click', onClick)
   }
 }
 

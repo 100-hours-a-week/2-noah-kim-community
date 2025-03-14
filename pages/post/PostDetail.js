@@ -175,7 +175,7 @@ class PostDetail extends Component {
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.commentInput, this.inputCommentHandler.bind(this))
+    this.addEvent(this.$elements.commentInput, 'input', this.inputCommentHandler.bind(this))
   }
 
   // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)

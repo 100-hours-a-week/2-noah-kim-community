@@ -78,7 +78,7 @@ class Mypage extends Component {
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.nicknameInput, this.validateNickname.bind(this))
+    this.addEvent(this.$elements.nicknameInput, 'input', this.validateNickname.bind(this))
   }
 
   /** 닉네임 유효성 검사 */

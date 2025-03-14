@@ -68,12 +68,12 @@ class PostWrite extends Component {
   }
 
   setEvent() {
-    this.addEvent('input', this.$elements.titleInput, event => {
+    this.addEvent(this.$elements.titleInput, 'input', event => {
       this.validateTitle()
       this.validateForm()
     })
 
-    this.addEvent('input', this.$elements.textareaInput, event => {
+    this.addEvent(this.$elements.textareaInput, 'input', event => {
       this.validateForm()
     })
   }
