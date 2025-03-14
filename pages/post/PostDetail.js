@@ -130,9 +130,6 @@ class PostDetail extends Component {
       commentDeleteButtons: [...this.$target.querySelectorAll('.comment-delete')],
     }
 
-    console.log([...this.$target.querySelectorAll('.comment-modify')])
-    console.log(this.$elements.commentModifyButtons)
-
     // 자식 요소 정의
     new Button(this.$elements.modifyPostButton, {
       text: '수정',
@@ -144,7 +141,6 @@ class PostDetail extends Component {
       onClick: this.deletePostHandler.bind(this),
       idName: 'delete-post',
     })
-    console.log(this.$elements.commentAddButton)
 
     new Button(this.$elements.commentAddButton, {
       text: '댓글 등록',
@@ -164,8 +160,6 @@ class PostDetail extends Component {
 
     // 모든 댓글 삭제 버튼에 대해 Button 컴포넌트 생성
     this.$elements.commentDeleteButtons.forEach((button, index) => {
-      console.log('요소: ', button)
-
       new Button(button, {
         text: '삭제',
         onClick: this.deleteCommentHandler.bind(this),

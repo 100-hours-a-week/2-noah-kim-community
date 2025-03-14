@@ -40,8 +40,6 @@ class Modal extends PortalComponent {
     // 자식 요소 정의
     const { confirmText, cancelText } = this.$props
 
-    console.log(this.$elements.cancelButton)
-
     new Button(this.$elements.cancelButton, {
       text: cancelText || '취소',
       onClick: this.cancelHandler.bind(this),

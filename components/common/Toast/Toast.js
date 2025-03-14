@@ -2,8 +2,6 @@ import PortalComponent from '../PortalComponent.js'
 
 class Toast extends PortalComponent {
   setup() {
-    console.log(this.$props)
-
     this.$state = {
       clearTimeout: this.$props.clearTimeout,
     }
@@ -27,7 +25,6 @@ class Toast extends PortalComponent {
     this.$elements = {
       toasts: document.getElementsByClassName('toast'),
     }
-    console.log(this.$elements)
   }
 
   setEvent() {
