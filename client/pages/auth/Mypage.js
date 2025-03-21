@@ -92,7 +92,6 @@ class Mypage extends Component {
     event.preventDefault() // 기본 동작 방지
     new Toast({
       message: '수정완료',
-      clearTimeout: 2000,
     })
   }
 
