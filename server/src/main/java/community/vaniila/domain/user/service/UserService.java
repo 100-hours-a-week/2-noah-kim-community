@@ -4,6 +4,8 @@ import community.vaniila.domain.user.dto.request.LoginRequest;
 import community.vaniila.domain.user.dto.response.LoginResponse;
 import community.vaniila.domain.user.entity.User;
 import community.vaniila.domain.user.repository.UserRepository;
+import community.vaniila.domain.utils.password.JwtProperties;
+import community.vaniila.domain.utils.password.JwtUtils;
 import community.vaniila.domain.utils.password.PasswordUtils;
 import community.vaniila.domain.utils.response.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,13 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
   private final UserRepository userRepository;
+  private final JwtUtils jwtUtils;
+
 
   @Autowired
-  public UserService(UserRepository userRepository) {
+  public UserService(UserRepository userRepository,JwtProperties jwtProperties, JwtUtils jwtUtils) {
     this.userRepository = userRepository;
+    this.jwtUtils = jwtUtils;
   }
 
   @Transactional
@@ -50,12 +55,9 @@ public class UserService {
 
     if (!PasswordUtils.matches(request.getPassword(), user.getPassword())) {
       throw new CustomException("Auth-003", "비밀번호가 일치하지 않습니다.");
-
-
     }
 
-    String accessToken = "mocked-access-token-for-"
-        + user.getId(); // TO BE REPLACED with actual token generation
+    String accessToken = jwtUtils.generateToken(user.getId());
 
     return new LoginResponse(user.getId(), accessToken);
   }

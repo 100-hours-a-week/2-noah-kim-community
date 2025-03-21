@@ -7,6 +7,7 @@ import community.vaniila.domain.user.entity.User;
 import community.vaniila.domain.user.service.UserService;
 import community.vaniila.domain.utils.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +40,9 @@ public class UserController {
   @PostMapping("/login")
   public ResponseEntity<CommonResponse<LoginResponse>> loginUser(@RequestBody LoginRequest request) {
     LoginResponse response = userService.loginUser(request);
-    return ResponseEntity.ok(CommonResponse.success("login success", response));
+
+    return ResponseEntity.ok()
+        .header("Authorization", "Bearer " + response.getAccessToken())
+        .body(CommonResponse.success("login success", response));
   }
 }
