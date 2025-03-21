@@ -34,6 +34,7 @@ public class UserController {
   @PostMapping("/register")
   public ResponseEntity<CommonResponse<String>> registerUser(@RequestBody RegisterRequest request) {
       userService.registerUser(request.getEmail(), request.getPassword(), request.getNickname(), request.getImageUrl());
+
       return ResponseEntity.ok(CommonResponse.success("register success", null));
   }
 
