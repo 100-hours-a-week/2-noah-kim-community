@@ -1,6 +1,8 @@
 package community.vaniila.domain.user.controller;
 
+import community.vaniila.domain.user.dto.request.LoginRequest;
 import community.vaniila.domain.user.dto.request.RegisterRequest;
+import community.vaniila.domain.user.dto.response.LoginResponse;
 import community.vaniila.domain.user.entity.User;
 import community.vaniila.domain.user.service.UserService;
 import community.vaniila.domain.utils.response.CommonResponse;
@@ -30,7 +32,13 @@ public class UserController {
 
   @PostMapping("/register")
   public ResponseEntity<CommonResponse<String>> registerUser(@RequestBody RegisterRequest request) {
-      userService.registerMember(request.getEmail(), request.getPassword(), request.getNickname(), request.getImageUrl());
-      return ResponseEntity.ok(CommonResponse.success("user register success", null));
+      userService.registerUser(request.getEmail(), request.getPassword(), request.getNickname(), request.getImageUrl());
+      return ResponseEntity.ok(CommonResponse.success("register success", null));
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<CommonResponse<LoginResponse>> loginUser(@RequestBody LoginRequest request) {
+    LoginResponse response = userService.loginUser(request);
+    return ResponseEntity.ok(CommonResponse.success("login success", response));
   }
 }

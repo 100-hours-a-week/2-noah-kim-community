@@ -1,5 +1,7 @@
 package community.vaniila.domain.user.service;
 
+import community.vaniila.domain.user.dto.request.LoginRequest;
+import community.vaniila.domain.user.dto.response.LoginResponse;
 import community.vaniila.domain.user.entity.User;
 import community.vaniila.domain.user.repository.UserRepository;
 import community.vaniila.domain.utils.password.PasswordUtils;
@@ -19,13 +21,13 @@ public class UserService {
   }
 
   @Transactional
-  public void registerMember(String email, String password, String nickname, String imageUrl) {
-    // 중복 검사
+  public void registerUser(String email, String password, String nickname, String imageUrl) {
+    /**
+     * 예외 처리
+     * 이메일이 이미 존재하는 경우
+     */
     if (userRepository.existsByEmail(email)) {
       throw new CustomException("Auth-001", "이미 존재하는 이메일입니다.");
-    }
-    if (userRepository.existsByNickname(nickname)) {
-      throw new CustomException("Auth-002", "이미 존재하는 닉네임입니다.");
     }
 
     // 비밀번호 해싱
@@ -34,5 +36,27 @@ public class UserService {
     // 사용자 저장
     User user = new User(email, hashedPassword, imageUrl, nickname);
     userRepository.save(user);
+  }
+
+
+  @Transactional
+  public LoginResponse loginUser(LoginRequest request) {
+    /**
+     * 예외 처리
+     * 회원가입된 이메일이 없는 경우
+     */
+    User user = userRepository.findByEmail(request.getEmail())
+        .orElseThrow(() -> new CustomException("Auth-002", "없는 유저입니다."));
+
+    if (!PasswordUtils.matches(request.getPassword(), user.getPassword())) {
+      throw new CustomException("Auth-003", "비밀번호가 일치하지 않습니다.");
+
+
+    }
+
+    String accessToken = "mocked-access-token-for-"
+        + user.getId(); // TO BE REPLACED with actual token generation
+
+    return new LoginResponse(user.getId(), accessToken);
   }
 }
