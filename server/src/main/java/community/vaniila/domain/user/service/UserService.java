@@ -1,7 +1,7 @@
-package community.vaniila.domain.member.service;
+package community.vaniila.domain.user.service;
 
-import community.vaniila.domain.member.entity.User;
-import community.vaniila.domain.member.repository.UserRepository;
+import community.vaniila.domain.user.entity.User;
+import community.vaniila.domain.user.repository.UserRepository;
 import community.vaniila.domain.utils.password.PasswordUtils;
 import community.vaniila.domain.utils.response.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;

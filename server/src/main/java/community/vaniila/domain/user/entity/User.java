@@ -1,4 +1,4 @@
-package community.vaniila.domain.member.entity;
+package community.vaniila.domain.user.entity;
 
 import community.vaniila.domain.utils.password.PasswordUtils;
 import jakarta.persistence.*;

@@ -1,15 +1,12 @@
-package community.vaniila.domain.member.controller;
+package community.vaniila.domain.user.controller;
 
-import community.vaniila.domain.member.entity.User;
-import community.vaniila.domain.member.service.UserService;
+import community.vaniila.domain.user.dto.request.RegisterRequest;
+import community.vaniila.domain.user.entity.User;
+import community.vaniila.domain.user.service.UserService;
 import community.vaniila.domain.utils.response.CommonResponse;
-import community.vaniila.domain.utils.response.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +29,8 @@ public class UserController {
   }
 
   @PostMapping("/register")
-  public ResponseEntity<CommonResponse<String>> registerUser(@RequestBody User user) {
-      userService.registerMember(user.getEmail(), user.getPassword(), user.getNickname(), user.getImageUrl());
+  public ResponseEntity<CommonResponse<String>> registerUser(@RequestBody RegisterRequest request) {
+      userService.registerMember(request.getEmail(), request.getPassword(), request.getNickname(), request.getImageUrl());
       return ResponseEntity.ok(CommonResponse.success("user register success", null));
   }
 }

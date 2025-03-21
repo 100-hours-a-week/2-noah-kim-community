@@ -1,6 +1,6 @@
-package community.vaniila.domain.member.repository;
+package community.vaniila.domain.user.repository;
 
-import community.vaniila.domain.member.entity.User;
+import community.vaniila.domain.user.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
