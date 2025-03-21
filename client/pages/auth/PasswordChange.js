@@ -116,7 +116,6 @@ class PasswordChange extends Component {
     event.preventDefault()
     new Toast({
       message: '수정 완료',
-      clearTimeout: 2000,
     })
   }
 }

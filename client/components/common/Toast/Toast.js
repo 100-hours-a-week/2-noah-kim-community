@@ -3,7 +3,7 @@ import PortalComponent from '../PortalComponent.js'
 class Toast extends PortalComponent {
   setup() {
     this.$state = {
-      clearTimeout: this.$props.clearTimeout,
+      clearTimeout: this.$props.clearTimeout ?? 2000,
     }
 
     this.loadStyles()

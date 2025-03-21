@@ -1,5 +1,6 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
+import Toast from '../../components/common/Toast/Toast.js'
 import {
   validateEmailInput,
   validateNicknameInput,
@@ -8,8 +9,21 @@ import {
 } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
+import register from '../../service/user/registerUser.js'
 class Register extends Component {
   setup() {
+    /** 상태 정의 */
+    this.$state = {
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      nickname: '',
+      /** TODO: 프로필 이미지를 S3에 업로드하고 이를 저장하기 */
+      profileImage: 'test-image',
+      isFormValid: false,
+    }
+
+    /** 스타일 로드 */
     this.loadStyles()
   }
   loadStyles() {
@@ -130,6 +144,7 @@ class Register extends Component {
 
   setEvent() {
     this.addEvent(this.$elements.profileInput, 'input', event => {
+      this.setState({ profileImage: event.target.files[0] })
       this.validateProfile()
       this.validateForm()
     })
@@ -138,18 +153,22 @@ class Register extends Component {
     this.addEvent(this.$elements.profilePreview, 'click', this.getProfileImage.bind(this))
     // 입력 이벤트
     this.addEvent(this.$elements.emailInput, 'input', event => {
+      this.setState({ email: event.target.value })
       this.validateEmail()
       this.validateForm()
     })
     this.addEvent(this.$elements.passwordInput, 'input', event => {
+      this.setState({ password: event.target.value })
       this.validatePassword()
       this.validateForm()
     })
     this.addEvent(this.$elements.passwordConfirmInput, 'input', event => {
+      this.setState({ passwordConfirm: event.target.value })
       this.validatePasswordConfirm()
       this.validateForm()
     })
     this.addEvent(this.$elements.nicknameInput, 'input', event => {
+      this.setState({ nickname: event.target.value })
       this.validateNickname()
       this.validateForm()
     })
@@ -257,9 +276,24 @@ class Register extends Component {
     navigateTo(ROUTES.AUTH.LOGIN.url)
   }
 
-  /** TODO: 회원가입 로직 구현 필요 */
-  registerHandler() {
-    navigateTo(ROUTES.AUTH.LOGIN.url)
+  async registerHandler() {
+    try {
+      const response = await register({
+        email: this.$state.email,
+        password: this.$state.password,
+        nickname: this.$state.nickname,
+        image_url: this.$state.profileImage,
+      })
+
+      if (response.success) {
+        new Toast({ message: '회원가입 성공!' })
+        navigateTo(ROUTES.AUTH.LOGIN.url)
+      } else {
+        new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
   }
 }
 
