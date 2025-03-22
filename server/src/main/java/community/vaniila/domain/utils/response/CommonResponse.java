@@ -13,8 +13,8 @@ public class CommonResponse<T> {
     return new CommonResponse<>(message, data);
   }
 
-  public static <T> CommonResponse<T> error(String message, T data) {
-    return new CommonResponse<>(message, data);
+  public static <T> CommonResponse<T> error(String message) {
+    return new CommonResponse<>(message, null);
   }
 
   public String getMessage() {

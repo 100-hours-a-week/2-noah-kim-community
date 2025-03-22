@@ -1,4 +1,4 @@
-package community.vaniila.domain.member.entity;
+package community.vaniila.domain.user.entity;
 
 import community.vaniila.domain.utils.password.PasswordUtils;
 import jakarta.persistence.*;
@@ -21,7 +21,7 @@ public class User {
   @Column(name = "image_url", nullable = false, length = 255)
   private String imageUrl;
 
-  @Column(nullable = false, unique = true, length = 31)
+  @Column(nullable = false, length = 31)
   private String nickname;
 
   @Column(name = "created_at", nullable = false, updatable = false)
@@ -63,4 +63,11 @@ public class User {
 
   public LocalDateTime getDeletedAt() { return deletedAt; }
   public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
+
+  public void updateInfo(String nickname, String imageUrl) {
+    this.nickname = nickname;
+    this.imageUrl = imageUrl;
+    this.updatedAt = LocalDateTime.now();  // 수정일 갱신
+  }
+
 }
