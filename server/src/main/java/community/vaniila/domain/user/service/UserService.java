@@ -59,4 +59,16 @@ public class UserService {
 
     return new LoginResponse(user.getId(), accessToken);
   }
+
+  @Transactional
+  public void modifyUser(Long userId, String nickname, String imageUrl) {
+    if (nickname == null || imageUrl == null || nickname.isBlank() || imageUrl.isBlank()) {
+      throw new CustomException(ErrorCode.AUTH_INVALID_UPDATE_DATA);  // auth-004
+    }
+
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(ErrorCode.AUTH_USER_NOT_FOUND));
+
+    user.updateInfo(nickname, imageUrl);
+  }
 }

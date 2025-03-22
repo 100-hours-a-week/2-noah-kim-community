@@ -63,4 +63,11 @@ public class User {
 
   public LocalDateTime getDeletedAt() { return deletedAt; }
   public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
+
+  public void updateInfo(String nickname, String imageUrl) {
+    this.nickname = nickname;
+    this.imageUrl = imageUrl;
+    this.updatedAt = LocalDateTime.now();  // 수정일 갱신
+  }
+
 }
