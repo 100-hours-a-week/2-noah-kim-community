@@ -12,10 +12,12 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(CustomException.class)
   public ResponseEntity<CommonResponse<Object>> handleCustomException(CustomException e) {
+    ErrorCode errorCode = e.getErrorCode();
+
     return ResponseEntity
-        .status(HttpStatus.BAD_REQUEST)
+        .status(errorCode.getHttpStatus())  // <- 여기서 HTTP 상태코드 적용
         .contentType(MediaType.APPLICATION_JSON)
-        .body(CommonResponse.error(e.getErrorCode()));
+        .body(CommonResponse.error(errorCode.getCode()));  // 메시지도 원하면 포함 가능
   }
 
   @ExceptionHandler(Exception.class)
