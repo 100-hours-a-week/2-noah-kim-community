@@ -1,5 +1,7 @@
 package community.vaniila.domain.utils.response;
 
+import community.vaniila.domain.utils.response.errorcode.ErrorCode;
+
 public class CustomException extends RuntimeException {
   private final ErrorCode errorCode;
 

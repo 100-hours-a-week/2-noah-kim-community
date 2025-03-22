@@ -8,10 +8,10 @@ import community.vaniila.domain.utils.password.JwtProperties;
 import community.vaniila.domain.utils.password.JwtUtils;
 import community.vaniila.domain.utils.password.PasswordUtils;
 import community.vaniila.domain.utils.response.CustomException;
-import community.vaniila.domain.utils.response.ErrorCode;
+import community.vaniila.domain.utils.response.errorcode.AuthErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -30,7 +30,7 @@ public class UserService {
   public void registerUser(String email, String password, String nickname, String imageUrl) {
     /** 이메일이 이미 존재하는 경우 */
     if (userRepository.existsByEmail(email)) {
-      throw new CustomException(ErrorCode.AUTH_EMAIL_ALREADY_EXISTS);
+      throw new CustomException(AuthErrorCode.AUTH_EMAIL_ALREADY_EXISTS);
     }
 
     // 비밀번호 해싱
@@ -49,10 +49,10 @@ public class UserService {
      * 회원가입된 이메일이 없는 경우
      */
     User user = userRepository.findByEmail(request.getEmail())
-        .orElseThrow(() ->new CustomException(ErrorCode.AUTH_USER_NOT_FOUND));
+        .orElseThrow(() ->new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
     if (!PasswordUtils.matches(request.getPassword(), user.getPassword())) {
-      throw new CustomException(ErrorCode.AUTH_INVALID_PASSWORD);
+      throw new CustomException(AuthErrorCode.AUTH_INVALID_PASSWORD);
     }
 
     String accessToken = jwtUtils.generateToken(user.getId());
@@ -63,11 +63,11 @@ public class UserService {
   @Transactional
   public void modifyUser(Long userId, String nickname, String imageUrl) {
     if (nickname == null || imageUrl == null || nickname.isBlank() || imageUrl.isBlank()) {
-      throw new CustomException(ErrorCode.AUTH_INVALID_UPDATE_DATA);  // auth-004
+      throw new CustomException(AuthErrorCode.AUTH_INVALID_UPDATE_DATA);  // auth-004
     }
 
     User user = userRepository.findById(userId)
-        .orElseThrow(() -> new CustomException(ErrorCode.AUTH_USER_NOT_FOUND));
+        .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
     user.updateInfo(nickname, imageUrl);
   }

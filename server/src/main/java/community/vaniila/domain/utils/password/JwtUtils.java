@@ -1,7 +1,7 @@
 package community.vaniila.domain.utils.password;
 
 import community.vaniila.domain.utils.response.CustomException;
-import community.vaniila.domain.utils.response.ErrorCode;
+import community.vaniila.domain.utils.response.errorcode.JwtErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -46,9 +46,9 @@ public class JwtUtils {
       return Long.parseLong(subject);
 
     } catch (ExpiredJwtException e) {
-      throw new CustomException(ErrorCode.JWT_EXPIRED_TOKEN);  // auth-006
+      throw new CustomException(JwtErrorCode.JWT_EXPIRED_TOKEN);  // auth-006
     } catch (JwtException | IllegalArgumentException e) {
-      throw new CustomException(ErrorCode.JWT_INVALID_TOKEN);  // auth-005
+      throw new CustomException(JwtErrorCode.JWT_INVALID_TOKEN);  // auth-005
     }
   }
 }

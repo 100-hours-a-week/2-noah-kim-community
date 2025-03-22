@@ -1,5 +1,6 @@
 package community.vaniila.domain.utils.response;
 
+import community.vaniila.domain.utils.response.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
