@@ -8,6 +8,7 @@ import community.vaniila.domain.utils.password.JwtProperties;
 import community.vaniila.domain.utils.password.JwtUtils;
 import community.vaniila.domain.utils.password.PasswordUtils;
 import community.vaniila.domain.utils.response.CustomException;
+import community.vaniila.domain.utils.response.ErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -27,12 +28,9 @@ public class UserService {
 
   @Transactional
   public void registerUser(String email, String password, String nickname, String imageUrl) {
-    /**
-     * 예외 처리
-     * 이메일이 이미 존재하는 경우
-     */
+    /** 이메일이 이미 존재하는 경우 */
     if (userRepository.existsByEmail(email)) {
-      throw new CustomException("auth-001", "이미 존재하는 이메일입니다.");
+      throw new CustomException(ErrorCode.AUTH_EMAIL_ALREADY_EXISTS);
     }
 
     // 비밀번호 해싱
@@ -44,21 +42,21 @@ public class UserService {
   }
 
 
-  @Transactional
-  public LoginResponse loginUser(LoginRequest request) {
-    /**
-     * 예외 처리
-     * 회원가입된 이메일이 없는 경우
-     */
-    User user = userRepository.findByEmail(request.getEmail())
-        .orElseThrow(() -> new CustomException("Auth-002", "없는 유저입니다."));
-
-    if (!PasswordUtils.matches(request.getPassword(), user.getPassword())) {
-      throw new CustomException("Auth-003", "비밀번호가 일치하지 않습니다.");
-    }
-
-    String accessToken = jwtUtils.generateToken(user.getId());
-
-    return new LoginResponse(user.getId(), accessToken);
-  }
+//  @Transactional
+//  public LoginResponse loginUser(LoginRequest request) {
+//    /**
+//     * 예외 처리
+//     * 회원가입된 이메일이 없는 경우
+//     */
+//    User user = userRepository.findByEmail(request.getEmail())
+//        .orElseThrow(() -> new CustomException("Auth-002", "없는 유저입니다."));
+//
+//    if (!PasswordUtils.matches(request.getPassword(), user.getPassword())) {
+//      throw new CustomException("Auth-003", "비밀번호가 일치하지 않습니다.");
+//    }
+//
+//    String accessToken = jwtUtils.generateToken(user.getId());
+//
+//    return new LoginResponse(user.getId(), accessToken);
+//  }
 }
