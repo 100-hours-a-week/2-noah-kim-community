@@ -32,7 +32,7 @@ public class UserService {
      * 이메일이 이미 존재하는 경우
      */
     if (userRepository.existsByEmail(email)) {
-      throw new CustomException("Auth-001", "이미 존재하는 이메일입니다.");
+      throw new CustomException("auth-001", "이미 존재하는 이메일입니다.");
     }
 
     // 비밀번호 해싱
