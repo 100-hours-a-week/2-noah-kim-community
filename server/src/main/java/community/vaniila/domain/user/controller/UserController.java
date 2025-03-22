@@ -38,12 +38,12 @@ public class UserController {
       return ResponseEntity.noContent().build();
   }
 
-//  @PostMapping("/login")
-//  public ResponseEntity<CommonResponse<LoginResponse>> loginUser(@RequestBody LoginRequest request) {
-//    LoginResponse response = userService.loginUser(request);
-//
-//    return ResponseEntity.ok()
-//        .header("Authorization", "Bearer " + response.getAccessToken())
-//        .body(CommonResponse.success("login success", response));
-//  }
+  @PostMapping("/login")
+  public ResponseEntity<CommonResponse<LoginResponse>> loginUser(@RequestBody LoginRequest request) {
+    LoginResponse response = userService.loginUser(request);
+
+    return ResponseEntity.ok()
+        .header("Authorization", "Bearer " + response.getAccessToken())
+        .body(CommonResponse.success("login success", response));
+  }
 }

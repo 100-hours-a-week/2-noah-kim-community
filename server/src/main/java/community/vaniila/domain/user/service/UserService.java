@@ -42,21 +42,21 @@ public class UserService {
   }
 
 
-//  @Transactional
-//  public LoginResponse loginUser(LoginRequest request) {
-//    /**
-//     * 예외 처리
-//     * 회원가입된 이메일이 없는 경우
-//     */
-//    User user = userRepository.findByEmail(request.getEmail())
-//        .orElseThrow(() -> new CustomException("Auth-002", "없는 유저입니다."));
-//
-//    if (!PasswordUtils.matches(request.getPassword(), user.getPassword())) {
-//      throw new CustomException("Auth-003", "비밀번호가 일치하지 않습니다.");
-//    }
-//
-//    String accessToken = jwtUtils.generateToken(user.getId());
-//
-//    return new LoginResponse(user.getId(), accessToken);
-//  }
+  @Transactional
+  public LoginResponse loginUser(LoginRequest request) {
+    /**
+     * 예외 처리
+     * 회원가입된 이메일이 없는 경우
+     */
+    User user = userRepository.findByEmail(request.getEmail())
+        .orElseThrow(() ->new CustomException(ErrorCode.AUTH_USER_NOT_FOUND));
+
+    if (!PasswordUtils.matches(request.getPassword(), user.getPassword())) {
+      throw new CustomException(ErrorCode.AUTH_INVALID_PASSWORD);
+    }
+
+    String accessToken = jwtUtils.generateToken(user.getId());
+
+    return new LoginResponse(user.getId(), accessToken);
+  }
 }
