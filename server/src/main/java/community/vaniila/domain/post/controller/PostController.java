@@ -3,6 +3,7 @@ package community.vaniila.domain.post.controller;
 import community.vaniila.domain.post.dto.request.comment.CommentCreateRequest;
 import community.vaniila.domain.post.dto.request.comment.CommentUpdateRequest;
 import community.vaniila.domain.post.dto.request.post.PostCreateRequest;
+import community.vaniila.domain.post.dto.request.post.PostListResponse;
 import community.vaniila.domain.post.dto.request.post.PostModifyRequest;
 import community.vaniila.domain.post.dto.response.comment.CommentCreateResponse;
 import community.vaniila.domain.post.dto.response.comment.CommentUpdateResponse;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -84,6 +86,16 @@ public class PostController {
 
     postService.deletePost(userId, postId);
     return ResponseEntity.noContent().build();  // 204 No Content
+  }
+
+  /** 게시글 목록  */
+  @GetMapping("/list")
+  public ResponseEntity<CommonResponse<PostListResponse>> getPostList(
+      @RequestParam("currentPage") int currentPage,
+      @RequestParam("pageSize") int pageSize
+  ) {
+    PostListResponse response = postService.getPostList(currentPage, pageSize);
+    return ResponseEntity.ok(CommonResponse.success("게시글 목록 조회 성공", response));
   }
 
   /** 댓글 생성 */
