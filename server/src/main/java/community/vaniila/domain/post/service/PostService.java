@@ -67,10 +67,15 @@ public class PostService {
 
   /** 단일 게시글 조회 */
   @Transactional(readOnly = true)
-  public PostDetailResponse getPostDetail(Long postId) {
+  public PostDetailResponse getPostDetail(Long postId,Long userId) {
     /**  게시글이 없음 */
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
+
+    /**  삭제된 게시글임 */
+    if (post.getDeletedAt() != null) {
+      throw new CustomException(PostErrorCode.POST_NOT_FOUND);
+    }
 
     /**  게시글이 없음 (작성자의 회원탈퇴) */
     User writer = userRepository.findById(post.getUserId())
@@ -90,6 +95,11 @@ public class PostService {
           );
         }).toList();
 
+    boolean isLiked = false;
+    if (userId != null) {
+      isLiked = likeRepository.existsByPostIdAndUserId(postId, userId);
+    }
+
     PostDetailResponse.PostData postData = new PostDetailResponse.PostData(
         post.getId(),
         post.getTitle(),
@@ -97,6 +107,7 @@ public class PostService {
         post.getThumbnailUrl(),
         post.getLikeCount(),
         post.getViewCount(),
+        isLiked,
         commentData,
         post.getCreatedAt()
     );

@@ -56,8 +56,13 @@ public class PostController {
       @RequestHeader(value = "Authorization", required = false) String authHeader,
       @PathVariable Long postId
   ) {
-    // 로그인 여부는 여기에서 판단 가능하지만, 이번 조회엔 로그인 상태가 영향 X
-    PostDetailResponse response = postService.getPostDetail(postId);
+    Long userId = null;
+    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+      String token = authHeader.replace("Bearer ", "").trim();
+      userId = jwtUtils.getId(token);  // ✅ 유효한 경우만 추출
+    }
+
+    PostDetailResponse response = postService.getPostDetail(postId, userId);
     return ResponseEntity.ok(CommonResponse.success("게시글 상세 조회 완료", response));
   }
 

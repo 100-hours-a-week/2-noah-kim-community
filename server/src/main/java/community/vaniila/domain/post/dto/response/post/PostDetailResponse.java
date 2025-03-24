@@ -21,6 +21,7 @@ public class PostDetailResponse {
     private String imageUrl;
     private int likeCount;
     private int viewCount;
+    private boolean isLiked;
     private List<CommentData> comments;
     private LocalDateTime createdAt;
   }
