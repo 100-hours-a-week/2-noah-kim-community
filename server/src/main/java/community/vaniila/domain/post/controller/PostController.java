@@ -6,6 +6,7 @@ import community.vaniila.domain.post.dto.request.post.PostCreateRequest;
 import community.vaniila.domain.post.dto.request.post.PostModifyRequest;
 import community.vaniila.domain.post.dto.response.comment.CommentCreateResponse;
 import community.vaniila.domain.post.dto.response.comment.CommentUpdateResponse;
+import community.vaniila.domain.post.dto.response.post.PostDetailResponse;
 import community.vaniila.domain.post.service.CommentService;
 import community.vaniila.domain.post.service.LikeService;
 import community.vaniila.domain.post.service.PostService;
@@ -14,6 +15,7 @@ import community.vaniila.domain.utils.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +53,17 @@ public class PostController {
 
     postService.createPost(userId, request);
     return ResponseEntity.noContent().build();  // 204 No Content
+  }
+
+  /** 단일 게시글 조회 */
+  @GetMapping("/{postId}")
+  public ResponseEntity<CommonResponse<PostDetailResponse>> getPostDetail(
+      @RequestHeader(value = "Authorization", required = false) String authHeader,
+      @PathVariable Long postId
+  ) {
+    // 로그인 여부는 여기에서 판단 가능하지만, 이번 조회엔 로그인 상태가 영향 X
+    PostDetailResponse response = postService.getPostDetail(postId);
+    return ResponseEntity.ok(CommonResponse.success("게시글 상세 조회 완료", response));
   }
 
   /** 게시글 수정 */

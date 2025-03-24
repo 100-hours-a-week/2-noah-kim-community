@@ -72,6 +72,39 @@ public class Post {
     return likeCount;
   }
 
+
+  public String getTitle() {
+    return title;
+  }
+
+  public String getContent() {
+    return content;
+  }
+
+  public String getThumbnailUrl() {
+    return thumbnailUrl;
+  }
+
+  public int getViewCount() {
+    return viewCount;
+  }
+
+  public int getCommentCount() {
+    return commentCount;
+  }
+
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public LocalDateTime getDeletedAt() {
+    return deletedAt;
+  }
+
   public void setLikeCount(int likeCount) {
     this.likeCount = likeCount;
   }
