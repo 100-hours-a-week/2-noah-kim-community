@@ -7,6 +7,7 @@ import community.vaniila.domain.post.dto.request.post.PostModifyRequest;
 import community.vaniila.domain.post.dto.response.comment.CommentCreateResponse;
 import community.vaniila.domain.post.dto.response.comment.CommentUpdateResponse;
 import community.vaniila.domain.post.service.CommentService;
+import community.vaniila.domain.post.service.LikeService;
 import community.vaniila.domain.post.service.PostService;
 import community.vaniila.domain.utils.response.CommonResponse;
 import community.vaniila.domain.utils.security.JwtUtils;
@@ -27,12 +28,14 @@ public class PostController {
 
   private final PostService postService;
   private final CommentService commentService;
+  private final LikeService likeService;
   private final JwtUtils jwtUtils;
 
   @Autowired
-  public PostController(PostService postService, CommentService commentService,JwtUtils jwtUtils) {
+  public PostController(PostService postService, CommentService commentService, LikeService likeService, JwtUtils jwtUtils) {
     this.postService = postService;
     this.commentService = commentService;
+    this.likeService = likeService;
     this.jwtUtils = jwtUtils;
   }
 
@@ -108,6 +111,19 @@ public class PostController {
 
     commentService.deleteComment(userId, postId, commentId);
     return ResponseEntity.noContent().build(); // 204 No Content
+  }
+
+  /** 좋아요 생성 */
+  @PostMapping("/{postId}/like")
+  public ResponseEntity<Void> likePost(
+      @RequestHeader("Authorization") String authHeader,
+      @PathVariable Long postId
+  ) {
+    String token = authHeader.replace("Bearer ", "").trim();
+    Long userId = jwtUtils.getId(token);
+
+    likeService.likePost(userId, postId);
+    return ResponseEntity.noContent().build();  // 204 No Content
   }
 }
 
