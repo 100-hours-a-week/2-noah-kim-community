@@ -1,4 +1,4 @@
-package community.vaniila.domain.utils.password;
+package community.vaniila.domain.utils.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package community.vaniila.domain.user.entity;
 
-import community.vaniila.domain.utils.password.PasswordUtils;
+import community.vaniila.domain.utils.security.PasswordUtils;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

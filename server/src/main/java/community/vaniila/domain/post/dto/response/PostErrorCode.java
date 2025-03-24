@@ -1,9 +1,10 @@
-package community.vaniila.domain.utils.response.errorcode;
+package community.vaniila.domain.post.dto.response;
+import community.vaniila.domain.utils.response.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum PostErrorCode implements ErrorCode {
 
-  POST_ERROR_DUMMY("post-001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED);
+  POST_INVALID_DATA("post-001", "", HttpStatus.UNAUTHORIZED);
 
   private final String code;
   private final String message;

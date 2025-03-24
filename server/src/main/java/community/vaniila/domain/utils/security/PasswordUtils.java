@@ -1,4 +1,4 @@
-package community.vaniila.domain.utils.password;
+package community.vaniila.domain.utils.security;
 
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 

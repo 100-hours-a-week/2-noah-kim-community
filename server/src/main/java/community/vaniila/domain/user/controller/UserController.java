@@ -5,7 +5,7 @@ import community.vaniila.domain.user.dto.request.ModifyRequest;
 import community.vaniila.domain.user.dto.request.RegisterRequest;
 import community.vaniila.domain.user.dto.response.LoginResponse;
 import community.vaniila.domain.user.service.UserService;
-import community.vaniila.domain.utils.password.JwtUtils;
+import community.vaniila.domain.utils.security.JwtUtils;
 import community.vaniila.domain.utils.response.CommonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

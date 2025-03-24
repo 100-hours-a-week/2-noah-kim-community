@@ -1,5 +1,6 @@
-package community.vaniila.domain.utils.response.errorcode;
+package community.vaniila.domain.utils.security;
 
+import community.vaniila.domain.utils.response.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 
 public enum JwtErrorCode implements ErrorCode {
