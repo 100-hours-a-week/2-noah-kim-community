@@ -12,7 +12,8 @@ import community.vaniila.domain.post.service.LikeService;
 import community.vaniila.domain.post.service.PostService;
 import community.vaniila.domain.utils.response.CommonResponse;
 import community.vaniila.domain.utils.security.JwtUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,21 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/post")
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class PostController {
 
   private final PostService postService;
   private final CommentService commentService;
   private final LikeService likeService;
   private final JwtUtils jwtUtils;
-
-  @Autowired
-  public PostController(PostService postService, CommentService commentService, LikeService likeService, JwtUtils jwtUtils) {
-    this.postService = postService;
-    this.commentService = commentService;
-    this.likeService = likeService;
-    this.jwtUtils = jwtUtils;
-  }
-
 
   /** 게시글 생성 */
   @PostMapping

@@ -1,13 +1,12 @@
 package community.vaniila.domain.post.dto.request.comment;
 
+import lombok.Getter;
+
+@Getter
 public class CommentCreateRequest {
   private String content;
 
-  public String getContent() {
-    return content;
-  }
-
-  public boolean isInvalid() {
+    public boolean isInvalid() {
     return content == null || content.isBlank();
   }
 }

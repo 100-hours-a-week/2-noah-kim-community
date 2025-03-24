@@ -1,8 +1,12 @@
 package community.vaniila.domain.post.dto.response.comment;
 
 import community.vaniila.domain.utils.response.errorcode.ErrorCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@AllArgsConstructor
+@Getter
 public enum CommentErrorCode implements ErrorCode {
 
   COMMENT_INVALID_DATA("comment-001", "댓글 내용이 비어 있습니다.", HttpStatus.BAD_REQUEST),
@@ -14,25 +18,4 @@ public enum CommentErrorCode implements ErrorCode {
   private final String code;
   private final String message;
   private final HttpStatus httpStatus;
-
-  CommentErrorCode(String code, String message, HttpStatus httpStatus) {
-    this.code = code;
-    this.message = message;
-    this.httpStatus = httpStatus;
-  }
-
-  @Override
-  public String getCode() {
-    return code;
-  }
-
-  @Override
-  public String getMessage() {
-    return message;
-  }
-
-  @Override
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
 }

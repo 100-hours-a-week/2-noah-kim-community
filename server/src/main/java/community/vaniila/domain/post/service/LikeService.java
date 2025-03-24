@@ -33,7 +33,7 @@ public class LikeService {
       throw new CustomException(PostErrorCode.POST_NOT_FOUND);
     }
 
-    // 이미 좋아요 상태여도 문제 없이 끝냄 (멱드성을 위해 에러는 반환X)
+    // 이미 좋아요 상태여도 문제 없이 끝냄 (멱등성을 위해 에러는 반환X)
     if (likeRepository.existsByUserIdAndPostId(userId, postId)) {
       return;
     }

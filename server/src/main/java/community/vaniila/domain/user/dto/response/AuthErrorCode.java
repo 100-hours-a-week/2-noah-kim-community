@@ -1,8 +1,12 @@
 package community.vaniila.domain.user.dto.response;
 
 import community.vaniila.domain.utils.response.errorcode.ErrorCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@AllArgsConstructor
+@Getter
 public enum AuthErrorCode implements ErrorCode {
 
   AUTH_EMAIL_ALREADY_EXISTS("auth-001", "이미 존재하는 이메일입니다", HttpStatus.CONFLICT),
@@ -14,25 +18,4 @@ public enum AuthErrorCode implements ErrorCode {
   private final String code;
   private final String message;
   private final HttpStatus httpStatus;
-
-  AuthErrorCode(String code, String message, HttpStatus httpStatus) {
-    this.code = code;
-    this.message = message;
-    this.httpStatus = httpStatus;
-  }
-
-  @Override
-  public String getCode() {
-    return code;
-  }
-
-  @Override
-  public String getMessage() {
-    return message;
-  }
-
-  @Override
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
 }

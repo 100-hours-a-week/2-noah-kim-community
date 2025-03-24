@@ -1,30 +1,25 @@
 package community.vaniila.domain.user.service;
 
 import community.vaniila.domain.user.dto.request.LoginRequest;
+import community.vaniila.domain.user.dto.response.AuthErrorCode;
 import community.vaniila.domain.user.dto.response.LoginResponse;
 import community.vaniila.domain.user.entity.User;
 import community.vaniila.domain.user.repository.UserRepository;
-import community.vaniila.domain.utils.security.JwtProperties;
+import community.vaniila.domain.utils.response.CustomException;
 import community.vaniila.domain.utils.security.JwtUtils;
 import community.vaniila.domain.utils.security.PasswordUtils;
-import community.vaniila.domain.utils.response.CustomException;
-import community.vaniila.domain.user.dto.response.AuthErrorCode;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@AllArgsConstructor(onConstructor_ = {@Autowired})
 public class UserService {
 
   private final UserRepository userRepository;
   private final JwtUtils jwtUtils;
 
-
-  @Autowired
-  public UserService(UserRepository userRepository,JwtProperties jwtProperties, JwtUtils jwtUtils) {
-    this.userRepository = userRepository;
-    this.jwtUtils = jwtUtils;
-  }
 
   @Transactional
   public void registerUser(String email, String password, String nickname, String imageUrl) {

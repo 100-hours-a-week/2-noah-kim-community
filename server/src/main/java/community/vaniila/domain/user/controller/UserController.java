@@ -7,6 +7,7 @@ import community.vaniila.domain.user.dto.response.LoginResponse;
 import community.vaniila.domain.user.service.UserService;
 import community.vaniila.domain.utils.security.JwtUtils;
 import community.vaniila.domain.utils.response.CommonResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,16 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
+@AllArgsConstructor
 public class UserController {
 
   private final UserService userService;
   private final JwtUtils jwtUtils;
-
-  @Autowired
-  public UserController(UserService userService, JwtUtils jwtUtils) {
-    this.userService = userService;
-    this.jwtUtils = jwtUtils;
-  }
 
   @GetMapping("/ping")
   public ResponseEntity<String> ping() {

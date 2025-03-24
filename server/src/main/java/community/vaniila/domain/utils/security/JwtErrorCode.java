@@ -1,8 +1,12 @@
 package community.vaniila.domain.utils.security;
 
 import community.vaniila.domain.utils.response.errorcode.ErrorCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@AllArgsConstructor
+@Getter
 public enum JwtErrorCode implements ErrorCode {
 
   JWT_INVALID_TOKEN("jwt-001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED),
@@ -11,25 +15,4 @@ public enum JwtErrorCode implements ErrorCode {
   private final String code;
   private final String message;
   private final HttpStatus httpStatus;
-
-  JwtErrorCode(String code, String message, HttpStatus httpStatus) {
-    this.code = code;
-    this.message = message;
-    this.httpStatus = httpStatus;
-  }
-
-  @Override
-  public String getCode() {
-    return code;
-  }
-
-  @Override
-  public String getMessage() {
-    return message;
-  }
-
-  @Override
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
 }

@@ -1,22 +1,12 @@
 package community.vaniila.domain.post.dto.request.post;
 
-public class PostCreateRequest {
+import lombok.Getter;
 
+@Getter
+public class PostCreateRequest {
   private String title;
   private String content;
   private String imageUrl;
-
-  public String getTitle() {
-    return title;
-  }
-
-  public String getContent() {
-    return content;
-  }
-
-  public String getImageUrl() {
-    return imageUrl;
-  }
 
   /**  */
   public boolean isInvalid() {

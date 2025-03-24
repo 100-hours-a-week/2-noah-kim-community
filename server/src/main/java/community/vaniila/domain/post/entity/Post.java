@@ -1,8 +1,20 @@
 package community.vaniila.domain.post.entity;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "posts")
 public class Post {
 
@@ -40,8 +52,6 @@ public class Post {
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
 
-  protected Post() {}
-
   public Post(Long userId, String title, String content, String thumbnailUrl) {
     this.userId = userId;
     this.title = title;
@@ -60,41 +70,4 @@ public class Post {
     this.deletedAt = LocalDateTime.now();
   }
 
-  public Long getUserId() {
-    return userId;
-  }
-  public Long getId() {
-    return id;
-  }
-  public int getLikeCount() {
-    return likeCount;
-  }
-  public String getTitle() {
-    return title;
-  }
-  public String getContent() {
-    return content;
-  }
-  public String getThumbnailUrl() {
-    return thumbnailUrl;
-  }
-  public int getViewCount() {
-    return viewCount;
-  }
-  public int getCommentCount() {
-    return commentCount;
-  }
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-  public LocalDateTime getUpdatedAt() {
-    return updatedAt;
-  }
-  public LocalDateTime getDeletedAt() {
-    return deletedAt;
-  }
-
-  public void setLikeCount(int likeCount) {
-    this.likeCount = likeCount;
-  }
 }
