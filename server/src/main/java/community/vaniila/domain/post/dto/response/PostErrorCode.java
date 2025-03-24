@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 
 public enum PostErrorCode implements ErrorCode {
 
-  POST_INVALID_DATA("post-001", "", HttpStatus.UNAUTHORIZED);
+  POST_INVALID_DATA("post-001", "게시글 데이터가 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
+  POST_NOT_FOUND("post-002", "존재하지 않는 게시글입니다.", HttpStatus.NOT_FOUND),
+  POST_UNAUTHORIZED("post-003", "해당 게시글에 대한 수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
 
   private final String code;
   private final String message;

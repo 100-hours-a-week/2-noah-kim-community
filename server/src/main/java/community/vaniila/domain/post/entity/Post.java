@@ -49,7 +49,7 @@ public class Post {
     this.thumbnailUrl = thumbnailUrl;
   }
 
-  public void update(String title, String content, String thumbnailUrl) {
+  public void modify(String title, String content, String thumbnailUrl) {
     this.title = title;
     this.content = content;
     this.thumbnailUrl = thumbnailUrl;
@@ -60,5 +60,9 @@ public class Post {
     this.deletedAt = LocalDateTime.now();
   }
 
-  // getter 생략 가능 (또는 롬복 사용해도 OK)
+  public Long getUserId() {
+    return userId;
+  }
+
+
 }
