@@ -1,8 +1,12 @@
 package community.vaniila.domain.post.controller;
 
-import community.vaniila.domain.post.dto.request.PostCreateRequest;
-import community.vaniila.domain.post.dto.request.PostModifyRequest;
+import community.vaniila.domain.post.dto.request.comment.CommentCreateRequest;
+import community.vaniila.domain.post.dto.request.post.PostCreateRequest;
+import community.vaniila.domain.post.dto.request.post.PostModifyRequest;
+import community.vaniila.domain.post.dto.response.comment.CommentCreateResponse;
+import community.vaniila.domain.post.service.CommentService;
 import community.vaniila.domain.post.service.PostService;
+import community.vaniila.domain.utils.response.CommonResponse;
 import community.vaniila.domain.utils.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
   private final PostService postService;
+  private final CommentService commentService;
   private final JwtUtils jwtUtils;
 
   @Autowired
-  public PostController(PostService postService, JwtUtils jwtUtils) {
+  public PostController(PostService postService, CommentService commentService,JwtUtils jwtUtils) {
     this.postService = postService;
+    this.commentService = commentService;
     this.jwtUtils = jwtUtils;
   }
 
@@ -55,5 +61,18 @@ public class PostController {
     return ResponseEntity.noContent().build(); // 204 No Content
   }
 
+  /** 댓글 생성 */
+  @PostMapping("/{postId}/comment")
+  public ResponseEntity<CommonResponse<CommentCreateResponse>> createComment(
+      @RequestHeader("Authorization") String authHeader,
+      @PathVariable Long postId,
+      @RequestBody CommentCreateRequest request
+  ) {
+    String token = authHeader.replace("Bearer ", "").trim();
+    Long userId = jwtUtils.getId(token);
+
+    CommentCreateResponse response = commentService.createComment(userId, postId, request);
+    return ResponseEntity.ok(CommonResponse.success("created comment", response));
+  }
 
 }

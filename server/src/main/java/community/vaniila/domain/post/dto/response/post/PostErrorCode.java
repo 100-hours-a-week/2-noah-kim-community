@@ -1,4 +1,4 @@
-package community.vaniila.domain.post.dto.response;
+package community.vaniila.domain.post.dto.response.post;
 import community.vaniila.domain.utils.response.errorcode.ErrorCode;
 import org.springframework.http.HttpStatus;
 

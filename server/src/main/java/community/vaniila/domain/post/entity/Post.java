@@ -64,5 +64,7 @@ public class Post {
     return userId;
   }
 
-
+  public Long getId() {
+    return id;
+  }
 }

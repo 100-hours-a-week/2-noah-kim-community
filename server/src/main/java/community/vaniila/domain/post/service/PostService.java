@@ -1,8 +1,8 @@
 package community.vaniila.domain.post.service;
 
-import community.vaniila.domain.post.dto.request.PostCreateRequest;
-import community.vaniila.domain.post.dto.request.PostModifyRequest;
-import community.vaniila.domain.post.dto.response.PostErrorCode;
+import community.vaniila.domain.post.dto.request.post.PostCreateRequest;
+import community.vaniila.domain.post.dto.request.post.PostModifyRequest;
+import community.vaniila.domain.post.dto.response.post.PostErrorCode;
 import community.vaniila.domain.post.entity.Post;
 import community.vaniila.domain.post.repository.PostRepository;
 import community.vaniila.domain.utils.security.JwtProperties;
