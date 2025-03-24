@@ -28,7 +28,6 @@ public class Like {
   public Long getUserId() {
     return userId;
   }
-
   public Long getPostId() {
     return postId;
   }

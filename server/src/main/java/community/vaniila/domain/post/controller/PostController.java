@@ -80,6 +80,19 @@ public class PostController {
     return ResponseEntity.noContent().build(); // 204 No Content
   }
 
+  /** 게시글 삭제 */
+  @DeleteMapping("/{postId}")
+  public ResponseEntity<Void> deletePost(
+      @RequestHeader("Authorization") String authHeader,
+      @PathVariable Long postId
+  ) {
+    String token = authHeader.replace("Bearer ", "").trim();
+    Long userId = jwtUtils.getId(token);
+
+    postService.deletePost(userId, postId);
+    return ResponseEntity.noContent().build();  // 204 No Content
+  }
+
   /** 댓글 생성 */
   @PostMapping("/{postId}/comment")
   public ResponseEntity<CommonResponse<CommentCreateResponse>> createComment(
