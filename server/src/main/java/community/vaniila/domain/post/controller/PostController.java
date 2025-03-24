@@ -1,9 +1,11 @@
 package community.vaniila.domain.post.controller;
 
 import community.vaniila.domain.post.dto.request.comment.CommentCreateRequest;
+import community.vaniila.domain.post.dto.request.comment.CommentUpdateRequest;
 import community.vaniila.domain.post.dto.request.post.PostCreateRequest;
 import community.vaniila.domain.post.dto.request.post.PostModifyRequest;
 import community.vaniila.domain.post.dto.response.comment.CommentCreateResponse;
+import community.vaniila.domain.post.dto.response.comment.CommentUpdateResponse;
 import community.vaniila.domain.post.service.CommentService;
 import community.vaniila.domain.post.service.PostService;
 import community.vaniila.domain.utils.response.CommonResponse;
@@ -75,4 +77,21 @@ public class PostController {
     return ResponseEntity.ok(CommonResponse.success("created comment", response));
   }
 
+
+  /** 댓글 수정 */
+  @PatchMapping("/{postId}/comment/{commentId}")
+  public ResponseEntity<CommonResponse<CommentUpdateResponse>> updateComment(
+      @RequestHeader("Authorization") String authHeader,
+      @PathVariable Long postId,
+      @PathVariable Long commentId,
+      @RequestBody CommentUpdateRequest request
+  ) {
+    System.out.println("entered post comment updatee");
+    String token = authHeader.replace("Bearer ", "").trim();
+    Long userId = jwtUtils.getId(token);
+
+    CommentUpdateResponse response = commentService.updateComment(userId, postId, commentId, request);
+
+    return ResponseEntity.ok(CommonResponse.success("댓글을 수정하였습니다", response));
+  }
 }

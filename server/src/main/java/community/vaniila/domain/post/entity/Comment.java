@@ -29,18 +29,12 @@ public class Comment {
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
 
-
+  public Comment() {}
   public Comment(Long postId, Long userId, String content) {
     this.postId = postId;
     this.userId = userId;
     this.content = content;
   }
-
-  public Comment() {
-
-  }
-
-  // Getter들 필요
 
   public Long getId() {
     return id;
@@ -62,5 +56,10 @@ public class Comment {
   }
   public LocalDateTime getDeletedAt() {
     return deletedAt;
+  }
+
+  public void update(String content) {
+    this.content = content;
+    this.updatedAt = LocalDateTime.now();
   }
 }

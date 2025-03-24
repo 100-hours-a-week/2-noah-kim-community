@@ -2,8 +2,10 @@ package community.vaniila.domain.post.service;
 
 
 import community.vaniila.domain.post.dto.request.comment.CommentCreateRequest;
+import community.vaniila.domain.post.dto.request.comment.CommentUpdateRequest;
 import community.vaniila.domain.post.dto.response.comment.CommentCreateResponse;
 import community.vaniila.domain.post.dto.response.comment.CommentErrorCode;
+import community.vaniila.domain.post.dto.response.comment.CommentUpdateResponse;
 import community.vaniila.domain.post.dto.response.post.PostErrorCode;
 import community.vaniila.domain.post.entity.Comment;
 import community.vaniila.domain.post.entity.Post;
@@ -60,6 +62,28 @@ public class CommentService {
         user.getImageUrl(),
         savedComment.getContent(),
         savedComment.getCreatedAt()
+    );
+  }
+
+  @Transactional
+  public CommentUpdateResponse updateComment(Long userId, Long postId, Long commentId, CommentUpdateRequest request) {
+    if (request.isInvalid()) {
+      throw new CustomException(CommentErrorCode.COMMENT_INVALID_DATA);
+    }
+
+    Comment comment = commentRepository.findById(commentId)
+        .orElseThrow(() -> new CustomException(CommentErrorCode.COMMENT_NOT_FOUND));
+
+    if (!comment.getUserId().equals(userId) || !comment.getPostId().equals(postId)) {
+      throw new CustomException(CommentErrorCode.COMMENT_UNAUTHORIZED);
+    }
+
+    comment.update(request.getContent());
+
+    return new CommentUpdateResponse(
+        comment.getId(),
+        comment.getContent(),
+        comment.getUpdatedAt()
     );
   }
 }
