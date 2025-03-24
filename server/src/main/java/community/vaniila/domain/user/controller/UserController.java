@@ -5,11 +5,11 @@ import community.vaniila.domain.user.dto.request.ModifyRequest;
 import community.vaniila.domain.user.dto.request.RegisterRequest;
 import community.vaniila.domain.user.dto.response.LoginResponse;
 import community.vaniila.domain.user.service.UserService;
-import community.vaniila.domain.utils.security.JwtUtils;
 import community.vaniila.domain.utils.response.CommonResponse;
+import community.vaniila.domain.utils.security.JwtUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,5 +60,17 @@ public class UserController {
     userService.modifyUser(userId, request.getNickname(), request.getImageUrl());
 
     return ResponseEntity.noContent().build();  // 204 No Content
+  }
+
+  @DeleteMapping("/unregister")
+  public ResponseEntity<Void> unregister(
+      @RequestHeader("Authorization") String authHeader
+  ) {
+    String token = authHeader.replace("Bearer ", "").trim();
+    Long userId = jwtUtils.getId(token);
+
+    userService.unregisterUser(userId);
+
+    return ResponseEntity.noContent().build(); // 204 No Content
   }
 }

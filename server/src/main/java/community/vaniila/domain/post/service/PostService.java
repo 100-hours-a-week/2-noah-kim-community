@@ -2,10 +2,10 @@ package community.vaniila.domain.post.service;
 
 import community.vaniila.domain.post.dto.request.post.PostCreateRequest;
 import community.vaniila.domain.post.dto.request.post.PostModifyRequest;
-import community.vaniila.domain.post.dto.response.comment.CommentErrorCode;
+import community.vaniila.domain.utils.response.errorcode.CommentErrorCode;
 import community.vaniila.domain.post.dto.response.post.PostDetailResponse;
 import community.vaniila.domain.post.dto.response.post.PostDetailResponse.CommentData;
-import community.vaniila.domain.post.dto.response.post.PostErrorCode;
+import community.vaniila.domain.utils.response.errorcode.PostErrorCode;
 import community.vaniila.domain.post.entity.Comment;
 import community.vaniila.domain.post.entity.Post;
 import community.vaniila.domain.post.repository.CommentRepository;
@@ -63,7 +63,7 @@ public class PostService {
         .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
     if (!post.getUserId().equals(userId)) {
-      throw new CustomException(PostErrorCode.POST_UNAUTHORIZED);
+      throw new CustomException(PostErrorCode.POST_FORBIDDEN);
     }
 
     post.modify(request.getTitle(), request.getContent(), request.getImageUrl());
@@ -117,30 +117,24 @@ public class PostService {
   /** 게시글 삭제 */
   @Transactional
   public void deletePost(Long userId, Long postId) {
-    // 게시글 확인
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
-    // 삭제된 게시글인지 확인
     if (post.getDeletedAt() != null) {
       throw new CustomException(PostErrorCode.POST_NOT_FOUND);
     }
 
-    // 본인 확인
     if (!post.getUserId().equals(userId)) {
-      throw new CustomException(PostErrorCode.POST_UNAUTHORIZED);
+      throw new CustomException(PostErrorCode.POST_FORBIDDEN);
     }
 
-    // 댓글 soft delete
     List<Comment> comments = commentRepository.findByPostIdAndDeletedAtIsNull(postId);
     for (Comment comment : comments) {
       comment.softDelete();
     }
 
-    // 좋아요 hard delete
     likeRepository.deleteByPostId(postId);
 
-    // 게시글 soft delete
     post.softDelete();
   }
 }

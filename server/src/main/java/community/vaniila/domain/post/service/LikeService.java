@@ -1,6 +1,6 @@
 package community.vaniila.domain.post.service;
 
-import community.vaniila.domain.post.dto.response.post.PostErrorCode;
+import community.vaniila.domain.utils.response.errorcode.PostErrorCode;
 import community.vaniila.domain.post.entity.Like;
 import community.vaniila.domain.post.entity.Post;
 import community.vaniila.domain.post.repository.LikeRepository;
