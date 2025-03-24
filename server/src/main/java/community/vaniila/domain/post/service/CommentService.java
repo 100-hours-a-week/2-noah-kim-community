@@ -86,5 +86,20 @@ public class CommentService {
         comment.getUpdatedAt()
     );
   }
+
+  @Transactional
+  public void deleteComment(Long userId, Long postId, Long commentId) {
+    Comment comment = commentRepository.findById(commentId)
+        .orElseThrow(() -> new CustomException(CommentErrorCode.COMMENT_NOT_FOUND));
+
+    if (!comment.getUserId().equals(userId) || !comment.getPostId().equals(postId)) {
+      throw new CustomException(CommentErrorCode.COMMENT_UNAUTHORIZED);
+    }
+    if (comment.getDeletedAt() != null) {
+      throw new CustomException(CommentErrorCode.COMMENT_DELETED);
+    }
+
+    comment.softDelete(); // deleted_at 갱신
+  }
 }
 

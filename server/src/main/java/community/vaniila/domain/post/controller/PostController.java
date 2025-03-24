@@ -12,6 +12,7 @@ import community.vaniila.domain.utils.response.CommonResponse;
 import community.vaniila.domain.utils.security.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,4 +95,20 @@ public class PostController {
 
     return ResponseEntity.ok(CommonResponse.success("댓글을 수정하였습니다", response));
   }
+
+  /** 댓글 삭제 (소프트 딜리트) */
+  @DeleteMapping("/{postId}/comment/{commentId}")
+  public ResponseEntity<Void> deleteComment(
+      @RequestHeader("Authorization") String authHeader,
+      @PathVariable Long postId,
+      @PathVariable Long commentId
+  ) {
+    String token = authHeader.replace("Bearer ", "").trim();
+    Long userId = jwtUtils.getId(token);
+
+    commentService.deleteComment(userId, postId, commentId);
+    return ResponseEntity.noContent().build(); // 204 No Content
+  }
 }
+
+
