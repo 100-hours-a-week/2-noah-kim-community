@@ -35,7 +35,6 @@ public class LikeService {
 
     // 이미 좋아요 상태여도 문제 없이 끝냄 (멱드성을 위해 에러는 반환X)
     if (likeRepository.existsByUserIdAndPostId(userId, postId)) {
-
       return;
     }
 
@@ -45,5 +44,24 @@ public class LikeService {
     // 선택: post.likeCount 증가 (비즈니스 룰에 따라)
     Post post = postRepository.findById(postId).get();
     post.setLikeCount(post.getLikeCount() + 1);
+  }
+
+  /** 좋아요 삭제하기 */
+  @Transactional
+  public void deleteLike(Long userId, Long postId) {
+    if (!postRepository.existsById(postId)) {
+      throw new CustomException(PostErrorCode.POST_NOT_FOUND);
+    }
+
+    // 이미 좋아요 안한 경우에도 조용히 204 응답 (에러 반환X)
+    if (!likeRepository.existsByUserIdAndPostId(userId, postId)) {
+      return;
+    }
+
+    likeRepository.deleteByUserIdAndPostId(userId, postId);
+
+    // post 좋아요 수 감소
+    Post post = postRepository.findById(postId).get();
+    post.setLikeCount(Math.max(post.getLikeCount() - 1, 0));
   }
 }

@@ -125,6 +125,19 @@ public class PostController {
     likeService.likePost(userId, postId);
     return ResponseEntity.noContent().build();  // 204 No Content
   }
+
+  /** 좋아요 삭제 */
+  @DeleteMapping("/{postId}/like")
+  public ResponseEntity<Void> deleteLike(
+      @RequestHeader("Authorization") String authHeader,
+      @PathVariable Long postId
+  ) {
+    String token = authHeader.replace("Bearer ", "").trim();
+    Long userId = jwtUtils.getId(token);
+
+    likeService.deleteLike(userId, postId);
+    return ResponseEntity.noContent().build();  // 204 No Content
+  }
 }
 
 
