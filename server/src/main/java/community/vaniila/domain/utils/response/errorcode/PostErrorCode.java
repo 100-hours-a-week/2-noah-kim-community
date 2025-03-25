@@ -1,32 +1,18 @@
 package community.vaniila.domain.utils.response.errorcode;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@AllArgsConstructor
+@Getter
 public enum PostErrorCode implements ErrorCode {
 
-  POST_ERROR_DUMMY("post-001", "유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED);
+  POST_INVALID_DATA("post-001", "게시글 데이터가 올바르지 않습니다.", HttpStatus.BAD_REQUEST),
+  POST_NOT_FOUND("post-002", "존재하지 않는 게시글입니다.", HttpStatus.NOT_FOUND),
+  POST_FORBIDDEN("post-003", "해당 게시글에 대한 수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
 
   private final String code;
   private final String message;
   private final HttpStatus httpStatus;
-
-  PostErrorCode(String code, String message, HttpStatus httpStatus) {
-    this.code = code;
-    this.message = message;
-    this.httpStatus = httpStatus;
-  }
-
-  @Override
-  public String getCode() {
-    return code;
-  }
-
-  @Override
-  public String getMessage() {
-    return message;
-  }
-
-  @Override
-  public HttpStatus getHttpStatus() {
-    return httpStatus;
-  }
 }

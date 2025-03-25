@@ -1,10 +1,20 @@
 package community.vaniila.domain.user.entity;
 
-import community.vaniila.domain.utils.password.PasswordUtils;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -33,7 +43,6 @@ public class User {
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
 
-  public User() {}
 
   public User(String email, String password, String image_url, String nickname) {
     this.email = email;
@@ -42,32 +51,9 @@ public class User {
     this.nickname = nickname;
   }
 
-
-  // Getter & Setter
-  public Long getId() { return id; }
-  public String getEmail() { return email; }
-  public void setEmail(String email) { this.email = email; }
-
-  public String getPassword() { return password; }
-  public void setPassword(String password) { this.password = PasswordUtils.hashPassword(password); }
-
-  public String getImageUrl() { return imageUrl; }
-  public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-
-  public String getNickname() { return nickname; }
-  public void setNickname(String nickname) { this.nickname = nickname; }
-
-  public LocalDateTime getCreatedAt() { return createdAt; }
-  public LocalDateTime getUpdatedAt() { return updatedAt; }
-  public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
-
-  public LocalDateTime getDeletedAt() { return deletedAt; }
-  public void setDeletedAt(LocalDateTime deletedAt) { this.deletedAt = deletedAt; }
-
   public void updateInfo(String nickname, String imageUrl) {
     this.nickname = nickname;
     this.imageUrl = imageUrl;
     this.updatedAt = LocalDateTime.now();  // 수정일 갱신
   }
-
 }
