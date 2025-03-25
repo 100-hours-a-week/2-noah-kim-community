@@ -1,10 +1,18 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
+import Toast from '../../components/common/Toast/Toast.js'
 import { validateEmailInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
+import { loginUser } from '../../service/userService.js'
 class Login extends Component {
   setup() {
+    /** 상태 정의 */
+    this.$state = {
+      email: '',
+      password: '',
+    }
+
     this.loadStyles()
   }
   loadStyles() {
@@ -21,6 +29,7 @@ class Login extends Component {
             <input
               id="email-input"
               type="email"
+              value="${this.$state.email}"
               placeholder="이메일을 입력하세요"
             />
           </div>
@@ -31,6 +40,7 @@ class Login extends Component {
             <input
               id="password-input"
               type="password"
+              value="${this.$state.password}"
               placeholder="비밀번호를 입력하세요"
             />
           </div>
@@ -70,10 +80,12 @@ class Login extends Component {
 
   setEvent() {
     this.addEvent(this.$elements.emailInput, 'input', event => {
+      this.setState({ email: event.target.value })
       this.validateEmail()
       this.validateForm()
     })
     this.addEvent(this.$elements.passwordInput, 'input', event => {
+      this.setState({ password: event.target.value })
       this.validatePassword()
       this.validateForm()
     })
@@ -105,9 +117,38 @@ class Login extends Component {
       loginButton.disabled = false // 버튼 활성화
     }
   }
-  // TODO: 로그인 API 필요 (현재는 더미 데이터 확인 후 로그인)
-  loginHandler() {
-    navigateTo(ROUTES.POST.MAIN.url)
+
+  async loginHandler(event) {
+    event.preventDefault()
+
+    try {
+      const body = {
+        email: this.$state.email,
+        password: this.$state.password,
+        nickname: this.$state.nickname,
+        imageUrl: this.$state.profileImage,
+      }
+
+      const response = await loginUser(body)
+      if (response.success) {
+        const { message, data } = response.data
+        const { userId, accessToken } = data
+
+        localStorage.setItem(
+          'auth',
+          JSON.stringify({
+            userId,
+            accessToken,
+          }),
+        )
+
+        navigateTo(ROUTES.POST.MAIN.url)
+      } else {
+        new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
   }
 
   navigateToRegister() {

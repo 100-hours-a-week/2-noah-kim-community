@@ -9,7 +9,8 @@ import {
 } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
-import register from '../../service/user/registerUser.js'
+import { registerUser } from '../../service/userService.js'
+
 class Register extends Component {
   setup() {
     /** 상태 정의 */
@@ -20,7 +21,6 @@ class Register extends Component {
       nickname: '',
       /** TODO: 프로필 이미지를 S3에 업로드하고 이를 저장하기 */
       profileImage: 'https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg',
-      isFormValid: false,
     }
 
     /** 스타일 로드 */
@@ -297,7 +297,7 @@ class Register extends Component {
         imageUrl: this.$state.profileImage,
       }
 
-      const response = await register(body)
+      const response = await registerUser(body)
 
       if (response.success) {
         navigateTo(ROUTES.AUTH.LOGIN.url)
