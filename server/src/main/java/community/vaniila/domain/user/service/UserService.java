@@ -49,12 +49,9 @@ public class UserService {
 
   @Transactional
   public LoginResponse loginUser(LoginRequest request) {
-    /**
-     * 예외 처리
-     * 회원가입된 이메일이 없는 경우
-     */
-    User user = userRepository.findByEmail(request.getEmail())
-        .orElseThrow(() ->new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+    /** 회원가입된 이메일이 없는 경우 */
+    User user = userRepository.findByEmailAndDeletedAtIsNull(request.getEmail())
+        .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
     if (!PasswordUtils.matches(request.getPassword(), user.getPassword())) {
       throw new CustomException(AuthErrorCode.AUTH_INVALID_PASSWORD);
@@ -67,13 +64,19 @@ public class UserService {
 
   @Transactional
   public void modifyUser(Long userId, String nickname, String imageUrl) {
+    /** 데이터가 부족한 경우 */
     if (nickname == null || imageUrl == null || nickname.isBlank() || imageUrl.isBlank()) {
       throw new CustomException(AuthErrorCode.AUTH_INVALID_UPDATE_DATA);  // auth-004
     }
 
+
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
+    /** 이미 회원 탈퇴한 유저인 경우 */
+    if (user.getDeletedAt() != null) {
+      throw new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND);
+    }
     user.updateInfo(nickname, imageUrl);
   }
 

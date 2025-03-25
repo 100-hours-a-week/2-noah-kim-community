@@ -13,6 +13,7 @@ import community.vaniila.domain.post.service.LikeService;
 import community.vaniila.domain.post.service.PostService;
 import community.vaniila.domain.utils.response.CommonResponse;
 import community.vaniila.domain.utils.security.JwtUtils;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,7 @@ public class PostController {
   @PostMapping
   public ResponseEntity<Void> createPost(
       @RequestHeader("Authorization") String authHeader,
-      @RequestBody PostCreateRequest request
+      @RequestBody @Valid PostCreateRequest request
   ) {
     String token = authHeader.replace("Bearer ", "").trim();
     Long userId = jwtUtils.getId(token);
@@ -71,7 +72,7 @@ public class PostController {
   public ResponseEntity<Void> updatePost(
       @RequestHeader("Authorization") String authHeader,
       @PathVariable Long postId,
-      @RequestBody PostModifyRequest request
+      @RequestBody @Valid PostModifyRequest request
   ) {
     String token = authHeader.replace("Bearer ", "").trim();
     Long userId = jwtUtils.getId(token);
@@ -108,7 +109,7 @@ public class PostController {
   public ResponseEntity<CommonResponse<CommentCreateResponse>> createComment(
       @RequestHeader("Authorization") String authHeader,
       @PathVariable Long postId,
-      @RequestBody CommentCreateRequest request
+      @RequestBody @Valid CommentCreateRequest request
   ) {
     String token = authHeader.replace("Bearer ", "").trim();
     Long userId = jwtUtils.getId(token);
@@ -124,7 +125,7 @@ public class PostController {
       @RequestHeader("Authorization") String authHeader,
       @PathVariable Long postId,
       @PathVariable Long commentId,
-      @RequestBody CommentUpdateRequest request
+      @RequestBody @Valid CommentUpdateRequest request
   ) {
     System.out.println("entered post comment updatee");
     String token = authHeader.replace("Bearer ", "").trim();

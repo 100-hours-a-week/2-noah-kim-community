@@ -16,7 +16,6 @@ import community.vaniila.domain.utils.response.CustomException;
 import community.vaniila.domain.utils.response.errorcode.AuthErrorCode;
 import community.vaniila.domain.utils.response.errorcode.CommentErrorCode;
 import community.vaniila.domain.utils.response.errorcode.PostErrorCode;
-import community.vaniila.domain.utils.security.JwtUtils;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,30 +34,24 @@ public class PostService {
   private final UserRepository userRepository;
   private final CommentRepository commentRepository;
   private final LikeRepository likeRepository;
-  private final JwtUtils jwtUtils;
 
   /** 게시글 생성 */
   @Transactional
   public void createPost(Long userId, PostCreateRequest request) {
-    if (request.isInvalid()) {
-      throw new CustomException(PostErrorCode.POST_INVALID_DATA);
-    }
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
-    Post post = new Post(userId, request.getTitle(), request.getContent(), request.getImageUrl());
+    Post post = new Post(user, request.getTitle(), request.getContent(), request.getImageUrl());
     postRepository.save(post);
   }
 
   /** 게시글 수정 */
   @Transactional
   public void updatePost(Long userId, Long postId, PostModifyRequest request) {
-    if (request.isInvalid()) {
-      throw new CustomException(PostErrorCode.POST_INVALID_DATA);
-    }
-
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
-    if (!post.getUserId().equals(userId)) {
+    if (!post.getUser().getId().equals(userId)) {
       throw new CustomException(PostErrorCode.POST_FORBIDDEN);
     }
 
@@ -68,24 +61,30 @@ public class PostService {
   /** 단일 게시글 조회 */
   @Transactional(readOnly = true)
   public PostDetailResponse getPostDetail(Long postId,Long userId) {
-    /**  게시글이 없음 */
+    /** 게시글이 없음 */
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
-    /**  삭제된 게시글임 */
+    /** 삭제된 게시글임 */
     if (post.getDeletedAt() != null) {
       throw new CustomException(PostErrorCode.POST_NOT_FOUND);
     }
 
-    /**  게시글이 없음 (작성자의 회원탈퇴) */
-    User writer = userRepository.findById(post.getUserId())
-        .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
+    /** 게시글이 없음 (작성자의 회원탈퇴) */
+    User writer = post.getUser();
+    if (writer.getDeletedAt() != null) {
+      throw new CustomException(PostErrorCode.POST_NOT_FOUND);
+    }
 
-    List<Comment> comments = commentRepository.findByPostIdAndDeletedAtIsNullOrderByCreatedAtDesc(postId);
+    List<Comment> comments = commentRepository.findByPostAndDeletedAtIsNullOrderByCreatedAtDesc(post);
     List<CommentData> commentData = comments.stream()
         .map(comment -> {
-          User commentUser = userRepository.findById(comment.getUserId())
-              .orElseThrow(() -> new CustomException(CommentErrorCode.COMMENT_DELETED));
+          User commentUser = comment.getUser();
+          if (commentUser.getDeletedAt() != null) {
+            throw new CustomException(CommentErrorCode.COMMENT_DELETED); // 또는 null 처리
+          }
+
+
           return new PostDetailResponse.CommentData(
               comment.getId(),
               commentUser.getId(),
@@ -97,7 +96,9 @@ public class PostService {
 
     boolean isLiked = false;
     if (userId != null) {
-      isLiked = likeRepository.existsByPostIdAndUserId(postId, userId);
+      User loginUser = userRepository.findById(userId)
+          .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+      isLiked = likeRepository.existsByPostAndUser(post, loginUser);
     }
 
     PostDetailResponse.PostData postData = new PostDetailResponse.PostData(
@@ -131,16 +132,16 @@ public class PostService {
       throw new CustomException(PostErrorCode.POST_NOT_FOUND);
     }
 
-    if (!post.getUserId().equals(userId)) {
+    if (!post.getUser().getId().equals(userId)) {
       throw new CustomException(PostErrorCode.POST_FORBIDDEN);
     }
 
-    List<Comment> comments = commentRepository.findByPostIdAndDeletedAtIsNull(postId);
+    List<Comment> comments = commentRepository.findByPostAndDeletedAtIsNull(post);
     for (Comment comment : comments) {
       comment.softDelete();
     }
 
-    likeRepository.deleteByPostId(postId);
+    likeRepository.deleteByPost(post);
 
     post.softDelete();
   }
@@ -153,8 +154,11 @@ public class PostService {
 
     List<PostListResponse.PostSummary> content = postPage.getContent().stream()
         .map(post -> {
-          User user = userRepository.findById(post.getUserId())
-              .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+          User user = post.getUser();
+
+          if (user.getDeletedAt() != null) {
+            throw new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND);
+          }
 
           return new PostListResponse.PostSummary(
               new PostListResponse.PostData(
