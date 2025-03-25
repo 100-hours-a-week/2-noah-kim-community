@@ -16,6 +16,7 @@ const HTTPMethods = {
 
 // 엔드포인트 정의 (HTTP Method 포함)
 const AuthEndpoints = {
+  GET_USER: { method: HTTPMethods.GET, url: `${AUTH_BASE}` },
   REGISTER: { method: HTTPMethods.POST, url: `${AUTH_BASE}/register` },
   LOGIN: { method: HTTPMethods.POST, url: `${AUTH_BASE}/login` },
   MODIFY: { method: HTTPMethods.PATCH, url: `${AUTH_BASE}/modify` },
