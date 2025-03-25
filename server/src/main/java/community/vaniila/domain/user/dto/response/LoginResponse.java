@@ -1,5 +1,8 @@
 package community.vaniila.domain.user.dto.response;
 
+import lombok.Getter;
+
+@Getter
 public class LoginResponse {
 
   Long userId;
@@ -8,12 +11,5 @@ public class LoginResponse {
   public LoginResponse(Long userId,String accessToken) {
     this.userId = userId;
     this.accessToken = accessToken;
-  }
-
-  public Long getUserId() {
-    return userId;
-  }
-  public String getAccessToken() {
-    return accessToken;
   }
 }
