@@ -7,6 +7,7 @@ import community.vaniila.domain.post.repository.LikeRepository;
 import community.vaniila.domain.post.repository.PostRepository;
 import community.vaniila.domain.user.dto.request.LoginRequest;
 import community.vaniila.domain.user.dto.response.LoginResponse;
+import community.vaniila.domain.user.dto.response.UserDataResponse;
 import community.vaniila.domain.user.entity.User;
 import community.vaniila.domain.user.repository.UserRepository;
 import community.vaniila.domain.utils.response.CustomException;
@@ -60,6 +61,18 @@ public class UserService {
     String accessToken = jwtUtils.generateToken(user.getId());
 
     return new LoginResponse(user.getId(), accessToken);
+  }
+
+  @Transactional
+  public UserDataResponse getUser(Long userId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+
+    return new UserDataResponse(
+        user.getId(),
+        user.getNickname(),
+        user.getImageUrl()
+    );
   }
 
   @Transactional

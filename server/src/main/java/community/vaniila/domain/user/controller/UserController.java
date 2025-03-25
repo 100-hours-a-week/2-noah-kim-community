@@ -4,6 +4,7 @@ import community.vaniila.domain.user.dto.request.LoginRequest;
 import community.vaniila.domain.user.dto.request.ModifyRequest;
 import community.vaniila.domain.user.dto.request.RegisterRequest;
 import community.vaniila.domain.user.dto.response.LoginResponse;
+import community.vaniila.domain.user.dto.response.UserDataResponse;
 import community.vaniila.domain.user.service.UserService;
 import community.vaniila.domain.utils.response.CommonResponse;
 import community.vaniila.domain.utils.security.JwtUtils;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -30,6 +32,18 @@ public class UserController {
       userService.registerUser(request.getEmail(), request.getPassword(), request.getNickname(), request.getImageUrl());
 
       return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("")
+  public ResponseEntity<CommonResponse<UserDataResponse>> getUserInfo(
+      @RequestHeader("Authorization") String authHeader
+  ) {
+    String token = authHeader.replace("Bearer ", "").trim();
+    Long userId = jwtUtils.getId(token);
+
+    UserDataResponse response = userService.getUser(userId);
+
+    return ResponseEntity.ok(CommonResponse.success("get user info", response));
   }
 
   @PostMapping("/login")
