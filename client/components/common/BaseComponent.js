@@ -9,39 +9,20 @@ class BaseComponent {
     if (arguments.length === 1) {
       this.$props = $targetOrProps
     } else {
-    /** Component.js */
+      /** Component.js */
       this.$target = $targetOrProps
       this.$props = $props
     }
 
-    this.setup()
-    this.render()
-    this.setEvent()
+    this.setup() // #1
+    this.render() // #2
+    this.setEvent() // #3
   }
 
+  /** #1 초기 State 정의, Props 불러오기, CSS 로딩 */
   setup() {}
 
-  /** HTML 템플릿 저장 */
-  template() {
-    return ''
-  }
-
-  /** 컴포넌트에서 필요한 이벤트 설정 */
-  setEvent() {}
-
-  /** 템플릿을 실제 요소로 변환  */
-  render() {}
-
-  /** 자식 컴포넌트 및 요소 정의 */
-  mounted() {}
-
-  setState(newState) {
-    this.$state = { ...this.$state, ...newState }
-    this.render() // UI를 다시 그려서 상태 반영
-  }
-
-  /** CSS 불러오기 */
-  /** TODO: 스타일 없을때 에러처리 */
+  /** #1 CSS 불러오기 */
   loadStyles(stylePath) {
     if (!stylePath) return
 
@@ -51,8 +32,47 @@ class BaseComponent {
     const link = document.createElement('link')
     link.rel = 'stylesheet'
     link.href = stylePath
-    link.setAttribute('data-dynamic-style', stylePath) // 동적 스타일 태그 관리
+    link.setAttribute('data-dynamic-style', stylePath)
     document.head.appendChild(link)
+  }
+
+  /** #2 템플릿을 실제 요소로 변환  */
+  render() {}
+
+  /** #2 HTML 템플릿 저장 */
+  template() {
+    return ''
+  }
+
+  /** #2 자식 컴포넌트 및 요소 정의 */
+  mounted() {}
+
+  /** #3 컴포넌트에서 필요한 이벤트 설정 */
+  setEvent() {}
+
+  setState(newState) {
+    // 1. 현재 포커스된 엘리먼트 기억
+    const activeElement = document.activeElement
+    const id = activeElement?.id
+
+    this.$state = { ...this.$state, ...newState }
+    this.render() // UI를 다시 그려서 상태 반영
+    this.setEvent() // 새 DOM에 이벤트 다시 바인딩
+
+    const SUPPORTED_INPUT_TYPES = ['text', 'search', 'url', 'tel', 'password']
+    if (id) {
+      const nextInput = document.getElementById(id)
+
+      if (nextInput) {
+        nextInput.focus()
+
+        const inputType = nextInput.type
+        if (SUPPORTED_INPUT_TYPES.includes(inputType)) {
+          const len = nextInput.value.length
+          nextInput.setSelectionRange(len, len)
+        }
+      }
+    }
   }
 
   /** 이벤트 등록 추상화 */

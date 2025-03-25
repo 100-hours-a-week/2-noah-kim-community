@@ -19,7 +19,7 @@ class Register extends Component {
       passwordConfirm: '',
       nickname: '',
       /** TODO: 프로필 이미지를 S3에 업로드하고 이를 저장하기 */
-      profileImage: 'test-image',
+      profileImage: 'https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg',
       isFormValid: false,
     }
 
@@ -38,22 +38,29 @@ class Register extends Component {
         <form id="register-form">
           <!-- 프로필 사진 업로드 -->
           <div class="form-field" id="profile">
-            <label>프로필 사진</label>
+            <label for="profile-val">프로필 사진</label>
             <div class="error-message" id="profile-error">* helper text</div>
 
-            <input type="file" id="profile-val" accept="image/*" hidden />
+            <input
+              type="file"
+              id="profile-val"
+              accept="image/*"
+              hidden 
+            />
             <div id="profile-preview">
-              <img id="profile-image" src="" alt="프로필 이미지" />
+              <img id="profile-image" src="${this.$state.profileImage}" alt="프로필 이미지" />
               <span id="profile-placeholder">+</span>
             </div>
           </div>
 
           <!-- 이메일 -->
           <div class="form-field" id="email">
-            <label for="email">이메일*</label>
+            <label for="email-val">이메일*</label>
             <input
-              type="email"
+              type="text"
+              inputmode="email"
               id="email-val"
+              value="${this.$state.email}"
               placeholder="이메일을 입력하세요"
             />
             <div class="error-message" id="email-error">* helper text</div>
@@ -61,10 +68,11 @@ class Register extends Component {
 
           <!-- 비밀번호 -->
           <div class="form-field" id="password">
-            <label for="password">비밀번호*</label>
+            <label for="password-val">비밀번호*</label>
             <input
               type="password"
               id="password-val"
+              value="${this.$state.password}"
               placeholder="비밀번호를 입력하세요"
             />
             <div class="error-message" id="password-error">* helper text</div>
@@ -72,10 +80,11 @@ class Register extends Component {
 
           <!-- 비밀번호 확인 -->
           <div class="form-field" id="password-confirm">
-            <label for="password-confirm">비밀번호 확인*</label>
+            <label for="password-confirm-val">비밀번호 확인*</label>
             <input
               type="password"
               id="password-confirm-val"
+              value="${this.$state.passwordConfirm}"
               placeholder="비밀번호를 한번 더 입력하세요"
             />
             <div class="error-message" id="password-confirm-error">
@@ -85,10 +94,11 @@ class Register extends Component {
 
           <!-- 닉네임 -->
           <div class="form-field" id="nickname">
-            <label for="nickname">닉네임*</label>
+            <label for="nickname-val">닉네임*</label>
             <input
               type="text"
               id="nickname-val"
+              value="${this.$state.nickname}"
               placeholder="닉네임을 입력하세요"
             />
             <div class="error-message" id="nickname-error">* helper text</div>
@@ -276,18 +286,22 @@ class Register extends Component {
     navigateTo(ROUTES.AUTH.LOGIN.url)
   }
 
-  async registerHandler() {
+  async registerHandler(event) {
+    event.preventDefault()
+
     try {
-      const response = await register({
+      const body = {
         email: this.$state.email,
         password: this.$state.password,
         nickname: this.$state.nickname,
-        image_url: this.$state.profileImage,
-      })
+        imageUrl: this.$state.profileImage,
+      }
+
+      const response = await register(body)
 
       if (response.success) {
-        new Toast({ message: '회원가입 성공!' })
         navigateTo(ROUTES.AUTH.LOGIN.url)
+        new Toast({ message: '회원가입 성공!' })
       } else {
         new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
       }

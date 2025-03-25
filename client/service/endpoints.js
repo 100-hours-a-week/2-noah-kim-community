@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://your-api.com' // 백엔드 기본 URL
+export const API_BASE_URL = 'http://localhost:8080' // 백엔드 기본 URL
 
 // 공통 경로 정의
 const AUTH_BASE = '/auth'
@@ -46,26 +46,4 @@ export const APIEndpoints = {
   POST: PostEndpoints,
   COMMENT: CommentEndpoints,
   LIKE: LikeEndpoints,
-}
-
-// API 기본 URL 포함 (자동 URL 생성)
-export const API = {
-  AUTH: Object.fromEntries(Object.entries(AuthEndpoints).map(([key, { method, url }]) => [key, { method, url: `${API_BASE_URL}${url}` }])),
-  POST: Object.fromEntries(
-    Object.entries(PostEndpoints).map(([key, value]) => [
-      key,
-      typeof value === 'function'
-        ? param => ({ method: value(param).method, url: `${API_BASE_URL}${value(param).url}` })
-        : { method: value.method, url: `${API_BASE_URL}${value.url}` },
-    ]),
-  ),
-  COMMENT: Object.fromEntries(
-    Object.entries(CommentEndpoints).map(([key, value]) => [
-      key,
-      typeof value === 'function'
-        ? param => ({ method: value(param).method, url: `${API_BASE_URL}${value(param).url}` })
-        : { method: value.method, url: `${API_BASE_URL}${value.url}` },
-    ]),
-  ),
-  LIKE: Object.fromEntries(Object.entries(LikeEndpoints).map(([key, { method, url }]) => [key, { method, url: `${API_BASE_URL}${url}` }])),
 }
