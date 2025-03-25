@@ -8,6 +8,6 @@ import lombok.Getter;
 public class UserDataResponse {
   private Long userId;
   private String email;
-  private String nicknameㅕ;
+  private String nickname;
   private String imageUrl;
 }
