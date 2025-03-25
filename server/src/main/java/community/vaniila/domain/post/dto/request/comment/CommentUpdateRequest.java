@@ -7,6 +7,4 @@ import lombok.Getter;
 public class CommentUpdateRequest {
   @NotNull
   private String content;
-
-
 }

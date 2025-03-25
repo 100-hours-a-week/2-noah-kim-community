@@ -69,7 +69,6 @@ public class UserService {
       throw new CustomException(AuthErrorCode.AUTH_INVALID_UPDATE_DATA);  // auth-004
     }
 
-
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 

@@ -98,7 +98,7 @@ public class PostService {
     if (userId != null) {
       User loginUser = userRepository.findById(userId)
           .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
-      isLiked = likeRepository.existsByPostAndUser(post, loginUser);
+      isLiked = likeRepository.existsByUserAndPost(loginUser, post);
     }
 
     PostDetailResponse.PostData postData = new PostDetailResponse.PostData(
@@ -150,15 +150,12 @@ public class PostService {
   @Transactional(readOnly = true)
   public PostListResponse getPostList(int currentPage, int pageSize) {
     Pageable pageable = PageRequest.of(currentPage, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-    Page<Post> postPage = postRepository.findByDeletedAtIsNull(pageable);
+    Page<Post> postPage = postRepository.findByDeletedAtIsNullAndUser_DeletedAtIsNull(pageable);
 
     List<PostListResponse.PostSummary> content = postPage.getContent().stream()
+        .filter(post -> post.getUser().getDeletedAt() == null)
         .map(post -> {
           User user = post.getUser();
-
-          if (user.getDeletedAt() != null) {
-            throw new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND);
-          }
 
           return new PostListResponse.PostSummary(
               new PostListResponse.PostData(
