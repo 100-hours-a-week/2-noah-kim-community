@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserDataResponse {
   private Long userId;
-  private String nickname;
+  private String email;
+  private String nicknameㅕ;
   private String imageUrl;
 }

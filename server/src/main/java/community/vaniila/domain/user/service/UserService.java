@@ -39,6 +39,9 @@ public class UserService {
       throw new CustomException(AuthErrorCode.AUTH_EMAIL_ALREADY_EXISTS);
     }
 
+    /** 중복 닉네임 검사 */
+    checkNicknameDuplication(nickname);
+
     // 비밀번호 해싱
     String hashedPassword = PasswordUtils.hashPassword(password);
 
@@ -70,6 +73,7 @@ public class UserService {
 
     return new UserDataResponse(
         user.getId(),
+        user.getEmail(),
         user.getNickname(),
         user.getImageUrl()
     );
@@ -77,11 +81,6 @@ public class UserService {
 
   @Transactional
   public void modifyUser(Long userId, String nickname, String imageUrl) {
-    /** 데이터가 부족한 경우 */
-    if (nickname == null || imageUrl == null || nickname.isBlank() || imageUrl.isBlank()) {
-      throw new CustomException(AuthErrorCode.AUTH_INVALID_UPDATE_DATA);  // auth-004
-    }
-
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
@@ -89,6 +88,10 @@ public class UserService {
     if (user.getDeletedAt() != null) {
       throw new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND);
     }
+
+    /** 중복 닉네임 검사 */
+    checkNicknameDuplication(nickname);
+
     user.updateInfo(nickname, imageUrl);
   }
 
@@ -114,5 +117,11 @@ public class UserService {
 
     // 4. 유저 소프트 딜리트
     user.setDeletedAt(LocalDateTime.now());
+  }
+
+  public void checkNicknameDuplication(String nickname) {
+    if (userRepository.existsByNickname(nickname)) {
+      throw new CustomException(AuthErrorCode.AUTH_NICKNAME_DUPLICATED);
+    }
   }
 }
