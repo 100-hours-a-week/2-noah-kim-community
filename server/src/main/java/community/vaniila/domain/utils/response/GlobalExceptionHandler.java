@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
     return ResponseEntity
         .status(HttpStatus.BAD_REQUEST)
-        .body(CommonResponse.error("validation error: " + errorMessage));
+        .body(CommonResponse.error("validation error " + errorMessage));
   }
 
   @ExceptionHandler(CustomException.class)
