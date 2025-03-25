@@ -1,10 +1,13 @@
 package community.vaniila.domain.post.entity;
 
-import jakarta.persistence.Column;
+import community.vaniila.domain.user.entity.User;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
@@ -22,17 +25,16 @@ public class Like {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "user_id", nullable = false)
-  private Long userId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private User user;
 
-  @Column(name = "post_id", nullable = false)
-  private Long postId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "post_id")
+  private Post post;
 
-
-  public Like(Long userId, Long postId) {
-    this.userId = userId;
-    this.postId = postId;
+  public Like(User user, Post post) {
+    this.user = user;
+    this.post = post;
   }
-
-
 }
