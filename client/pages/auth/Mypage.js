@@ -5,7 +5,7 @@ import Toast from '../../components/common/Toast/Toast.js'
 import { validateNicknameInput } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
-import { getUser } from '../../service/userService.js'
+import { getUser, modifyUser } from '../../service/userService.js'
 class Mypage extends Component {
   setup() {
     /** 상태 정의 */
@@ -13,6 +13,7 @@ class Mypage extends Component {
       /** TODO: 실제 프로필 이미지 저장하기 */
       profileImage: '',
       email: '',
+      nickname: '',
       nicknameInput: '',
     }
 
@@ -66,8 +67,6 @@ class Mypage extends Component {
   }
 
   mounted() {
-    console.log(this.$state.nicknameInput)
-
     // DOM 요소 저장
     this.$elements = {
       nicknameInput: this.$target.querySelector('#nickname-val'),
@@ -104,12 +103,37 @@ class Mypage extends Component {
   }
 
   /** 수정하기 로직 */
-  modifyHandler(event) {
+  async modifyHandler(event) {
+    const nickname = this.$state.nickname
+    const nicknameInput = this.$state.nicknameInput
     event.preventDefault() // 기본 동작 방지
 
-    new Toast({
-      message: '수정완료',
-    })
+    /** 닉네임이 기존과 바뀐게 없는 경우 */
+    if (!nicknameInput || nickname === nicknameInput) {
+      new Toast({ message: '닉네임 변경사항이 없습니다' })
+      return
+    }
+
+    try {
+      const body = {
+        nickname: nicknameInput,
+        imageUrl: `../../public/images/header_image`,
+      }
+      const response = await modifyUser(body)
+
+      if (response.success) {
+        // 바뀐 닉네임 최신화
+        this.setState({
+          nickname,
+        })
+
+        new Toast({ message: '수정 완료' })
+      } else {
+        new Toast({ message: '유저 정보 가져오기에 실패하였습니다' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요' })
+    }
   }
 
   /** 회원탈퇴 로직 */
@@ -137,6 +161,7 @@ class Mypage extends Component {
         this.setState({
           profileImage: imageUrl,
           email: email,
+          nickname: nickname,
         })
       } else {
         new Toast({ message: '유저 정보 가져오기에 실패하였습니다.' })
