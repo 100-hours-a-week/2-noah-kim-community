@@ -59,7 +59,7 @@ public class PostService {
   }
 
   /** 단일 게시글 조회 */
-  @Transactional(readOnly = true)
+  @Transactional()
   public PostDetailResponse getPostDetail(Long postId,Long userId) {
     /** 게시글이 없음 */
     Post post = postRepository.findById(postId)
@@ -102,6 +102,9 @@ public class PostService {
       isLiked = likeRepository.existsByUserAndPost(loginUser, post);
     }
 
+    // 조회수 증가
+    post.increaseViewCount();
+
     PostDetailResponse.PostData postData = new PostDetailResponse.PostData(
         post.getId(),
         post.getTitle(),
@@ -119,6 +122,8 @@ public class PostService {
         writer.getNickname(),
         writer.getImageUrl()
     );
+
+
 
     return new PostDetailResponse(postData, userData);
   }
