@@ -1,8 +1,7 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import Toast from '../../components/common/Toast/Toast.js'
-import { parseISOToFullString } from '../../lib/utils/date.js'
-import { formatNumber } from '../../lib/utils/number.js'
+import PostCard from '../../components/pages/post/PostCard.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 import { getPostList } from '../../service/postService.js'
@@ -26,36 +25,6 @@ class PostList extends Component {
   }
 
   template() {
-    const { posts } = this.$state
-
-    const postList = posts
-      .map(post => {
-        // TODO: 게시글 클릭 시 상세 페이지 이동
-        const { postData, userData } = post
-
-        const { postId, title, content, likeCount, viewCount, commentCount, createdAt } = postData
-        const { userId, nickname, imageUrl } = userData
-
-        return `<li class='post'>
-        <div id="post-header">
-          <strong>${title}</strong>
-          <div id="post-header-details">
-            <ul>
-              <li> 좋아요 ${formatNumber(likeCount)}</li>
-              <li> 댓글 ${formatNumber(commentCount)} </li>
-              </li> 조회수 ${formatNumber(viewCount)} </li>
-            </ul>
-            <span> ${parseISOToFullString(createdAt)} </span>
-          </div>
-        </div>
-        <div id="post-footer">
-          <img src=${imageUrl} id="user-image" />
-           ${nickname}
-        </div>
-      </li>`
-      })
-      .join('')
-
     return `
       <main id="main-content">
         <section id="title">
@@ -63,9 +32,7 @@ class PostList extends Component {
           <span>아무 말 대잔치 <strong>게시판</strong>입니다.</span>
         </section>
         <button id="write-button"></button>
-        <ul id="posts">
-          ${postList}
-        </ul>
+        <ul id="posts"></ul>
       </main>
     `
   }
@@ -74,6 +41,8 @@ class PostList extends Component {
     // DOM 요소 저장
     this.$elements = {
       writePostButton: this.$target.querySelector('#write-button'),
+
+      postList: this.$target.querySelector('#posts'),
     }
 
     // 자식 요소 정의
@@ -81,6 +50,17 @@ class PostList extends Component {
       text: '게시글 작성',
       onClick: this.navigateToWritePostRoute.bind(this),
       idName: 'write-button',
+    })
+
+    // 게시글들
+    const posts = this.$state.posts
+    posts.forEach(post => {
+      const postWrapper = document.createElement('div')
+      this.$elements.postList.appendChild(postWrapper)
+
+      new PostCard(postWrapper, {
+        ...post,
+      })
     })
   }
 
