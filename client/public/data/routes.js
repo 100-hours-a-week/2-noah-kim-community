@@ -20,7 +20,7 @@ export const ROUTES = {
   POST: {
     MAIN: { url: '/post/main', component: PostList },
     DETAIL: { url: postId => `/post/detail?postId=${postId}`, component: PostDetail },
-    MODIFY: { url: '/post/modify', component: PostModify },
+    MODIFY: { url: postId => `/post/modify?postId=${postId}`, component: PostModify },
     WRITE: { url: '/post/write', component: PostWrite },
   },
 }

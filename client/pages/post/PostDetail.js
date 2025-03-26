@@ -9,7 +9,7 @@ import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 import { createComment, createLikes, deleteComment, deleteLikes, deletePost, getPost, modifyComment } from '../../service/postService.js'
 
-const defaultPost = {
+export const defaultPost = {
   postId: null,
   title: null,
   content: null,
@@ -21,7 +21,7 @@ const defaultPost = {
   liked: null,
 }
 
-const defaultUser = {
+export const defaultUser = {
   userId: null,
   name: null,
   imageUrl: null,
@@ -179,7 +179,7 @@ class PostDetail extends Component {
 
   // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
   navigateToModifyPost() {
-    navigateTo(ROUTES.POST.MODIFY.url)
+    navigateTo(ROUTES.POST.MODIFY.url(this.$state.postData.postId))
   }
 
   openDeleteModal() {
