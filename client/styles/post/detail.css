@@ -46,6 +46,10 @@
   width: 100%;
   aspect-ratio: 17/10;
 }
+#post-content span {
+  width: 100%;
+  text-align: left;
+}
 
 #post-stats {
   width: max-content;
@@ -67,6 +71,9 @@
 
   background-color: #d9d9d9;
   border-radius: 12px;
+}
+#post-stats .stats span {
+  text-align: center;
 }
 
 #comment-box {

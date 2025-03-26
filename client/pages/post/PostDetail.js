@@ -7,7 +7,7 @@ import { parseISOToFullString } from '../../lib/utils/date.js'
 import { formatNumber } from '../../lib/utils/number.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
-import { getPost } from '../../service/postService.js'
+import { createComment, getPost } from '../../service/postService.js'
 
 const defaultPost = {
   postId: null,
@@ -33,6 +33,8 @@ class PostDetail extends Component {
     this.$state = {
       postData: null,
       userData: null,
+
+      commentInput: null,
 
       postId: this.$props.params.postId,
     }
@@ -94,14 +96,14 @@ class PostDetail extends Component {
             <span class="text">조회수</span>
           </div>
           <div class="stats">
-            <span class="number">${comments.length}</span> 
+            <span class="number">${formatNumber(comments.length)}</span> 
             <span class="text">댓글</span>
           </div>
         </div>
       </section>  
 
       <section id="comment-box">
-        <textarea placeholder="댓글을 남겨주세요!" id="comment-input"></textarea>
+        <textarea placeholder="댓글을 남겨주세요!" id="comment-input">${this.$state.commentInput ? this.$state.commentInput : ''}</textarea>
         <button id="comment-button"></button>
       </section>
 
@@ -135,7 +137,7 @@ class PostDetail extends Component {
 
     new Button(this.$elements.commentAddButton, {
       text: '댓글 등록',
-      onClick: this.postCommentHandler.bind(this),
+      onClick: this.createCommentHandler.bind(this),
       idName: 'comment-button',
     })
 
@@ -152,7 +154,10 @@ class PostDetail extends Component {
   }
 
   setEvent() {
-    this.addEvent(this.$elements.commentInput, 'input', this.inputCommentHandler.bind(this))
+    this.addEvent(this.$elements.commentInput, 'input', event => {
+      this.setState({ commentInput: event.target.value })
+      this.validateComment()
+    })
   }
 
   // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
@@ -173,7 +178,7 @@ class PostDetail extends Component {
     })
   }
 
-  inputCommentHandler() {
+  validateComment() {
     const comment = this.$elements.commentInput
     const commentAddButton = this.$elements.commentAddButton
 
@@ -196,8 +201,26 @@ class PostDetail extends Component {
     }
   }
 
-  postCommentHandler() {
-    alert('Post Comment')
+  async createCommentHandler() {
+    try {
+      const response = await createComment({ content: this.$state.commentInput, postId: this.$state.postId })
+      if (response.success) {
+        const { message, data } = response.data
+        const newComment = data
+
+        const currentComment = this.$state.postData.comments
+        currentComment.push(newComment)
+
+        this.setState({
+          postData: { ...this.$state.postData, comments: currentComment },
+        })
+        new Toast({ message: '댓글 추가 성공' })
+      } else {
+        new Toast({ message: '댓글 추가 실패' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
   }
 
   /** 게시글 정보 가져오기 */

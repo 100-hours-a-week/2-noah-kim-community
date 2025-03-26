@@ -13,8 +13,6 @@ export const Fetch = async (endpoint, options = {}) => {
   const queryString = new URLSearchParams(params).toString()
   const fullEndpoint = `${API_BASE_URL}${url}${queryString ? `?${queryString}` : ''}`
 
-  console.log('fullEndpoint: ', fullEndpoint)
-
   const fetchOptions = {
     method,
     headers: {

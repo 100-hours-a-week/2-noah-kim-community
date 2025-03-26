@@ -9,6 +9,7 @@ import lombok.Getter;
 public class CommentCreateResponse {
   private Long commentId;
   private Long userId;
+  private String nickname;
   private String imageUrl;
   private String content;
   private LocalDateTime createdAt;

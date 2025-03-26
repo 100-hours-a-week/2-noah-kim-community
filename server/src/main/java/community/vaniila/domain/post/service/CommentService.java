@@ -45,6 +45,7 @@ public class CommentService {
     return new CommentCreateResponse(
         savedComment.getId(),
         user.getId(),
+        user.getNickname(),
         user.getImageUrl(),
         savedComment.getContent(),
         savedComment.getCreatedAt()

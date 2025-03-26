@@ -3,8 +3,8 @@ export const API_BASE_URL = 'http://localhost:8080' // 백엔드 기본 URL
 // 공통 경로 정의
 const AUTH_BASE = '/auth'
 const POST_BASE = '/post'
-const COMMENT_BASE = '/post/comment'
-const LIKE_BASE = '/post/like'
+const COMMENT_BASE = '/comment'
+const LIKE_BASE = '/like'
 
 const HTTPMethods = {
   GET: 'GET',
@@ -33,7 +33,7 @@ const PostEndpoints = {
 }
 
 const CommentEndpoints = {
-  ADD: { method: HTTPMethods.POST, url: `${COMMENT_BASE}` },
+  CREATE: postID => ({ method: HTTPMethods.POST, url: `${POST_BASE}/${postID}${COMMENT_BASE}` }),
   UPDATE: commentId => ({ method: HTTPMethods.PATCH, url: `${COMMENT_BASE}/${commentId}` }),
 }
 

@@ -22,7 +22,6 @@ function router(requestedUrl) {
 
   // 1. 쿼리 스트링 분리
   const [path, queryString] = requestedUrl.split('?')
-  console.log(path, queryString)
 
   const Component = RouteComponent[path]
 
@@ -31,7 +30,6 @@ function router(requestedUrl) {
     new Header($header, {
       route: requestedUrl,
     })
-    console.log(1)
     // #2. 페이지 컴포넌트 생성
     if (queryString) {
       const params = parseQueryParams(queryString)
@@ -39,7 +37,6 @@ function router(requestedUrl) {
     } else {
       new Component($app, {})
     }
-    console.log(2)
   } else {
     /** 정의되지 않은 컴포넌트(페이지) */
     $app.innerHTML = '<h1>404 - Page Not Found</h1>'

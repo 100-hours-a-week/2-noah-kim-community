@@ -20,3 +20,16 @@ export const getPost = async ({ postId }) => {
   const response = await Fetch(ENDPOINT, { token })
   return response
 }
+
+/**
+ * 댓글 관련 API
+ */
+export const createComment = async ({ postId, content }) => {
+  const ENDPOINT = APIEndpoints.COMMENT.CREATE(postId)
+
+  const token = getAccessToken()
+  const body = { content }
+
+  const response = await Fetch(ENDPOINT, { body, token })
+  return response
+}
