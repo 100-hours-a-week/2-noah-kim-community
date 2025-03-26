@@ -100,6 +100,12 @@ public class UserService {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
+    // 이미 삭제된 유저
+    if (user.getDeletedAt() != null) {
+      throw new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND);
+    }
+
+
     // 1. 게시글 소프트 딜리트
     List<Post> posts = postRepository.findByUserIdAndDeletedAtIsNull(userId);
     for (Post post : posts) {

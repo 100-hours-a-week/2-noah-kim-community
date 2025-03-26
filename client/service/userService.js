@@ -36,3 +36,12 @@ export const modifyUser = async ({ nickname, imageUrl }) => {
   const response = await Fetch(ENDPOINT, { body, token })
   return response
 }
+
+export const unregisterUser = async () => {
+  const ENDPOINT = APIEndpoints.AUTH.UNREGISTER
+
+  const token = getAccessToken()
+
+  const response = await Fetch(ENDPOINT, { token })
+  return response
+}

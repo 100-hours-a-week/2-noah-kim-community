@@ -5,7 +5,7 @@ import Toast from '../../components/common/Toast/Toast.js'
 import { validateNicknameInput } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
-import { getUser, modifyUser } from '../../service/userService.js'
+import { getUser, modifyUser, unregisterUser } from '../../service/userService.js'
 class Mypage extends Component {
   setup() {
     /** 상태 정의 */
@@ -143,10 +143,7 @@ class Mypage extends Component {
       message: '작성된 게시글과 댓글은 삭제됩니다.',
       confirmText: '확인',
       cancelText: '취소',
-      onConfirm: () => {
-        // TODO: 회원 탈퇴 API 로직
-        navigateTo(ROUTES.AUTH.LOGIN.url)
-      },
+      onConfirm: this.unregister.bind(this),
     })
   }
 
@@ -163,6 +160,24 @@ class Mypage extends Component {
           email: email,
           nickname: nickname,
         })
+      } else {
+        new Toast({ message: '유저 정보 가져오기에 실패하였습니다.' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
+  }
+
+  /** 회원탈퇴 */
+  async unregister() {
+    console.log('1')
+
+    try {
+      const response = await unregisterUser()
+      console.log('2')
+      if (response.success) {
+        navigateTo(ROUTES.AUTH.LOGIN.url)
+        new Toast({ message: '회원탈퇴 성공!' })
       } else {
         new Toast({ message: '유저 정보 가져오기에 실패하였습니다.' })
       }
