@@ -3,3 +3,8 @@ export const getAuthData = () => {
 
   return authData
 }
+
+export const getAccessToken = () => {
+  const { userId, accessToken } = getAuthData()
+  return accessToken
+}

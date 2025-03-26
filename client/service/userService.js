@@ -1,4 +1,4 @@
-import { getAuthData } from '../lib/utils/auth.js'
+import { getAccessToken } from '../lib/utils/auth.js'
 import { APIEndpoints } from './endpoints.js'
 import { Fetch } from './Fetch.js'
 
@@ -19,22 +19,19 @@ export const loginUser = async ({ email, password }) => {
 }
 
 export const getUser = async () => {
-  const { userId, accessToken } = getAuthData()
-  const token = accessToken
-
   const ENDPOINT = APIEndpoints.AUTH.GET_USER
+
+  const token = getAccessToken()
 
   const response = await Fetch(ENDPOINT, { token })
   return response
 }
 
 export const modifyUser = async ({ nickname, imageUrl }) => {
-  const { userId, accessToken } = getAuthData()
-
-  const body = { nickname, imageUrl }
-  const token = accessToken
-
   const ENDPOINT = APIEndpoints.AUTH.MODIFY
+
+  const token = getAccessToken()
+  const body = { nickname, imageUrl }
 
   const response = await Fetch(ENDPOINT, { body, token })
   return response

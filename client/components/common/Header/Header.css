@@ -83,3 +83,7 @@ header #image-container #dropdown-menu {
 
   cursor: pointer;
 }
+
+#title-text {
+  cursor: pointer;
+}

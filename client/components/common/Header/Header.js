@@ -44,7 +44,7 @@ class Header extends Component {
 
     return `
       ${backButton}
-      <span>아무 말 대잔치</span>
+      <span id="title-text">아무 말 대잔치</span>
       <div id="image-container">
         <img src="/public/images/header_image.jpeg" alt="user-card-image" id="header-image"/>
         <div id="dropdown-menu">
@@ -61,13 +61,14 @@ class Header extends Component {
   mounted() {
     // DOM 요소 저장
     this.$elements = {
-      ImageContainer: this.$target.querySelector('#image-container'),
-      Image: this.$target.querySelector('#header-image'),
-      DropdownMenu: this.$target.querySelector('#dropdown-menu'),
+      titleText: this.$target.querySelector('#title-text'),
+      image: this.$target.querySelector('#header-image'),
+      dropdownMenu: this.$target.querySelector('#dropdown-menu'),
       mypageLink: this.$target.querySelector('#mypage-link'),
       passwordChangeLink: this.$target.querySelector('#password-change-link'),
       logoutLink: this.$target.querySelector('#logout-link'),
     }
+
     if (this.$state.backRoute) {
       this.$elements = {
         ...this.$elements,
@@ -77,8 +78,12 @@ class Header extends Component {
   }
 
   setEvent() {
+    /** 글자 클릭시 메인으로 이동 */
+    this.addEvent(this.$elements.titleText, 'click', event => {
+      navigateTo(ROUTES.POST.MAIN.url)
+    })
     /** 프로필 이미지 클릭 이벤트  */
-    this.addEvent(this.$elements.Image, 'click', this.toggleDropdownMenu.bind(this))
+    this.addEvent(this.$elements.image, 'click', this.toggleDropdownMenu.bind(this))
 
     // TODO: 외부 클릭 시 메뉴 닫기
     // DropdownMenu.addEventListener("click", outsideClick);
@@ -106,13 +111,13 @@ class Header extends Component {
   }
 
   toggleDropdownMenu(event) {
-    const DropdownMenu = this.$elements.DropdownMenu
+    const DropdownMenu = this.$elements.dropdownMenu
     // event.stopPropagation(); // 클릭 이벤트 전파 방지
     DropdownMenu.style.display = DropdownMenu.style.display !== 'block' ? 'block' : 'none'
   }
 
   outsideClick(event) {
-    const DropdownMenu = this.$elements.DropdownMenu
+    const DropdownMenu = this.$elements.dropdownMenu
     if (!DropdownMenu.contains(event.target) && !event.target.closest('#header-image')) {
       DropdownMenu.style.display = 'none'
     }
