@@ -11,3 +11,12 @@ export const createPost = async ({ title, content, imageUrl }) => {
   const response = await Fetch(ENDPOINT, { body, token })
   return response
 }
+
+export const getPost = async ({ postId }) => {
+  const ENDPOINT = APIEndpoints.POST.DETAILS(postId)
+
+  const token = getAccessToken()
+
+  const response = await Fetch(ENDPOINT, { token })
+  return response
+}

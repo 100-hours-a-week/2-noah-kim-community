@@ -1,26 +1,75 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import Modal from '../../components/common/Modal/Modal.js'
+import Toast from '../../components/common/Toast/Toast.js'
+import Comment from '../../components/pages/post/Comment.js'
+import { parseISOToFullString } from '../../lib/utils/date.js'
 import { formatNumber } from '../../lib/utils/number.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
+import { getPost } from '../../service/postService.js'
+
+const defaultPost = {
+  postId: null,
+  title: null,
+  content: null,
+  imageUrl: null,
+  likeCount: null,
+  viewCount: null,
+  comments: [],
+  createdAt: null,
+  liked: null,
+}
+
+const defaultUser = {
+  userId: null,
+  name: null,
+  imageUrl: null,
+}
+
 class PostDetail extends Component {
   setup() {
+    /** 상태 정의 */
+    this.$state = {
+      postData: null,
+      userData: null,
+
+      postId: this.$props.params.postId,
+    }
+    /** 특정 게시물을 타겟하지 않은 경우 */
+    if (!this.$state.postId) {
+      navigateTo(ROUTES.POST.MAIN.url)
+    }
+
     this.loadStyles()
+    this.fetchPostData()
   }
   loadStyles() {
     super.loadStyles('/styles/post/detail.css')
   }
 
   template() {
+    const {
+      postId,
+      title,
+      content,
+      imageUrl: postImageUrl,
+      likeCount,
+      viewCount,
+      comments,
+      createdAt,
+      liked,
+    } = this.$state.postData ?? defaultPost
+    const { userId, name, imageUrl: userImageUrl } = this.$state.userData ?? defaultUser
+
     return `
     <main id="main-content">
       <section id="post-header">
-        <div class="title">제목 1</div>
+        <div class="title">${title}</div>
         <div id="meta">
-          <div class="user-image"></div>
-          <span class="user-name">데미 작성자 1</span>
-          <span class="time">2021-01-01 00:00:00</span>
+          <img src=${userImageUrl} class="user-image"></img>
+          <span class="user-name">${name}</span>
+          <span class="time">${parseISOToFullString(createdAt)}</span>
 
           <div class="buttons" id="header-buttons">
             <button id="modify-post"></button>
@@ -32,23 +81,20 @@ class PostDetail extends Component {
       <section id="post-content">
         <div id="image"></div>
         <span>
-          무엇을 얘기할까요? 아무말이라면, 삶은 항상 놀라운 모험이라고 생각합니다. 우리는 매일 새로운 경험을 하고 배우며 성장합니다. 때로는 어려움과 도전이 있지만, 그것들이 우리를 더 강하고 지혜롭게 만듭니다. 또한 우리는 주변의 사람들과 연결되며 사랑과 지지를 받습니다. 그래서 우리의 삶은 소중하고 의미가 있습니다. </br>
-          자연도 아름다운 이야기입니다. 우리 주변의 자연은 끝없는 아름다움과 신비로움을 담고 있습니다. 산, 바다, 숲, 하늘 등 모든 것이 우리를 놀라게 만들고 감동시킵니다. 자연은 우리의 생명과 안정을 지키며 우리에게 힘을 주는 곳입니다. </br>
-          마지막으로, 지식을 향한 탐구는 항상 흥미로운 여정입니다. 우리는 끝없는 지식의 바다에서 배우고 발견할 수 있으며, 이것이 우리를 더 깊이 이해하고 세상을 더 넓게 보게 해줍니다.</br>
-          그런 의미에서, 삶은 놀라움과 경이로움으로 가득 차 있습니다. 새로운 경험을 즐기고 항상 앞으로 나아가는 것이 중요하다고 생각합니다.
+          ${content}
         </span>
 
         <div id="post-stats">
           <div class="stats">
-            <span class="number">${formatNumber(123)}</span> 
+            <span class="number">${formatNumber(likeCount)}</span> 
             <span class="text">좋아요수</span>
           </div>
           <div class="stats">
-            <span class="number">${formatNumber(123)}</span> 
+            <span class="number">${formatNumber(viewCount)}</span> 
             <span class="text">조회수</span>
           </div>
           <div class="stats">
-            <span class="number">${formatNumber(123)}</span> 
+            <span class="number">${comments.length}</span> 
             <span class="text">댓글</span>
           </div>
         </div>
@@ -59,61 +105,7 @@ class PostDetail extends Component {
         <button id="comment-button"></button>
       </section>
 
-      <section id="comment-list">
-        <div class="comment">
-          <div id="meta">
-            <div id="image"></div>
-            <div id="data">
-              <div id="data-title">
-                <span id="username">데미 작성자1</span>
-                <span id="time">2021-01-01 00:00:00</span>
-              </div>
-              <span class="data-context">댓글 내용</span>
-            </div>
-          </div>
-          
-          <div class="buttons" id="comment-buttons">
-            <button class="comment-modify"></button>
-            <button class="comment-delete"></button>
-          </div>
-        </div>
-
-         <div class="comment">
-          <div id="meta">
-            <div id="image"></div>
-            <div id="data">
-              <div id="data-title">
-                <span id="username">데미 작성자1</span>
-                <span id="time">2021-01-01 00:00:00</span>
-              </div>
-              <span class="data-context">댓글 내용</span>
-            </div>
-          </div>
-          
-          <div class="buttons" id="comment-buttons">
-            <button class="comment-modify"></button>
-            <button class="comment-delete"></button>
-          </div>
-        </div>
-
-         <div class="comment">
-          <div id="meta">
-            <div id="image"></div>
-            <div id="data">
-              <div id="data-title">
-                <span id="username">데미 작성자1</span>
-                <span id="time">2021-01-01 00:00:00</span>
-              </div>
-              <span class="data-context">댓글 내용</span>
-            </div>
-          </div>
-          
-          <div class="buttons" id="comment-buttons">
-            <button class="comment-modify"></button>
-            <button class="comment-delete"></button>
-          </div>
-        </div>
-      </section>
+      <section id="comment-list"></section>
     </main>`
   }
 
@@ -124,10 +116,9 @@ class PostDetail extends Component {
       deletePostButton: this.$target.querySelector('#delete-post'),
 
       commentInput: this.$target.querySelector('#comment-input'),
-
       commentAddButton: this.$target.querySelector('#comment-button'),
-      commentModifyButtons: [...this.$target.querySelectorAll('.comment-modify')],
-      commentDeleteButtons: [...this.$target.querySelectorAll('.comment-delete')],
+
+      commentList: this.$target.querySelector('#comment-list'),
     }
 
     // 자식 요소 정의
@@ -148,22 +139,14 @@ class PostDetail extends Component {
       idName: 'comment-button',
     })
 
-    // TODO: 댓글 수정 로직 구현
-    // 모든 댓글 수정 버튼에 대해 Button 컴포넌트 생성
-    this.$elements.commentModifyButtons.forEach((button, index) => {
-      new Button(button, {
-        text: '수정',
-        onClick: this.modifyCommentHandler.bind(this),
-        className: 'comment-modify',
-      })
-    })
+    const comments = this.$state.postData?.comments ?? []
 
-    // 모든 댓글 삭제 버튼에 대해 Button 컴포넌트 생성
-    this.$elements.commentDeleteButtons.forEach((button, index) => {
-      new Button(button, {
-        text: '삭제',
-        onClick: this.deleteCommentHandler.bind(this),
-        className: 'comment-delete',
+    comments.forEach(comment => {
+      const commentWrapper = document.createElement('div')
+      this.$elements.commentList.appendChild(commentWrapper)
+
+      new Comment(commentWrapper, {
+        ...comment,
       })
     })
   }
@@ -216,21 +199,25 @@ class PostDetail extends Component {
   postCommentHandler() {
     alert('Post Comment')
   }
-  modifyCommentHandler() {
-    alert('Modify Comment')
-  }
 
-  deleteCommentHandler() {
-    new Modal({
-      title: '댓글을 삭제하시겠습니까?',
-      message: '삭제한 내용은 복구 할 수 없습니다.',
-      confirmText: '확인',
-      cancelText: '취소',
-      onConfirm: () => {
-        // TODO: 댓글 삭제 로직 구현
-        // navigateTo(ROUTES.AUTH.LOGIN.url)
-      },
-    })
+  /** 게시글 정보 가져오기 */
+  async fetchPostData() {
+    try {
+      const response = await getPost({ postId: this.$state.postId })
+      if (response.success) {
+        const { message, data } = response.data
+        const { postData, userData } = data
+
+        this.setState({
+          postData,
+          userData,
+        })
+      } else {
+        new Toast({ message: '게시글 정보 가져오기 실패' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
   }
 }
 

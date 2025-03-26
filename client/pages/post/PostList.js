@@ -1,6 +1,5 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
-import { parseDateToFullString } from '../../lib/utils/date.js'
 import { formatNumber } from '../../lib/utils/number.js'
 import { DUMMY_POSTS } from '../../public/data/dummy_posts.js'
 import { ROUTES } from '../../public/data/routes.js'
@@ -8,9 +7,10 @@ import { navigateTo } from '../../router.js'
 
 class PostList extends Component {
   setup() {
-    this.state = {
+    this.$state = {
       posts: DUMMY_POSTS,
     }
+    console.log('entered setup')
 
     this.loadStyles()
   }
@@ -19,7 +19,8 @@ class PostList extends Component {
   }
 
   template() {
-    const { posts } = this.state
+    console.log('entered template')
+    const { posts } = this.$state
 
     const postList = posts
       .map(post => {
@@ -36,7 +37,7 @@ class PostList extends Component {
               <li> 댓글 ${formatNumber(post.comments.length)} </li>
               </li> 조회수 ${formatNumber(post.hitCnt)} </li>
             </ul>
-            <span> ${parseDateToFullString(post.date)} </span>
+            <span> ${1} </span>
           </div>
         </div> 
         <div id="post-footer"> 
@@ -62,6 +63,7 @@ class PostList extends Component {
   }
 
   mounted() {
+    console.log('entered momunted')
     // DOM 요소 저장
     this.$elements = {
       writePostButton: this.$target.querySelector('#write-button'),

@@ -59,20 +59,20 @@ class BaseComponent {
     this.render() // UI를 다시 그려서 상태 반영
     this.setEvent() // 새 DOM에 이벤트 다시 바인딩
 
-    const SUPPORTED_INPUT_TYPES = ['text', 'search', 'url', 'tel', 'password']
-    if (id) {
-      const nextInput = document.getElementById(id)
+    // const SUPPORTED_INPUT_TYPES = ['text', 'search', 'url', 'tel', 'password']
+    // if (id) {
+    //   const nextInput = document.getElementById(id)
 
-      if (nextInput) {
-        nextInput.focus()
+    //   if (nextInput) {
+    //     nextInput.focus()
 
-        const inputType = nextInput.type
-        if (SUPPORTED_INPUT_TYPES.includes(inputType)) {
-          const len = nextInput.value.length
-          nextInput.setSelectionRange(len, len)
-        }
-      }
-    }
+    //     const inputType = nextInput.type
+    //     if (SUPPORTED_INPUT_TYPES.includes(inputType)) {
+    //       const len = nextInput.value.length
+    //       nextInput.setSelectionRange(len, len)
+    //     }
+    //   }
+    // }
   }
 
   /** 이벤트 등록 추상화 */

@@ -19,16 +19,22 @@ export const ROUTES = {
   },
   POST: {
     MAIN: { url: '/post/main', component: PostList },
-    DETAIL: { url: '/post/detail', component: PostDetail },
+    DETAIL: { url: postId => `/post/detail?postId=${postId}`, component: PostDetail },
     MODIFY: { url: '/post/modify', component: PostModify },
     WRITE: { url: '/post/write', component: PostWrite },
   },
 }
 
-/** ROUTES 기반으로 routes 생성 */
+/**
+ * ROUTES 기반으로 routes 생성
+ * pathname 기준으로 구성 (query string 제거)
+ */
 export const RouteComponent = Object.values(ROUTES)
   .flatMap(group => Object.values(group))
-  .reduce((acc, { url, component }) => {
-    acc[url] = component
+  .reduce((acc, route) => {
+    const url = typeof route.url === 'function' ? route.url() : route.url
+
+    const pathOnly = typeof route.url === 'function' ? route.url().split('?')[0] : route.url
+    acc[pathOnly] = route.component
     return acc
   }, {})
