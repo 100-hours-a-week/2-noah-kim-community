@@ -55,3 +55,26 @@ export const deleteComment = async ({ postId, commentId }) => {
   const response = await Fetch(ENDPOINT, { token })
   return response
 }
+
+/**
+ * 좋아요 관련 API
+ */
+// 좋아요 생성
+export const createLikes = async ({ postId }) => {
+  const ENDPOINT = APIEndpoints.LIKE.CREATE(postId)
+
+  const token = getAccessToken()
+
+  const response = await Fetch(ENDPOINT, { token })
+  return response
+}
+
+// 좋아요 삭제
+export const deleteLikes = async ({ postId }) => {
+  const ENDPOINT = APIEndpoints.LIKE.DELETE(postId)
+
+  const token = getAccessToken()
+
+  const response = await Fetch(ENDPOINT, { token })
+  return response
+}

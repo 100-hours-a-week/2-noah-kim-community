@@ -7,7 +7,7 @@ import { parseISOToFullString } from '../../lib/utils/date.js'
 import { formatNumber } from '../../lib/utils/number.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
-import { createComment, deleteComment, getPost, modifyComment } from '../../service/postService.js'
+import { createComment, createLikes, deleteComment, deleteLikes, getPost, modifyComment } from '../../service/postService.js'
 
 const defaultPost = {
   postId: null,
@@ -88,7 +88,7 @@ class PostDetail extends Component {
         </span>
 
         <div id="post-stats">
-          <div class="stats">
+          <div class="stats ${liked ? 'liked' : ''}" id="like-button">
             <span class="number">${formatNumber(likeCount)}</span> 
             <span class="text">좋아요수</span>
           </div>
@@ -117,6 +117,8 @@ class PostDetail extends Component {
     this.$elements = {
       modifyPostButton: this.$target.querySelector('#modify-post'),
       deletePostButton: this.$target.querySelector('#delete-post'),
+
+      likeButton: this.$target.querySelector('#like-button'),
 
       commentInput: this.$target.querySelector('#comment-input'),
       commentAddButton: this.$target.querySelector('#comment-button'),
@@ -169,6 +171,10 @@ class PostDetail extends Component {
       this.setState({ commentInput: event.target.value })
       this.validateComment()
     })
+
+    this.addEvent(this.$elements.likeButton, 'click', event => {
+      this.likeClickHandler(this.$state.postData.postId)
+    })
   }
 
   // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
@@ -214,6 +220,26 @@ class PostDetail extends Component {
   // 댓글 수정 클릭
   modifyClickHandler(commentId, content) {
     this.setState({ commentInput: content, editingCommentId: commentId })
+  }
+
+  /** 게시글 정보 가져오기 API */
+  async fetchPostData() {
+    try {
+      const response = await getPost({ postId: this.$state.postId })
+      if (response.success) {
+        const { message, data } = response.data
+        const { postData, userData } = data
+
+        this.setState({
+          postData,
+          userData,
+        })
+      } else {
+        new Toast({ message: '게시글 정보 가져오기 실패' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
   }
 
   /** 댓글 생성 API */
@@ -303,20 +329,43 @@ class PostDetail extends Component {
     }
   }
 
-  /** 게시글 정보 가져오기 API */
-  async fetchPostData() {
+  likeClickHandler(postId) {
+    if (this.$state.postData.liked) {
+      this.deleteLikeHandler(postId)
+    } else {
+      this.createLikeHandler(postId)
+    }
+  }
+  /** 좋아요 추가 API */
+  async createLikeHandler(postId) {
     try {
-      const response = await getPost({ postId: this.$state.postId })
+      const response = await createLikes({
+        postId,
+      })
       if (response.success) {
-        const { message, data } = response.data
-        const { postData, userData } = data
-
         this.setState({
-          postData,
-          userData,
+          postData: { ...this.$state.postData, liked: true, likeCount: this.$state.postData.likeCount + 1 },
         })
       } else {
-        new Toast({ message: '게시글 정보 가져오기 실패' })
+        new Toast({ message: '좋아요 추가 실패' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
+  }
+
+  /** 좋아요 삭제 API */
+  async deleteLikeHandler(postId) {
+    try {
+      const response = await deleteLikes({
+        postId,
+      })
+      if (response.success) {
+        this.setState({
+          postData: { ...this.$state.postData, liked: false, likeCount: this.$state.postData.likeCount - 1 },
+        })
+      } else {
+        new Toast({ message: '좋아요 삭제 실패' })
       }
     } catch (error) {
       new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })

@@ -39,7 +39,8 @@ const CommentEndpoints = {
 }
 
 const LikeEndpoints = {
-  TOGGLE: { method: HTTPMethods.POST, url: `${LIKE_BASE}` },
+  CREATE: postId => ({ method: HTTPMethods.POST, url: `${POST_BASE}/${postId}${LIKE_BASE}` }),
+  DELETE: postId => ({ method: HTTPMethods.DELETE, url: `${POST_BASE}/${postId}${LIKE_BASE}` }),
 }
 
 // 최종 API 객체
