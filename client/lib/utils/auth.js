@@ -12,3 +12,7 @@ export const getAccessToken = () => {
   const { userId, accessToken } = getAuthData()
   return accessToken ?? undefined
 }
+
+export const removeAuthData = () => {
+  localStorage.removeItem('auth')
+}

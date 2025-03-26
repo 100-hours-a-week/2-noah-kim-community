@@ -1,3 +1,4 @@
+import { removeAuthData } from '../../../lib/utils/auth.js'
 import { ROUTES } from '../../../public/data/routes.js'
 import { navigateTo } from '../../../router.js'
 import Component from '../Component.js'
@@ -98,9 +99,8 @@ class Header extends Component {
 
     // TODO: 로그아웃 로직 이벤트 구현
     this.addEvent(this.$elements.logoutLink, 'click', event => {
-      alert('로그아웃 성공')
-
-      // navigateTo(ROUTES.AUTH.PASSWORD_CHANGE.url);
+      removeAuthData()
+      navigateTo(ROUTES.AUTH.LOGIN.url)
     })
 
     if (this.$state.backRoute) {
