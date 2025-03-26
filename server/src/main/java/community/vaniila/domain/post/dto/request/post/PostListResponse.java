@@ -41,7 +41,7 @@ public class PostListResponse {
   @AllArgsConstructor
   public static class UserData {
     private Long userId;
-    private String name;
+    private String nickname;
     private String imageUrl;
   }
 }

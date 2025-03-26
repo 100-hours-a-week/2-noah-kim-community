@@ -78,9 +78,6 @@ class Comment extends InlineComponent {
       confirmText: '확인',
       cancelText: '취소',
       onConfirm: () => {
-        console.log(this.$props.modifyClickHandler)
-        console.log(this.$props.deleteClickHandler)
-
         this.$props.deleteClickHandler(commentId)
       },
     })

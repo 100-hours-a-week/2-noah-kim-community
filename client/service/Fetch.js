@@ -8,7 +8,9 @@ import { API_BASE_URL } from './endpoints.js'
  */
 export const Fetch = async (endpoint, options = {}) => {
   const { method, url } = endpoint
+
   const { params = {}, body, headers = {}, token } = options
+
   // 쿼리 파라미터 처리
   const queryString = new URLSearchParams(params).toString()
   const fullEndpoint = `${API_BASE_URL}${url}${queryString ? `?${queryString}` : ''}`

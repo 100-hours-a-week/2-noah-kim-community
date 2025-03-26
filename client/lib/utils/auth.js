@@ -1,10 +1,14 @@
 export const getAuthData = () => {
-  const authData = JSON.parse(localStorage.getItem('auth'))
+  const authData = localStorage.getItem('auth')
+  let data
+  if (authData) {
+    data = JSON.parse(authData)
+  }
 
-  return authData
+  return data
 }
 
 export const getAccessToken = () => {
   const { userId, accessToken } = getAuthData()
-  return accessToken
+  return accessToken ?? undefined
 }

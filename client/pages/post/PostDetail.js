@@ -317,8 +317,6 @@ class PostDetail extends Component {
   }
   /** 댓글 수정 API */
   async deleteCommentHandler(commentId) {
-    console.log('entered deleteCommentHandler')
-
     try {
       const response = await deleteComment({
         postId: this.$state.postId,

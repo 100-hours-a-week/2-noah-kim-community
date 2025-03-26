@@ -46,6 +46,21 @@ export const getPost = async ({ postId }) => {
   return response
 }
 
+// 게시글 가져오기
+export const getPostList = async ({ currentPage, pageSize }) => {
+  const ENDPOINT = APIEndpoints.POST.LIST
+
+  const token = getAccessToken() // 토큰은 필수 값이 아니다.
+
+  const params = {
+    currentPage,
+    pageSize,
+  }
+
+  const response = await Fetch(ENDPOINT, { token, params })
+  return response
+}
+
 /**
  * 댓글 관련 API
  */
