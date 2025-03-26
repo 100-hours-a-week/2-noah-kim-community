@@ -60,7 +60,7 @@ public class PostController {
     Long userId = null;
     if (authHeader != null && authHeader.startsWith("Bearer ")) {
       String token = authHeader.replace("Bearer ", "").trim();
-      userId = jwtUtils.getId(token);  // ✅ 유효한 경우만 추출
+      userId = jwtUtils.getId(token);
     }
 
     PostDetailResponse response = postService.getPostDetail(postId, userId);

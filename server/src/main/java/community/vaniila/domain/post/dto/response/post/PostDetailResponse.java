@@ -31,6 +31,7 @@ public class PostDetailResponse {
   public static class CommentData {
     private Long commentId;
     private Long userId;
+    private String nickname;
     private String imageUrl;
     private String content;
     private LocalDateTime createdAt;

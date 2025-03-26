@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-  List<Comment> findByPostAndDeletedAtIsNullOrderByCreatedAtDesc(Post post);
+  List<Comment> findByPostAndDeletedAtIsNullOrderByCreatedAtAsc(Post post);
   List<Comment> findByPostAndDeletedAtIsNull(Post post);
 
   List<Comment> findByUserIdAndDeletedAtIsNull(Long userId);

@@ -76,7 +76,7 @@ public class PostService {
       throw new CustomException(PostErrorCode.POST_NOT_FOUND);
     }
 
-    List<Comment> comments = commentRepository.findByPostAndDeletedAtIsNullOrderByCreatedAtDesc(post);
+    List<Comment> comments = commentRepository.findByPostAndDeletedAtIsNullOrderByCreatedAtAsc(post);
     List<CommentData> commentData = comments.stream()
         .map(comment -> {
           User commentUser = comment.getUser();
@@ -88,6 +88,7 @@ public class PostService {
           return new PostDetailResponse.CommentData(
               comment.getId(),
               commentUser.getId(),
+              commentUser.getNickname(),
               commentUser.getImageUrl(),
               comment.getContent(),
               comment.getCreatedAt()
