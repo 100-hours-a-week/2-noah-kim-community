@@ -25,16 +25,16 @@ const AuthEndpoints = {
 }
 
 const PostEndpoints = {
-  DETAILS: postID => ({ method: HTTPMethods.GET, url: `${POST_BASE}/${postID}` }),
+  DETAILS: postId => ({ method: HTTPMethods.GET, url: `${POST_BASE}/${postId}` }),
   LIST: { method: HTTPMethods.GET, url: `${POST_BASE}/list` },
   CREATE: { method: HTTPMethods.POST, url: `${POST_BASE}` },
-  UPDATE: { method: HTTPMethods.PUT, url: `${POST_BASE}` },
+  MODIFY: { method: HTTPMethods.PUT, url: `${POST_BASE}` },
   DELETE: { method: HTTPMethods.DELETE, url: `${POST_BASE}/delete` },
 }
 
 const CommentEndpoints = {
-  CREATE: postID => ({ method: HTTPMethods.POST, url: `${POST_BASE}/${postID}${COMMENT_BASE}` }),
-  UPDATE: commentId => ({ method: HTTPMethods.PATCH, url: `${COMMENT_BASE}/${commentId}` }),
+  CREATE: postId => ({ method: HTTPMethods.POST, url: `${POST_BASE}/${postId}${COMMENT_BASE}` }),
+  MODIFY: (postId, commentId) => ({ method: HTTPMethods.PATCH, url: `${POST_BASE}/${postId}${COMMENT_BASE}/${commentId}` }),
 }
 
 const LikeEndpoints = {

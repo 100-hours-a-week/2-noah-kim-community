@@ -33,3 +33,13 @@ export const createComment = async ({ postId, content }) => {
   const response = await Fetch(ENDPOINT, { body, token })
   return response
 }
+
+export const modifyComment = async ({ postId, commentId, content }) => {
+  const ENDPOINT = APIEndpoints.COMMENT.MODIFY(postId, commentId)
+
+  const token = getAccessToken()
+  const body = { content }
+
+  const response = await Fetch(ENDPOINT, { body, token })
+  return response
+}

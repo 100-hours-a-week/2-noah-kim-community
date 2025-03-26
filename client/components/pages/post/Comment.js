@@ -7,6 +7,7 @@ class Comment extends InlineComponent {
   setup() {
     /** 상태 정의 */
     this.$state = {}
+
     this.loadStyles()
   }
   loadStyles() {
@@ -14,25 +15,27 @@ class Comment extends InlineComponent {
   }
 
   template() {
-    const { nickname, imageUrl, content, createdAt } = this.$props
+    const { commentId, userId, nickname, imageUrl, content, createdAt } = this.$props
 
-    return `<div class="comment">
-              <div id="meta">
-                <img id="image" src=${imageUrl}></img>
-                <div id="data">
-                  <div id="data-title">
-                    <span id="username">${nickname}</span>
-                    <span id="time">${parseISOToFullString(createdAt)}</span>
-                  </div>
-                  <span class="data-context">${content}</span>
-                </div>
-              </div>
-              
-              <div class="buttons" id="comment-buttons">
-                <button class="comment-modify"></button>
-                <button class="comment-delete"></button>
-              </div>
-            </div>`
+    return `
+      <div class="comment">
+        <div id="meta">
+          <img id="image" src=${imageUrl}></img>
+          <div id="data">
+            <div id="data-title">
+              <span id="username">${nickname}</span>
+              <span id="time">${parseISOToFullString(createdAt)}</span>
+            </div>
+            <span class="data-context">${content}</span>
+          </div>
+        </div>
+        
+        <div class="buttons" id="comment-buttons">
+          <button class="comment-modify"></button>
+          <button class="comment-delete"></button>
+        </div>
+      </div>
+    `
   }
 
   mounted() {
@@ -43,9 +46,6 @@ class Comment extends InlineComponent {
     }
 
     // 자식 요소 정의
-
-    // TODO: 댓글 수정 로직 구현
-    // 모든 댓글 수정 버튼에 대해 Button 컴포넌트 생성
     new Button(this.$elements.commentModifyButton, {
       text: '수정',
       onClick: this.modifyCommentHandler.bind(this),
@@ -66,7 +66,8 @@ class Comment extends InlineComponent {
   }
 
   modifyCommentHandler() {
-    alert('Modify Comment')
+    const { commentId, content } = this.$props
+    this.$props.modifyClickHandler(commentId, content)
   }
 
   deleteCommentHandler() {

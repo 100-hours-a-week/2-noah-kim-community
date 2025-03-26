@@ -7,7 +7,7 @@ import { parseISOToFullString } from '../../lib/utils/date.js'
 import { formatNumber } from '../../lib/utils/number.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
-import { createComment, getPost } from '../../service/postService.js'
+import { createComment, getPost, modifyComment } from '../../service/postService.js'
 
 const defaultPost = {
   postId: null,
@@ -35,6 +35,7 @@ class PostDetail extends Component {
       userData: null,
 
       commentInput: null,
+      editingCommentId: null,
 
       postId: this.$props.params.postId,
     }
@@ -135,11 +136,17 @@ class PostDetail extends Component {
       idName: 'delete-post',
     })
 
-    new Button(this.$elements.commentAddButton, {
+    const createCommentProps = {
       text: '댓글 등록',
       onClick: this.createCommentHandler.bind(this),
       idName: 'comment-button',
-    })
+    }
+    const modifyCommentProps = {
+      text: '댓글 수정',
+      onClick: () => this.modifyCommentHandler(this.$state.editingCommentId),
+      idName: 'comment-button',
+    }
+    new Button(this.$elements.commentAddButton, !this.$state.editingCommentId ? createCommentProps : modifyCommentProps)
 
     const comments = this.$state.postData?.comments ?? []
 
@@ -149,6 +156,7 @@ class PostDetail extends Component {
 
       new Comment(commentWrapper, {
         ...comment,
+        modifyClickHandler: this.modifyClickHandler.bind(this),
       })
     })
   }
@@ -201,6 +209,12 @@ class PostDetail extends Component {
     }
   }
 
+  // 댓글 수정 클릭
+  modifyClickHandler(commentId, content) {
+    this.setState({ commentInput: content, editingCommentId: commentId })
+  }
+
+  /** 댓글 생성 API */
   async createCommentHandler() {
     try {
       const response = await createComment({ content: this.$state.commentInput, postId: this.$state.postId })
@@ -213,8 +227,8 @@ class PostDetail extends Component {
 
         this.setState({
           postData: { ...this.$state.postData, comments: currentComment },
+          commentInput: null,
         })
-        new Toast({ message: '댓글 추가 성공' })
       } else {
         new Toast({ message: '댓글 추가 실패' })
       }
@@ -223,7 +237,43 @@ class PostDetail extends Component {
     }
   }
 
-  /** 게시글 정보 가져오기 */
+  /** 댓글 수정 API */
+  async modifyCommentHandler(commentId) {
+    try {
+      const response = await modifyComment({
+        postId: this.$state.postId,
+        commentId: commentId,
+        content: this.$state.commentInput,
+      })
+      if (response.success) {
+        const { message, data } = response.data
+        const { commentId, content, updatedAt } = data
+
+        const modifiedComment = this.$state.postData.comments.map(comment => {
+          if (comment.commentId === commentId) {
+            return {
+              ...comment,
+              content: content,
+            }
+          } else {
+            return comment
+          }
+        })
+
+        this.setState({
+          postData: { ...this.$state.postData, comments: modifiedComment },
+          commentInput: null,
+          editingCommentId: null,
+        })
+      } else {
+        new Toast({ message: '댓글 추가 실패' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
+  }
+
+  /** 게시글 정보 가져오기 API */
   async fetchPostData() {
     try {
       const response = await getPost({ postId: this.$state.postId })
