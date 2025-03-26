@@ -41,6 +41,7 @@ public class CommentService {
 
     Comment comment = new Comment(post, user, request.getContent());
     Comment savedComment = commentRepository.save(comment);
+    post.increaseCommentCount();
 
     return new CommentCreateResponse(
         savedComment.getId(),
@@ -75,6 +76,9 @@ public class CommentService {
   /** 댓글 삭제 */
   @Transactional
   public void deleteComment(Long userId, Long postId, Long commentId) {
+    Post post = postRepository.findById(postId)
+        .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
+
     Comment comment = commentRepository.findById(commentId)
         .orElseThrow(() -> new CustomException(CommentErrorCode.COMMENT_NOT_FOUND));
 
@@ -86,6 +90,7 @@ public class CommentService {
     }
 
     comment.softDelete(); // deleted_at 갱신
+    post.decreaseCommentCount();
   }
 }
 

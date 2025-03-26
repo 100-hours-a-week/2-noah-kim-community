@@ -75,4 +75,12 @@ public class Post {
     this.deletedAt = LocalDateTime.now();
   }
 
+  public void increaseCommentCount() {
+    this.commentCount += 1;
+  }
+
+  public void decreaseCommentCount() {
+    this.commentCount -= 1;
+  }
+
 }
