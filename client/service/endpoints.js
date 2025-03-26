@@ -28,8 +28,8 @@ const PostEndpoints = {
   DETAILS: postId => ({ method: HTTPMethods.GET, url: `${POST_BASE}/${postId}` }),
   LIST: { method: HTTPMethods.GET, url: `${POST_BASE}/list` },
   CREATE: { method: HTTPMethods.POST, url: `${POST_BASE}` },
-  MODIFY: { method: HTTPMethods.PUT, url: `${POST_BASE}` },
-  DELETE: { method: HTTPMethods.DELETE, url: `${POST_BASE}/delete` },
+  MODIFY: postId => ({ method: HTTPMethods.PATCH, url: `${POST_BASE}/${postId}` }),
+  DELETE: postId => ({ method: HTTPMethods.DELETE, url: `${POST_BASE}/${postId}` }),
 }
 
 const CommentEndpoints = {

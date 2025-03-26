@@ -1,7 +1,10 @@
 import { getAccessToken } from '../lib/utils/auth.js'
 import { APIEndpoints } from './endpoints.js'
 import { Fetch } from './Fetch.js'
-
+/**
+ * 게시글 관련 API
+ */
+// 게시글 생성
 export const createPost = async ({ title, content, imageUrl }) => {
   const ENDPOINT = APIEndpoints.POST.CREATE
 
@@ -12,6 +15,28 @@ export const createPost = async ({ title, content, imageUrl }) => {
   return response
 }
 
+// 게시글 수정
+export const modifyPost = async ({ postId, title, content, imageUrl }) => {
+  const ENDPOINT = APIEndpoints.POST.MODIFY(postId)
+
+  const token = getAccessToken()
+  const body = { title, content, imageUrl }
+
+  const response = await Fetch(ENDPOINT, { body, token })
+  return response
+}
+
+// 게시글 삭제
+export const deletePost = async ({ postId }) => {
+  const ENDPOINT = APIEndpoints.POST.DELETE(postId)
+
+  const token = getAccessToken()
+
+  const response = await Fetch(ENDPOINT, { token })
+  return response
+}
+
+// 게시글 가져오기
 export const getPost = async ({ postId }) => {
   const ENDPOINT = APIEndpoints.POST.DETAILS(postId)
 

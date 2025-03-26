@@ -7,7 +7,7 @@ import { parseISOToFullString } from '../../lib/utils/date.js'
 import { formatNumber } from '../../lib/utils/number.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
-import { createComment, createLikes, deleteComment, deleteLikes, getPost, modifyComment } from '../../service/postService.js'
+import { createComment, createLikes, deleteComment, deleteLikes, deletePost, getPost, modifyComment } from '../../service/postService.js'
 
 const defaultPost = {
   postId: null,
@@ -135,7 +135,7 @@ class PostDetail extends Component {
     // 게시글 삭제 버튼
     new Button(this.$elements.deletePostButton, {
       text: '삭제',
-      onClick: this.deletePostHandler.bind(this),
+      onClick: this.openDeleteModal.bind(this),
       idName: 'delete-post',
     })
 
@@ -182,14 +182,14 @@ class PostDetail extends Component {
     navigateTo(ROUTES.POST.MODIFY.url)
   }
 
-  deletePostHandler() {
+  openDeleteModal() {
     new Modal({
       title: '게시글을 삭제하시겠습니까?',
       message: '삭제한 내용은 복구 할 수 없습니다.',
       confirmText: '확인',
       cancelText: '취소',
       onConfirm: () => {
-        new Toast({ message: '댓글이 삭제되었습니다' })
+        this.deletePostHandler()
       },
     })
   }
@@ -234,6 +234,21 @@ class PostDetail extends Component {
           postData,
           userData,
         })
+      } else {
+        new Toast({ message: '게시글 정보 가져오기 실패' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
+  }
+
+  /** 게시글 정보 가져오기 API */
+  async deletePostHandler() {
+    try {
+      const response = await deletePost({ postId: this.$state.postId })
+      if (response.success) {
+        navigateTo(ROUTES.POST.MAIN.url)
+        new Toast({ message: '게시글 삭제 완료' })
       } else {
         new Toast({ message: '게시글 정보 가져오기 실패' })
       }
