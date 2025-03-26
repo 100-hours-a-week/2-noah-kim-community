@@ -75,23 +75,19 @@ class PostList extends Component {
   /** 게시글 정보 가져오기 API */
   async fetchPostListData() {
     const { posts, currentPage } = this.$state
-    try {
-      const response = await getPostList({ currentPage: currentPage, pageSize: PAGE_SIZE })
-      if (response.success) {
-        const { message, data } = response.data
-        const { page, content } = data
-        const { totalPages, totalElements } = page
+    const response = await getPostList({ currentPage: currentPage, pageSize: PAGE_SIZE })
+    if (response.success) {
+      const { message, data } = response.data
+      const { page, content } = data
+      const { totalPages, totalElements } = page
 
-        this.setState({
-          posts: [...posts, ...content],
-          currentPage: currentPage + 1,
-          totalPages: totalPages,
-        })
-      } else {
-        new Toast({ message: '게시글 목록 가져오기 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+      this.setState({
+        posts: [...posts, ...content],
+        currentPage: currentPage + 1,
+        totalPages: totalPages,
+      })
+    } else {
+      new Toast({ message: '게시글 목록 가져오기 실패' })
     }
   }
 

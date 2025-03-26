@@ -114,25 +114,21 @@ class Mypage extends Component {
       return
     }
 
-    try {
-      const body = {
-        nickname: nicknameInput,
-        imageUrl: `../../public/images/header_image`,
-      }
-      const response = await modifyUser(body)
+    const body = {
+      nickname: nicknameInput,
+      imageUrl: `../../public/images/header_image`,
+    }
+    const response = await modifyUser(body)
 
-      if (response.success) {
-        // 바뀐 닉네임 최신화
-        this.setState({
-          nickname,
-        })
+    if (response.success) {
+      // 바뀐 닉네임 최신화
+      this.setState({
+        nickname,
+      })
 
-        new Toast({ message: '수정 완료' })
-      } else {
-        new Toast({ message: '유저 정보 가져오기에 실패하였습니다' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요' })
+      new Toast({ message: '수정 완료' })
+    } else {
+      new Toast({ message: '유저 정보 가져오기에 실패하였습니다' })
     }
   }
 
@@ -149,40 +145,29 @@ class Mypage extends Component {
 
   /** 유저 정보 가져오기 */
   async fetchUserData() {
-    try {
-      const response = await getUser()
-      if (response.success) {
-        const { message, data } = response.data
-        const { userId, email, nickname, imageUrl } = data
+    const response = await getUser()
+    if (response.success) {
+      const { message, data } = response.data
+      const { userId, email, nickname, imageUrl } = data
 
-        this.setState({
-          profileImage: imageUrl,
-          email: email,
-          nickname: nickname,
-        })
-      } else {
-        new Toast({ message: '유저 정보 가져오기에 실패하였습니다.' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+      this.setState({
+        profileImage: imageUrl,
+        email: email,
+        nickname: nickname,
+      })
+    } else {
+      new Toast({ message: '유저 정보 가져오기에 실패하였습니다.' })
     }
   }
 
   /** 회원탈퇴 */
   async unregister() {
-    console.log('1')
-
-    try {
-      const response = await unregisterUser()
-      console.log('2')
-      if (response.success) {
-        navigateTo(ROUTES.AUTH.LOGIN.url)
-        new Toast({ message: '회원탈퇴 성공!' })
-      } else {
-        new Toast({ message: '유저 정보 가져오기에 실패하였습니다.' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    const response = await unregisterUser()
+    if (response.success) {
+      navigateTo(ROUTES.AUTH.LOGIN.url)
+      new Toast({ message: '회원탈퇴 성공!' })
+    } else {
+      new Toast({ message: '유저 정보 가져오기에 실패하였습니다.' })
     }
   }
 }

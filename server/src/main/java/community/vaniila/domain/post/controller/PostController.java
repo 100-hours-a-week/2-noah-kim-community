@@ -94,7 +94,7 @@ public class PostController {
     return ResponseEntity.noContent().build();  // 204 No Content
   }
 
-  /** 게시글 목록  */
+  /** 게시글 목록 */
   @GetMapping("/list")
   public ResponseEntity<CommonResponse<PostListResponse>> getPostList(
       @RequestParam("currentPage") int currentPage,

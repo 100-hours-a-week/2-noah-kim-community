@@ -224,121 +224,101 @@ class PostDetail extends Component {
 
   /** 게시글 정보 가져오기 API */
   async fetchPostData() {
-    try {
-      const response = await getPost({ postId: this.$state.postId })
-      if (response.success) {
-        const { message, data } = response.data
-        const { postData, userData } = data
+    const response = await getPost({ postId: this.$state.postId })
+    if (response.success) {
+      const { message, data } = response.data
+      const { postData, userData } = data
 
-        this.setState({
-          postData,
-          userData,
-        })
-      } else {
-        new Toast({ message: '게시글 정보 가져오기 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+      this.setState({
+        postData,
+        userData,
+      })
+    } else {
+      new Toast({ message: '게시글 정보 가져오기 실패' })
     }
   }
 
   /** 게시글 정보 가져오기 API */
   async deletePostHandler() {
-    try {
-      const response = await deletePost({ postId: this.$state.postId })
-      if (response.success) {
-        navigateTo(ROUTES.POST.MAIN.url)
-        new Toast({ message: '게시글 삭제 완료' })
-      } else {
-        new Toast({ message: '게시글 정보 가져오기 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    const response = await deletePost({ postId: this.$state.postId })
+    if (response.success) {
+      navigateTo(ROUTES.POST.MAIN.url)
+      new Toast({ message: '게시글 삭제 완료' })
+    } else {
+      new Toast({ message: '게시글 정보 가져오기 실패' })
     }
   }
 
   /** 댓글 생성 API */
   async createCommentHandler() {
-    try {
-      const response = await createComment({ content: this.$state.commentInput, postId: this.$state.postId })
-      if (response.success) {
-        const { message, data } = response.data
-        const newComment = data
+    const response = await createComment({ content: this.$state.commentInput, postId: this.$state.postId })
+    if (response.success) {
+      const { message, data } = response.data
+      const newComment = data
 
-        const currentComment = this.$state.postData.comments
-        currentComment.push(newComment)
+      const currentComment = this.$state.postData.comments
+      currentComment.push(newComment)
 
-        this.setState({
-          postData: { ...this.$state.postData, comments: currentComment },
-          commentInput: null,
-        })
-      } else {
-        new Toast({ message: '댓글 추가 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+      this.setState({
+        postData: { ...this.$state.postData, comments: currentComment },
+        commentInput: null,
+      })
+    } else {
+      new Toast({ message: '댓글 추가 실패' })
     }
   }
 
   /** 댓글 수정 API */
   async modifyCommentHandler(commentId) {
-    try {
-      const response = await modifyComment({
-        postId: this.$state.postId,
-        commentId: commentId,
-        content: this.$state.commentInput,
-      })
-      if (response.success) {
-        const { message, data } = response.data
-        const { commentId, content, updatedAt } = data
+    const response = await modifyComment({
+      postId: this.$state.postId,
+      commentId: commentId,
+      content: this.$state.commentInput,
+    })
+    if (response.success) {
+      const { message, data } = response.data
+      const { commentId, content, updatedAt } = data
 
-        const modifiedComment = this.$state.postData.comments.map(comment => {
-          if (comment.commentId === commentId) {
-            return {
-              ...comment,
-              content: content,
-            }
-          } else {
-            return comment
+      const modifiedComment = this.$state.postData.comments.map(comment => {
+        if (comment.commentId === commentId) {
+          return {
+            ...comment,
+            content: content,
           }
-        })
+        } else {
+          return comment
+        }
+      })
 
-        this.setState({
-          postData: { ...this.$state.postData, comments: modifiedComment },
-          commentInput: null,
-          editingCommentId: null,
-        })
-      } else {
-        new Toast({ message: '댓글 추가 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+      this.setState({
+        postData: { ...this.$state.postData, comments: modifiedComment },
+        commentInput: null,
+        editingCommentId: null,
+      })
+    } else {
+      new Toast({ message: '댓글 추가 실패' })
     }
   }
   /** 댓글 수정 API */
   async deleteCommentHandler(commentId) {
-    try {
-      const response = await deleteComment({
-        postId: this.$state.postId,
-        commentId: commentId,
+    const response = await deleteComment({
+      postId: this.$state.postId,
+      commentId: commentId,
+    })
+    if (response.success) {
+      const modifiedComments = this.$state.postData.comments.filter(comment => {
+        if (comment.commentId === commentId) {
+          return false
+        }
+        return true
       })
-      if (response.success) {
-        const modifiedComments = this.$state.postData.comments.filter(comment => {
-          if (comment.commentId === commentId) {
-            return false
-          }
-          return true
-        })
 
-        this.setState({
-          postData: { ...this.$state.postData, comments: modifiedComments },
-        })
-        new Toast({ message: '댓글이 삭제되었습니다' })
-      } else {
-        new Toast({ message: '댓글 삭제 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+      this.setState({
+        postData: { ...this.$state.postData, comments: modifiedComments },
+      })
+      new Toast({ message: '댓글이 삭제되었습니다' })
+    } else {
+      new Toast({ message: '댓글 삭제 실패' })
     }
   }
 
@@ -351,37 +331,29 @@ class PostDetail extends Component {
   }
   /** 좋아요 추가 API */
   async createLikeHandler(postId) {
-    try {
-      const response = await createLikes({
-        postId,
+    const response = await createLikes({
+      postId,
+    })
+    if (response.success) {
+      this.setState({
+        postData: { ...this.$state.postData, liked: true, likeCount: this.$state.postData.likeCount + 1 },
       })
-      if (response.success) {
-        this.setState({
-          postData: { ...this.$state.postData, liked: true, likeCount: this.$state.postData.likeCount + 1 },
-        })
-      } else {
-        new Toast({ message: '좋아요 추가 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    } else {
+      new Toast({ message: '좋아요 추가 실패' })
     }
   }
 
   /** 좋아요 삭제 API */
   async deleteLikeHandler(postId) {
-    try {
-      const response = await deleteLikes({
-        postId,
+    const response = await deleteLikes({
+      postId,
+    })
+    if (response.success) {
+      this.setState({
+        postData: { ...this.$state.postData, liked: false, likeCount: this.$state.postData.likeCount - 1 },
       })
-      if (response.success) {
-        this.setState({
-          postData: { ...this.$state.postData, liked: false, likeCount: this.$state.postData.likeCount - 1 },
-        })
-      } else {
-        new Toast({ message: '좋아요 삭제 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    } else {
+      new Toast({ message: '좋아요 삭제 실패' })
     }
   }
 }

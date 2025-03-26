@@ -103,43 +103,35 @@ class PostModify extends Component {
 
   /** 게시글 정보 가져오기 API */
   async fetchPostData() {
-    try {
-      const response = await getPost({ postId: this.$state.postId })
-      if (response.success) {
-        const { message, data } = response.data
-        const { postData, userData } = data
+    const response = await getPost({ postId: this.$state.postId })
+    if (response.success) {
+      const { message, data } = response.data
+      const { postData, userData } = data
 
-        this.setState({
-          titleInput: postData.title,
-          contentInput: postData.content,
-          imageInput: postData.imageUrl,
-        })
-      } else {
-        new Toast({ message: '게시글 정보 가져오기 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+      this.setState({
+        titleInput: postData.title,
+        contentInput: postData.content,
+        imageInput: postData.imageUrl,
+      })
+    } else {
+      new Toast({ message: '게시글 정보 가져오기 실패' })
     }
   }
 
   /** 게시글 정보 가져오기 API */
   async modifyPostHandler() {
-    try {
-      const { postId, titleInput, contentInput, imageInput } = this.$state
-      const response = await modifyPost({
-        postId: postId,
-        title: titleInput,
-        content: contentInput,
-        imageUrl: imageInput,
-      })
-      if (response.success) {
-        navigateTo(ROUTES.POST.DETAIL.url(postId))
-        new Toast({ message: '게시글 수정 완료' })
-      } else {
-        new Toast({ message: '게시글 수정 실패' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    const { postId, titleInput, contentInput, imageInput } = this.$state
+    const response = await modifyPost({
+      postId: postId,
+      title: titleInput,
+      content: contentInput,
+      imageUrl: imageInput,
+    })
+    if (response.success) {
+      navigateTo(ROUTES.POST.DETAIL.url(postId))
+      new Toast({ message: '게시글 수정 완료' })
+    } else {
+      new Toast({ message: '게시글 수정 실패' })
     }
   }
 }

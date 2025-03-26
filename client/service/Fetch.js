@@ -1,3 +1,4 @@
+import { getAccessToken } from '../lib/utils/auth.js'
 import { API_BASE_URL } from './endpoints.js'
 
 /**
@@ -9,7 +10,7 @@ import { API_BASE_URL } from './endpoints.js'
 export const Fetch = async (endpoint, options = {}) => {
   const { method, url } = endpoint
 
-  const { params = {}, body, headers = {}, token } = options
+  const { params = {}, body, headers = {}, auth = false } = options
 
   // 쿼리 파라미터 처리
   const queryString = new URLSearchParams(params).toString()
@@ -24,8 +25,9 @@ export const Fetch = async (endpoint, options = {}) => {
   }
 
   // AT가 있다면 Authorization 헤더 추가
-  if (token) {
-    fetchOptions.headers['Authorization'] = `Bearer ${token}`
+  if (auth) {
+    const accessToken = getAccessToken()
+    fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
   }
 
   if (body) {
@@ -42,11 +44,11 @@ export const Fetch = async (endpoint, options = {}) => {
 
     const data = await response.json()
     if (!response.ok) {
-      throw new Error(data.message || 'API 요청 실패')
+      return { success: false, error: data.message || 'API 요청 실패', status: response.status }
     }
+
     return { success: true, data }
   } catch (error) {
-    console.error('API 요청 에러:', error)
-    throw error
+    return { success: false, error: error.message || '네트워크 오류' }
   }
 }

@@ -121,33 +121,29 @@ class Login extends Component {
   async loginHandler(event) {
     event.preventDefault()
 
-    try {
-      const body = {
-        email: this.$state.email,
-        password: this.$state.password,
-        nickname: this.$state.nickname,
-        imageUrl: this.$state.profileImage,
-      }
+    const body = {
+      email: this.$state.email,
+      password: this.$state.password,
+      nickname: this.$state.nickname,
+      imageUrl: this.$state.profileImage,
+    }
 
-      const response = await loginUser(body)
-      if (response.success) {
-        const { message, data } = response.data
-        const { userId, accessToken } = data
+    const response = await loginUser(body)
+    if (response.success) {
+      const { message, data } = response.data
+      const { userId, accessToken } = data
 
-        localStorage.setItem(
-          'auth',
-          JSON.stringify({
-            userId,
-            accessToken,
-          }),
-        )
+      localStorage.setItem(
+        'auth',
+        JSON.stringify({
+          userId,
+          accessToken,
+        }),
+      )
 
-        navigateTo(ROUTES.POST.MAIN.url)
-      } else {
-        new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+      navigateTo(ROUTES.POST.MAIN.url)
+    } else {
+      new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
     }
   }
 

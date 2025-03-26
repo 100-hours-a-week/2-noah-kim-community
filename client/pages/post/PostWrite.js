@@ -127,23 +127,18 @@ class PostWrite extends Component {
 
   /** 수정하러 가기 */
   async createPostHandler() {
-    try {
-      const body = {
-        title: this.$state.title,
-        content: this.$state.content,
-        imageUrl: this.$state.imageUrl,
-      }
+    const body = {
+      title: this.$state.title,
+      content: this.$state.content,
+      imageUrl: this.$state.imageUrl,
+    }
+    const response = await createPost(body)
+    if (response.success) {
+      new Toast({ message: '게시글 생성 성공!' })
 
-      const response = await createPost(body)
-      if (response.success) {
-        new Toast({ message: '게시글 생성 성공!' })
-
-        // navigateTo(ROUTES.POST.MAIN.url)
-      } else {
-        new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+      // navigateTo(ROUTES.POST.MAIN.url)
+    } else {
+      new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
     }
     // navigateTo(ROUTES.POST.DETAIL.url)
   }

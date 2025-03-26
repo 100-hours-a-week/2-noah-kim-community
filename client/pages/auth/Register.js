@@ -289,24 +289,20 @@ class Register extends Component {
   async registerHandler(event) {
     event.preventDefault()
 
-    try {
-      const body = {
-        email: this.$state.email,
-        password: this.$state.password,
-        nickname: this.$state.nickname,
-        imageUrl: this.$state.profileImage,
-      }
+    const body = {
+      email: this.$state.email,
+      password: this.$state.password,
+      nickname: this.$state.nickname,
+      imageUrl: this.$state.profileImage,
+    }
 
-      const response = await registerUser(body)
+    const response = await registerUser(body)
 
-      if (response.success) {
-        navigateTo(ROUTES.AUTH.LOGIN.url)
-        new Toast({ message: '회원가입 성공!' })
-      } else {
-        new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    if (response.success) {
+      navigateTo(ROUTES.AUTH.LOGIN.url)
+      new Toast({ message: '회원가입 성공!' })
+    } else {
+      new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
     }
   }
 }
