@@ -35,6 +35,7 @@ const PostEndpoints = {
 const CommentEndpoints = {
   CREATE: postId => ({ method: HTTPMethods.POST, url: `${POST_BASE}/${postId}${COMMENT_BASE}` }),
   MODIFY: (postId, commentId) => ({ method: HTTPMethods.PATCH, url: `${POST_BASE}/${postId}${COMMENT_BASE}/${commentId}` }),
+  DELETE: (postId, commentId) => ({ method: HTTPMethods.DELETE, url: `${POST_BASE}/${postId}${COMMENT_BASE}/${commentId}` }),
 }
 
 const LikeEndpoints = {

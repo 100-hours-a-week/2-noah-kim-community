@@ -24,6 +24,7 @@ export const getPost = async ({ postId }) => {
 /**
  * 댓글 관련 API
  */
+// 댓글 생성
 export const createComment = async ({ postId, content }) => {
   const ENDPOINT = APIEndpoints.COMMENT.CREATE(postId)
 
@@ -34,6 +35,7 @@ export const createComment = async ({ postId, content }) => {
   return response
 }
 
+// 댓글 수정
 export const modifyComment = async ({ postId, commentId, content }) => {
   const ENDPOINT = APIEndpoints.COMMENT.MODIFY(postId, commentId)
 
@@ -41,5 +43,15 @@ export const modifyComment = async ({ postId, commentId, content }) => {
   const body = { content }
 
   const response = await Fetch(ENDPOINT, { body, token })
+  return response
+}
+
+// 댓글 삭제
+export const deleteComment = async ({ postId, commentId }) => {
+  const ENDPOINT = APIEndpoints.COMMENT.DELETE(postId, commentId)
+
+  const token = getAccessToken()
+
+  const response = await Fetch(ENDPOINT, { token })
   return response
 }

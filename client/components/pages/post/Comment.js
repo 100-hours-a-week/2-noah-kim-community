@@ -54,7 +54,7 @@ class Comment extends InlineComponent {
 
     new Button(this.$elements.commentDeleteButton, {
       text: '삭제',
-      onClick: this.deleteCommentHandler.bind(this),
+      onClick: this.openDeleteModal.bind(this),
       className: 'comment-delete',
     })
   }
@@ -70,15 +70,18 @@ class Comment extends InlineComponent {
     this.$props.modifyClickHandler(commentId, content)
   }
 
-  deleteCommentHandler() {
+  openDeleteModal() {
+    const { commentId } = this.$props
     new Modal({
       title: '댓글을 삭제하시겠습니까?',
       message: '삭제한 내용은 복구 할 수 없습니다.',
       confirmText: '확인',
       cancelText: '취소',
       onConfirm: () => {
-        // TODO: 댓글 삭제 로직 구현
-        // navigateTo(ROUTES.AUTH.LOGIN.url)
+        console.log(this.$props.modifyClickHandler)
+        console.log(this.$props.deleteClickHandler)
+
+        this.$props.deleteClickHandler(commentId)
       },
     })
   }

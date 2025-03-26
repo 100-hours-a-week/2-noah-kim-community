@@ -7,7 +7,7 @@ import { parseISOToFullString } from '../../lib/utils/date.js'
 import { formatNumber } from '../../lib/utils/number.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
-import { createComment, getPost, modifyComment } from '../../service/postService.js'
+import { createComment, deleteComment, getPost, modifyComment } from '../../service/postService.js'
 
 const defaultPost = {
   postId: null,
@@ -124,18 +124,20 @@ class PostDetail extends Component {
       commentList: this.$target.querySelector('#comment-list'),
     }
 
-    // 자식 요소 정의
+    // 게시글 수정 버튼
     new Button(this.$elements.modifyPostButton, {
       text: '수정',
       onClick: this.navigateToModifyPost.bind(this),
       idName: 'modify-post',
     })
+    // 게시글 삭제 버튼
     new Button(this.$elements.deletePostButton, {
       text: '삭제',
       onClick: this.deletePostHandler.bind(this),
       idName: 'delete-post',
     })
 
+    // 댓글 추가 버튼
     const createCommentProps = {
       text: '댓글 등록',
       onClick: this.createCommentHandler.bind(this),
@@ -148,8 +150,8 @@ class PostDetail extends Component {
     }
     new Button(this.$elements.commentAddButton, !this.$state.editingCommentId ? createCommentProps : modifyCommentProps)
 
+    // 댓글들
     const comments = this.$state.postData?.comments ?? []
-
     comments.forEach(comment => {
       const commentWrapper = document.createElement('div')
       this.$elements.commentList.appendChild(commentWrapper)
@@ -157,6 +159,7 @@ class PostDetail extends Component {
       new Comment(commentWrapper, {
         ...comment,
         modifyClickHandler: this.modifyClickHandler.bind(this),
+        deleteClickHandler: this.deleteCommentHandler.bind(this),
       })
     })
   }
@@ -180,8 +183,7 @@ class PostDetail extends Component {
       confirmText: '확인',
       cancelText: '취소',
       onConfirm: () => {
-        // TODO: 게시글 삭제 로직 구현
-        // navigateTo(ROUTES.AUTH.LOGIN.url)
+        new Toast({ message: '댓글이 삭제되었습니다' })
       },
     })
   }
@@ -267,6 +269,34 @@ class PostDetail extends Component {
         })
       } else {
         new Toast({ message: '댓글 추가 실패' })
+      }
+    } catch (error) {
+      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    }
+  }
+  /** 댓글 수정 API */
+  async deleteCommentHandler(commentId) {
+    console.log('entered deleteCommentHandler')
+
+    try {
+      const response = await deleteComment({
+        postId: this.$state.postId,
+        commentId: commentId,
+      })
+      if (response.success) {
+        const modifiedComments = this.$state.postData.comments.filter(comment => {
+          if (comment.commentId === commentId) {
+            return false
+          }
+          return true
+        })
+
+        this.setState({
+          postData: { ...this.$state.postData, comments: modifiedComments },
+        })
+        new Toast({ message: '댓글이 삭제되었습니다' })
+      } else {
+        new Toast({ message: '댓글 삭제 실패' })
       }
     } catch (error) {
       new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
