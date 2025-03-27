@@ -1,8 +1,14 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
+import TextInput from '../../components/common/TextInput/TextInput.js'
+import Textarea from '../../components/common/Textarea/Textarea.js'
 import Toast from '../../components/common/Toast/Toast.js'
+import { ROUTES } from '../../public/data/routes.js'
+import { navigateTo } from '../../router.js'
 import { createPost } from '../../service/postService.js'
 class PostWrite extends Component {
+  isComposing = false
+
   setup() {
     /** 상태 정의 */
     this.$state = {
@@ -26,22 +32,13 @@ class PostWrite extends Component {
 
         <form>
           <div id="post-title">
-            <label>제목*</label>
-            <input
-              id="title-input"
-              type="title"
-              value="${this.$state.title}"
-              placeholder="제목을 입력하세요. (최대 26글자)"
-            />
+            <label>제목</label>
+            <input id="title-input"/>
           </div>
 
           <div id="post-content">
             <label>내용*</label>
-            <textarea
-              id="content-input"
-              type="content"
-              placeholder="내용을 입력하세요"
-            >${this.$state.content}</textarea>
+            <textarea id="content-input"></textarea>
           </div>
 
           <span class="error-message"></span>
@@ -76,18 +73,27 @@ class PostWrite extends Component {
       onClick: this.createPostHandler.bind(this),
       idName: 'submit-button',
     })
+
+    new TextInput(this.$elements.titleInput, {
+      id: 'title-input',
+      type: 'text',
+      value: this.$state.title,
+      placeholder: '제목을 입력하세요. (최대 26글자)',
+      changeHandler: value => this.setState({ title: value }),
+      callback: this.validateTitle.bind(this),
+    })
+
+    new Textarea(this.$elements.textareaInput, {
+      id: 'content-input',
+      type: 'text',
+      value: this.$state.content,
+      placeholder: '내용을 입력하세요',
+      changeHandler: value => this.setState({ content: value }),
+      callback: this.validateTitle.bind(this),
+    })
   }
 
   setEvent() {
-    this.addEvent(this.$elements.titleInput, 'input', event => {
-      this.setState({ title: event.target.value })
-      this.validateTitle()
-    })
-
-    this.addEvent(this.$elements.textareaInput, 'input', event => {
-      this.setState({ content: event.target.value })
-    })
-
     this.addEvent(this.$elements.imageInput, 'input', event => {
       const file = event.target.files[0]
       // TODO: 이미지 업로드 및 경로로 저장
@@ -134,13 +140,13 @@ class PostWrite extends Component {
     }
     const response = await createPost(body)
     if (response.success) {
+      const { message, data } = response.data
+      const { postId } = data
+      navigateTo(ROUTES.POST.DETAIL.url(postId))
       new Toast({ message: '게시글 생성 성공!' })
-
-      // navigateTo(ROUTES.POST.MAIN.url)
     } else {
       new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
     }
-    // navigateTo(ROUTES.POST.DETAIL.url)
   }
 
   setState(newState) {

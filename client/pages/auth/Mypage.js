@@ -92,6 +92,8 @@ class Mypage extends Component {
 
   setEvent() {
     this.addEvent(this.$elements.nicknameInput, 'input', event => {
+      event.preventDefault()
+      event.stopPropagation()
       this.setState({ nicknameInput: event.target.value })
       this.validateNickname
     })

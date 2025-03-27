@@ -293,7 +293,7 @@ class Register extends Component {
       email: this.$state.email,
       password: this.$state.password,
       nickname: this.$state.nickname,
-      imageUrl: this.$state.profileImage,
+      imageUrl: `https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg`,
     }
 
     const response = await registerUser(body)

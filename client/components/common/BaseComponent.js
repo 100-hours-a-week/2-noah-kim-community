@@ -51,28 +51,28 @@ class BaseComponent {
   setEvent() {}
 
   setState(newState) {
-    // 1. 현재 포커스된 엘리먼트 기억
     const activeElement = document.activeElement
-    const id = activeElement?.id
+
+    const isInput = activeElement && ['INPUT', 'TEXTAREA'].includes(activeElement.tagName) && activeElement.type !== 'file'
+    const inputId = activeElement?.id
+    const cursorPos = activeElement?.selectionStart
 
     this.$state = { ...this.$state, ...newState }
-    this.render() // UI를 다시 그려서 상태 반영
-    this.setEvent() // 새 DOM에 이벤트 다시 바인딩
+    this.render()
+    this.setEvent()
 
-    // const SUPPORTED_INPUT_TYPES = ['text', 'search', 'url', 'tel', 'password']
-    // if (id) {
-    //   const nextInput = document.getElementById(id)
-
-    //   if (nextInput) {
-    //     nextInput.focus()
-
-    //     const inputType = nextInput.type
-    //     if (SUPPORTED_INPUT_TYPES.includes(inputType)) {
-    //       const len = nextInput.value.length
-    //       nextInput.setSelectionRange(len, len)
-    //     }
-    //   }
-    // }
+    // 입력 위치 복원
+    if (isInput && inputId) {
+      const inputElement = document.getElementById(inputId)
+      requestAnimationFrame(() => {
+        const inputElement = document.getElementById(inputId)
+        if (inputElement) {
+          inputElement.focus()
+          const len = inputElement.value.length
+          inputElement.setSelectionRange(cursorPos ?? len, cursorPos ?? len)
+        }
+      })
+    }
   }
 
   /** 이벤트 등록 추상화 */
