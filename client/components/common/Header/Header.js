@@ -1,14 +1,14 @@
-import { removeAuthData } from '../../../lib/utils/auth.js'
+import { getAuthData, removeAuthData } from '../../../lib/utils/auth.js'
 import { ROUTES } from '../../../public/data/routes.js'
 import { navigateTo } from '../../../router.js'
 import Component from '../Component.js'
 
-// 기본적으로 뒤로 갈 경로를 정의하는 규칙
+// 뒤로 갈 경로
 const BACK_ROUTE_MAP = {
-  REGISTER: 'LOGIN', // 회원가입 → 로그인
-  DETAIL: 'MAIN', // 게시글 상세 → 게시글 목록
-  MODIFY: 'DETAIL', // 게시글 수정 → 게시글 상세,
-  WRITE: 'MAIN', // 게시글 작성 → 게시글 상세,
+  REGISTER: 'LOGIN',
+  DETAIL: 'MAIN',
+  MODIFY: 'DETAIL',
+  WRITE: 'MAIN',
 }
 
 // BACK_ROUTE 자동 생성 함수
@@ -42,6 +42,7 @@ class Header extends Component {
 
   template() {
     const backButton = this.$state.backRoute ? `<div id="back-button">&lt;</div>` : ''
+    const authData = getAuthData()
 
     return `
       ${backButton}
@@ -52,7 +53,7 @@ class Header extends Component {
           <ul>
             <li id="mypage-link">회원정보수정</li>
             <li id="password-change-link">비밀번호수정</li>
-            <li id="logout-link">로그아웃</li>
+            ${authData ? `<li id="auth-link">로그아웃</li>` : `<li id="auth-link">로그인</li>`}
           </ul>
         </div>
       </div>
@@ -67,7 +68,8 @@ class Header extends Component {
       dropdownMenu: this.$target.querySelector('#dropdown-menu'),
       mypageLink: this.$target.querySelector('#mypage-link'),
       passwordChangeLink: this.$target.querySelector('#password-change-link'),
-      logoutLink: this.$target.querySelector('#logout-link'),
+
+      authLink: this.$target.querySelector('#auth-link'),
     }
 
     if (this.$state.backRoute) {
@@ -97,10 +99,17 @@ class Header extends Component {
       navigateTo(ROUTES.AUTH.PASSWORD_CHANGE.url)
     })
 
-    // TODO: 로그아웃 로직 이벤트 구현
-    this.addEvent(this.$elements.logoutLink, 'click', event => {
-      removeAuthData()
-      navigateTo(ROUTES.AUTH.LOGIN.url)
+    this.addEvent(this.$elements.authLink, 'click', event => {
+      const authData = getAuthData()
+      // 로그아웃
+      if (authData) {
+        removeAuthData()
+        navigateTo(ROUTES.AUTH.LOGIN.url)
+      }
+      // 로그인
+      else {
+        navigateTo(ROUTES.AUTH.LOGIN.url)
+      }
     })
 
     if (this.$state.backRoute) {

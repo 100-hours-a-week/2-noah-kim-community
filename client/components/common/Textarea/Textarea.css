@@ -1,0 +1,7 @@
+textarea {
+  width: 100%;
+  margin: 12px 24px;
+  background: inherit;
+  border: none;
+  height: 200px;
+}

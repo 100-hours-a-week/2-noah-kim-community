@@ -5,7 +5,7 @@ class TextInput extends InlineComponent {
     this.loadStyles()
   }
   loadStyles() {
-    super.loadStyles('/components/common/Input/Input.css')
+    super.loadStyles('/components/common/TextInput/TextInput.css')
   }
 
   template() {

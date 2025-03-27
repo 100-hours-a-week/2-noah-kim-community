@@ -28,23 +28,6 @@ label {
   padding: 24px;
 }
 
-input {
-  width: 100%;
-  margin: 12px 24px;
-  background: none;
-  border: none;
-
-  padding-left: 0;
-}
-
-textarea {
-  width: 100%;
-  margin: 12px 24px;
-  background: inherit;
-  border: none;
-  height: 200px;
-}
-
 button {
   width: 354px;
 }
