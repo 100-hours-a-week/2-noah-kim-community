@@ -3,6 +3,7 @@ import BaseComponent from './BaseComponent.js'
 class InlineComponent extends BaseComponent {
   /** 템플릿을 실제 요소로 변환  */
   render() {
+    super.render()
     const wrapper = document.createElement('div') // 임시 래퍼 요소
     wrapper.innerHTML = this.template().trim()
 

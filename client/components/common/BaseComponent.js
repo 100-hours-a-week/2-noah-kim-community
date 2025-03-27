@@ -1,3 +1,6 @@
+import { EffectManager } from './EffectManager.js'
+import { StateManager } from './StateManager.js'
+
 class BaseComponent {
   $target
   $props
@@ -13,6 +16,13 @@ class BaseComponent {
       this.$target = $targetOrProps
       this.$props = $props
     }
+
+    // Hook 시스템 초기화
+    this._stateManager = new StateManager(this)
+    this.useState = this._stateManager.useState.bind(this._stateManager)
+
+    this._effectManager = new EffectManager(this)
+    this.useEffect = this._effectManager.useEffect.bind(this._effectManager)
 
     this.setup() // #1
     this.render() // #2
@@ -37,7 +47,10 @@ class BaseComponent {
   }
 
   /** #2 템플릿을 실제 요소로 변환  */
-  render() {}
+  render() {
+    this._stateManager.resetCursor?.()
+    this._effectManager.runEffects?.()
+  }
 
   /** #2 HTML 템플릿 저장 */
   template() {
