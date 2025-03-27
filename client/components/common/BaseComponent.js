@@ -49,7 +49,6 @@ class BaseComponent {
   /** #2 템플릿을 실제 요소로 변환  */
   render() {
     this._stateManager.resetCursor?.()
-    this._effectManager.runEffects?.()
   }
 
   /** #2 HTML 템플릿 저장 */

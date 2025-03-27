@@ -18,7 +18,9 @@ export class EffectManager {
       const { callback, deps, hasRun, prevDeps } = effect
 
       /**
-       * 아직 한 번도 실행 안 했거나 / 이전 deps가 없거나 / deps 중 하나라도 변경됐다면
+       * 아직 한 번도 실행 안 했거나(최초 렌더링)
+       * 이전 deps가 없거나 (최초 상태 변경)
+       * deps 중 하나라도 변경됐다면 (최초 아닌 상태 변경)
        */
       const shouldRun = !hasRun || !prevDeps || deps.some((dep, i) => dep !== prevDeps[i])
 
