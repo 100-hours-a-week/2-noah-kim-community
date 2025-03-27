@@ -1,5 +1,6 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
+import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
 import { validateEmailInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
@@ -26,23 +27,13 @@ class Login extends Component {
         <form>
           <div class="form-field">
             <label>이메일</label>
-            <input
-              id="email-input"
-              type="email"
-              value="${this.$state.email}"
-              placeholder="이메일을 입력하세요"
-            />
+            <input id="email-input" />
           </div>
           <div class="error-message" id="email-error-message"></div>
 
           <div class="form-field">
             <label>비밀번호</label>
-            <input
-              id="password-input"
-              type="password"
-              value="${this.$state.password}"
-              placeholder="비밀번호를 입력하세요"
-            />
+            <input id="password-input" />
           </div>
           <div class="error-message" id="password-error-message"></div>
         </form>
@@ -65,6 +56,30 @@ class Login extends Component {
     }
 
     // 자식 요소 정의
+    new TextInput(this.$elements.emailInput, {
+      id: 'email-input',
+      type: 'text',
+      value: this.$state.email,
+      placeholder: '이메일을 입력하세요',
+      changeHandler: value => this.setState({ email: value }),
+      callback: () => {
+        this.validateEmail()
+        this.validateForm()
+      },
+    })
+
+    new TextInput(this.$elements.passwordInput, {
+      id: 'password-input',
+      type: 'password',
+      value: this.$state.password,
+      placeholder: '비밀번호를 입력하세요',
+      changeHandler: value => this.setState({ password: value }),
+      callback: () => {
+        this.validatePassword()
+        this.validateForm()
+      },
+    })
+
     new Button(this.$elements.loginButton, {
       text: '로그인',
       onClick: this.loginHandler.bind(this),

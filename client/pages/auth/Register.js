@@ -1,5 +1,6 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
+import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
 import {
   validateEmailInput,
@@ -56,37 +57,21 @@ class Register extends Component {
           <!-- 이메일 -->
           <div class="form-field" id="email">
             <label for="email-val">이메일*</label>
-            <input
-              type="text"
-              inputmode="email"
-              id="email-val"
-              value="${this.$state.email}"
-              placeholder="이메일을 입력하세요"
-            />
+            <input id="email-val" />
             <div class="error-message" id="email-error">* helper text</div>
           </div>
 
           <!-- 비밀번호 -->
           <div class="form-field" id="password">
             <label for="password-val">비밀번호*</label>
-            <input
-              type="password"
-              id="password-val"
-              value="${this.$state.password}"
-              placeholder="비밀번호를 입력하세요"
-            />
+            <input id="password-val" />
             <div class="error-message" id="password-error">* helper text</div>
           </div>
 
           <!-- 비밀번호 확인 -->
           <div class="form-field" id="password-confirm">
             <label for="password-confirm-val">비밀번호 확인*</label>
-            <input
-              type="password"
-              id="password-confirm-val"
-              value="${this.$state.passwordConfirm}"
-              placeholder="비밀번호를 한번 더 입력하세요"
-            />
+            <input id="password-confirm-val" />
             <div class="error-message" id="password-confirm-error">
               * helper text
             </div>
@@ -95,12 +80,7 @@ class Register extends Component {
           <!-- 닉네임 -->
           <div class="form-field" id="nickname">
             <label for="nickname-val">닉네임*</label>
-            <input
-              type="text"
-              id="nickname-val"
-              value="${this.$state.nickname}"
-              placeholder="닉네임을 입력하세요"
-            />
+            <input id="nickname-val" />
             <div class="error-message" id="nickname-error">* helper text</div>
           </div>
 
@@ -140,6 +120,55 @@ class Register extends Component {
     }
 
     // 자식 요소 정의
+    new TextInput(this.$elements.emailInput, {
+      id: 'email-val',
+      type: 'text',
+      value: this.$state.email,
+      placeholder: '이메일을 입력하세요',
+      changeHandler: value => this.setState({ email: value }),
+      callback: () => {
+        console.log('execeted validateEmail')
+
+        this.validateEmail()
+        this.validateForm()
+      },
+    })
+
+    new TextInput(this.$elements.passwordInput, {
+      id: 'password-val',
+      type: 'password',
+      value: this.$state.password,
+      placeholder: '비밀번호를 입력하세요',
+      changeHandler: value => this.setState({ password: value }),
+      callback: () => {
+        this.validatePassword()
+        this.validateForm()
+      },
+    })
+    new TextInput(this.$elements.passwordConfirmInput, {
+      id: 'password-confirm-val',
+      type: 'password',
+      value: this.$state.passwordConfirm,
+      placeholder: '비밀번호를 한번 더 입력하세요',
+      changeHandler: value => this.setState({ passwordConfirm: value }),
+      callback: () => {
+        this.validatePasswordConfirm()
+        this.validateForm()
+      },
+    })
+
+    new TextInput(this.$elements.nicknameInput, {
+      id: 'nickname-val',
+      type: 'text',
+      value: this.$state.nickname,
+      placeholder: '닉네임을 입력하세요',
+      changeHandler: value => this.setState({ nickname: value }),
+      callback: () => {
+        this.validateNickname()
+        this.validateForm()
+      },
+    })
+
     new Button(this.$elements.registerButton, {
       text: '회원가입',
       onClick: this.registerHandler.bind(this),
@@ -161,27 +190,6 @@ class Register extends Component {
     this.addEvent(this.$elements.profileInput, 'change', this.profileChangeHandler.bind(this))
 
     this.addEvent(this.$elements.profilePreview, 'click', this.getProfileImage.bind(this))
-    // 입력 이벤트
-    this.addEvent(this.$elements.emailInput, 'input', event => {
-      this.setState({ email: event.target.value })
-      this.validateEmail()
-      this.validateForm()
-    })
-    this.addEvent(this.$elements.passwordInput, 'input', event => {
-      this.setState({ password: event.target.value })
-      this.validatePassword()
-      this.validateForm()
-    })
-    this.addEvent(this.$elements.passwordConfirmInput, 'input', event => {
-      this.setState({ passwordConfirm: event.target.value })
-      this.validatePasswordConfirm()
-      this.validateForm()
-    })
-    this.addEvent(this.$elements.nicknameInput, 'input', event => {
-      this.setState({ nickname: event.target.value })
-      this.validateNickname()
-      this.validateForm()
-    })
   }
 
   // 이미지가 입력받아지면 수행할 일

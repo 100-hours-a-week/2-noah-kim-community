@@ -1,7 +1,6 @@
 textarea {
   width: 100%;
-  margin: 12px 24px;
-  background: inherit;
-  border: none;
+  margin: 10px 0px;
+
   height: 200px;
 }

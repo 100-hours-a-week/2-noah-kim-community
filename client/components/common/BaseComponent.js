@@ -61,8 +61,10 @@ class BaseComponent {
     this.render()
     this.setEvent()
 
+    const SUPPORTED_SELECTION_TYPES = ['text', 'search', 'url', 'tel', 'password']
+
     // 입력 위치 복원
-    if (isInput && inputId) {
+    if (isInput && inputId && SUPPORTED_SELECTION_TYPES.includes(activeElement?.type)) {
       const inputElement = document.getElementById(inputId)
       requestAnimationFrame(() => {
         const inputElement = document.getElementById(inputId)

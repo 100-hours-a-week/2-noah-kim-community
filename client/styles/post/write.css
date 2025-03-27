@@ -35,3 +35,8 @@ button {
 .error-message {
   padding-left: 24px;
 }
+
+#image-input {
+  background: inherit;
+  border: none;
+}

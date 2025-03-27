@@ -20,14 +20,15 @@ class TextInput extends InlineComponent {
       />
     `
   }
-  mounted() {}
 
   setEvent() {
     this.addEvent(this.$target, 'blur', () => {
       const { changeHandler, callback } = this.$props
 
       const value = this.$target?.value ?? ''
+
       changeHandler(value)
+      callback()
     })
   }
 }
