@@ -127,8 +127,6 @@ class Register extends Component {
       placeholder: '이메일을 입력하세요',
       changeHandler: value => this.setState({ email: value }),
       callback: () => {
-        console.log('execeted validateEmail')
-
         this.validateEmail()
         this.validateForm()
       },
