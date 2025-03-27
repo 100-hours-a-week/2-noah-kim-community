@@ -10,12 +10,12 @@ const PAGE_SIZE = 6
 
 class PostList extends Component {
   setup() {
-    this.$state = {
+    /** 상태 정의 */
+    this.useState('postData', {
       posts: [],
-
       currentPage: 0,
       totalPages: 0,
-    }
+    })
 
     this.loadStyles()
     this.fetchPostListData()
@@ -53,7 +53,7 @@ class PostList extends Component {
     })
 
     // 게시글들
-    const posts = this.$state.posts
+    const posts = this.postData.posts
     posts.forEach(post => {
       const postWrapper = document.createElement('div')
       this.$elements.postList.appendChild(postWrapper)
@@ -74,14 +74,14 @@ class PostList extends Component {
 
   /** 게시글 정보 가져오기 API */
   async fetchPostListData() {
-    const { posts, currentPage } = this.$state
+    const { posts, currentPage } = this.postData
     const response = await getPostList({ currentPage: currentPage, pageSize: PAGE_SIZE })
     if (response.success) {
       const { message, data } = response.data
       const { page, content } = data
       const { totalPages, totalElements } = page
 
-      this.setState({
+      this.setPostData({
         posts: [...posts, ...content],
         currentPage: currentPage + 1,
         totalPages: totalPages,
@@ -93,7 +93,7 @@ class PostList extends Component {
 
   handleScroll() {
     const scrollBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 100
-    if (scrollBottom && this.$state.totalPages !== this.$state.currentPage) {
+    if (scrollBottom && this.postData.totalPages !== this.postData.currentPage) {
       this.fetchPostListData()
     }
   }
