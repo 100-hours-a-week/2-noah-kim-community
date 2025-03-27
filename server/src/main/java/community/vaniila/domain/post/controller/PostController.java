@@ -11,6 +11,7 @@ import community.vaniila.domain.post.dto.response.post.PostDetailResponse;
 import community.vaniila.domain.post.service.CommentService;
 import community.vaniila.domain.post.service.LikeService;
 import community.vaniila.domain.post.service.PostService;
+import community.vaniila.domain.user.dto.response.CreateResponse;
 import community.vaniila.domain.utils.response.CommonResponse;
 import community.vaniila.domain.utils.security.JwtUtils;
 import jakarta.validation.Valid;
@@ -40,15 +41,16 @@ public class PostController {
 
   /** 게시글 생성 */
   @PostMapping
-  public ResponseEntity<Void> createPost(
+  public ResponseEntity<CommonResponse<CreateResponse>> createPost(
       @RequestHeader("Authorization") String authHeader,
       @RequestBody @Valid PostCreateRequest request
   ) {
     String token = authHeader.replace("Bearer ", "").trim();
     Long userId = jwtUtils.getId(token);
 
-    postService.createPost(userId, request);
-    return ResponseEntity.noContent().build();  // 204 No Content
+    CreateResponse response = postService.createPost(userId, request);
+
+    return ResponseEntity.ok(CommonResponse.success("게시글 상세 조회 완료", response));
   }
 
   /** 단일 게시글 조회 */

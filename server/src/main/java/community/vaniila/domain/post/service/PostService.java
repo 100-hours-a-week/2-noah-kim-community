@@ -10,6 +10,7 @@ import community.vaniila.domain.post.entity.Post;
 import community.vaniila.domain.post.repository.CommentRepository;
 import community.vaniila.domain.post.repository.LikeRepository;
 import community.vaniila.domain.post.repository.PostRepository;
+import community.vaniila.domain.user.dto.response.CreateResponse;
 import community.vaniila.domain.user.entity.User;
 import community.vaniila.domain.user.repository.UserRepository;
 import community.vaniila.domain.utils.response.CustomException;
@@ -37,12 +38,14 @@ public class PostService {
 
   /** 게시글 생성 */
   @Transactional
-  public void createPost(Long userId, PostCreateRequest request) {
+  public CreateResponse createPost(Long userId, PostCreateRequest request) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
     Post post = new Post(user, request.getTitle(), request.getContent(), request.getImageUrl());
-    postRepository.save(post);
+    Post savedPost = postRepository.save(post);
+
+    return new CreateResponse(savedPost.getId());
   }
 
   /** 게시글 수정 */
