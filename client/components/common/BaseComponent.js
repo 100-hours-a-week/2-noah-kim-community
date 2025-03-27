@@ -9,39 +9,20 @@ class BaseComponent {
     if (arguments.length === 1) {
       this.$props = $targetOrProps
     } else {
-    /** Component.js */
+      /** Component.js */
       this.$target = $targetOrProps
       this.$props = $props
     }
 
-    this.setup()
-    this.render()
-    this.setEvent()
+    this.setup() // #1
+    this.render() // #2
+    this.setEvent() // #3
   }
 
+  /** #1 초기 State 정의, Props 불러오기, CSS 로딩 */
   setup() {}
 
-  /** HTML 템플릿 저장 */
-  template() {
-    return ''
-  }
-
-  /** 컴포넌트에서 필요한 이벤트 설정 */
-  setEvent() {}
-
-  /** 템플릿을 실제 요소로 변환  */
-  render() {}
-
-  /** 자식 컴포넌트 및 요소 정의 */
-  mounted() {}
-
-  setState(newState) {
-    this.$state = { ...this.$state, ...newState }
-    this.render() // UI를 다시 그려서 상태 반영
-  }
-
-  /** CSS 불러오기 */
-  /** TODO: 스타일 없을때 에러처리 */
+  /** #1 CSS 불러오기 */
   loadStyles(stylePath) {
     if (!stylePath) return
 
@@ -51,8 +32,49 @@ class BaseComponent {
     const link = document.createElement('link')
     link.rel = 'stylesheet'
     link.href = stylePath
-    link.setAttribute('data-dynamic-style', stylePath) // 동적 스타일 태그 관리
+    link.setAttribute('data-dynamic-style', stylePath)
     document.head.appendChild(link)
+  }
+
+  /** #2 템플릿을 실제 요소로 변환  */
+  render() {}
+
+  /** #2 HTML 템플릿 저장 */
+  template() {
+    return ''
+  }
+
+  /** #2 자식 컴포넌트 및 요소 정의 */
+  mounted() {}
+
+  /** #3 컴포넌트에서 필요한 이벤트 설정 */
+  setEvent() {}
+
+  setState(newState) {
+    const activeElement = document.activeElement
+
+    const isInput = activeElement && ['INPUT', 'TEXTAREA'].includes(activeElement.tagName) && activeElement.type !== 'file'
+    const inputId = activeElement?.id
+    const cursorPos = activeElement?.selectionStart
+
+    this.$state = { ...this.$state, ...newState }
+    this.render()
+    this.setEvent()
+
+    const SUPPORTED_SELECTION_TYPES = ['text', 'search', 'url', 'tel', 'password']
+
+    // 입력 위치 복원
+    if (isInput && inputId && SUPPORTED_SELECTION_TYPES.includes(activeElement?.type)) {
+      const inputElement = document.getElementById(inputId)
+      requestAnimationFrame(() => {
+        const inputElement = document.getElementById(inputId)
+        if (inputElement) {
+          inputElement.focus()
+          const len = inputElement.value.length
+          inputElement.setSelectionRange(cursorPos ?? len, cursorPos ?? len)
+        }
+      })
+    }
   }
 
   /** 이벤트 등록 추상화 */

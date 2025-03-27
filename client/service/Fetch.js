@@ -1,4 +1,5 @@
-const API_BASE_URL = 'localhost:8080'
+import { getAccessToken } from '../lib/utils/auth.js'
+import { API_BASE_URL } from './endpoints.js'
 
 /**
  * API 요청을 처리하는 커스텀 fetch 함수
@@ -8,31 +9,46 @@ const API_BASE_URL = 'localhost:8080'
  */
 export const Fetch = async (endpoint, options = {}) => {
   const { method, url } = endpoint
-  const requestUrl = typeof url === 'function' ? url(options.params) : url
 
-  const config = {
-    method: method,
+  const { params = {}, body, headers = {}, auth = false } = options
+
+  // 쿼리 파라미터 처리
+  const queryString = new URLSearchParams(params).toString()
+  const fullEndpoint = `${API_BASE_URL}${url}${queryString ? `?${queryString}` : ''}`
+
+  const fetchOptions = {
+    method,
     headers: {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...headers,
     },
   }
 
-  if (options.body) {
-    config.body = JSON.stringify(options.body)
+  // AT가 있다면 Authorization 헤더 추가
+  if (auth) {
+    const accessToken = getAccessToken()
+    fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
+  }
+
+  if (body) {
+    fetchOptions.body = JSON.stringify(body)
   }
 
   try {
-    const response = await fetch(`${API_BASE_URL}${requestUrl}`, config)
-    const data = await response.json()
+    const response = await fetch(fullEndpoint, fetchOptions)
 
-    if (!response.ok) {
-      throw new Error(data?.message || 'API 요청 실패')
+    /** 204는 본문이 없다. */
+    if (response.status === 204) {
+      return { success: true, data: null }
     }
 
-    return data
+    const data = await response.json()
+    if (!response.ok) {
+      return { success: false, error: data.message || 'API 요청 실패', status: response.status }
+    }
+
+    return { success: true, data }
   } catch (error) {
-    console.error('API 요청 중 오류 발생:', error)
-    return { success: false, message: error.message }
+    return { success: false, error: error.message || '네트워크 오류' }
   }
 }

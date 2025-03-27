@@ -1,52 +1,30 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
-import { parseDateToFullString } from '../../lib/utils/date.js'
-import { formatNumber } from '../../lib/utils/number.js'
-import { DUMMY_POSTS } from '../../public/data/dummy_posts.js'
+import Toast from '../../components/common/Toast/Toast.js'
+import PostCard from '../../components/pages/post/PostCard.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
+import { getPostList } from '../../service/postService.js'
+
+const PAGE_SIZE = 6
 
 class PostList extends Component {
   setup() {
-    this.state = {
-      posts: DUMMY_POSTS,
+    this.$state = {
+      posts: [],
+
+      currentPage: 0,
+      totalPages: 0,
     }
 
     this.loadStyles()
+    this.fetchPostListData()
   }
   loadStyles() {
     super.loadStyles('/styles/post/list.css')
   }
 
   template() {
-    const { posts } = this.state
-
-    const postList = posts
-      .map(post => {
-        // TODO: 게시글 클릭 시 상세 페이지 이동
-        // li.addEventListener("click", () => {
-        //   window.location.href = URL.POST.DETAIL.url;
-        // });
-        return `<li class='post'>
-        <div id="post-header"> 
-          <strong>${post.title}</strong> 
-          <div id="post-header-details">
-            <ul>  
-              <li> 좋아요 ${formatNumber(post.likeCnt)}</li>
-              <li> 댓글 ${formatNumber(post.comments.length)} </li>
-              </li> 조회수 ${formatNumber(post.hitCnt)} </li>
-            </ul>
-            <span> ${parseDateToFullString(post.date)} </span>
-          </div>
-        </div> 
-        <div id="post-footer"> 
-          <div id="user-image"></div>
-           ${post.userName}
-        </div>
-      </li>`
-      })
-      .join('')
-
     return `
       <main id="main-content">
         <section id="title">
@@ -54,9 +32,7 @@ class PostList extends Component {
           <span>아무 말 대잔치 <strong>게시판</strong>입니다.</span>
         </section>
         <button id="write-button"></button>
-        <ul id="posts">
-          ${postList}
-        </ul>
+        <ul id="posts"></ul>
       </main>
     `
   }
@@ -65,6 +41,8 @@ class PostList extends Component {
     // DOM 요소 저장
     this.$elements = {
       writePostButton: this.$target.querySelector('#write-button'),
+
+      postList: this.$target.querySelector('#posts'),
     }
 
     // 자식 요소 정의
@@ -73,10 +51,51 @@ class PostList extends Component {
       onClick: this.navigateToWritePostRoute.bind(this),
       idName: 'write-button',
     })
+
+    // 게시글들
+    const posts = this.$state.posts
+    posts.forEach(post => {
+      const postWrapper = document.createElement('div')
+      this.$elements.postList.appendChild(postWrapper)
+
+      new PostCard(postWrapper, {
+        ...post,
+      })
+    })
+  }
+
+  setEvent() {
+    window.addEventListener('scroll', this.handleScroll.bind(this))
   }
 
   navigateToWritePostRoute() {
     navigateTo(ROUTES.POST.WRITE.url)
+  }
+
+  /** 게시글 정보 가져오기 API */
+  async fetchPostListData() {
+    const { posts, currentPage } = this.$state
+    const response = await getPostList({ currentPage: currentPage, pageSize: PAGE_SIZE })
+    if (response.success) {
+      const { message, data } = response.data
+      const { page, content } = data
+      const { totalPages, totalElements } = page
+
+      this.setState({
+        posts: [...posts, ...content],
+        currentPage: currentPage + 1,
+        totalPages: totalPages,
+      })
+    } else {
+      new Toast({ message: '게시글 목록 가져오기 실패' })
+    }
+  }
+
+  handleScroll() {
+    const scrollBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 100
+    if (scrollBottom && this.$state.totalPages !== this.$state.currentPage) {
+      this.fetchPostListData()
+    }
   }
 }
 

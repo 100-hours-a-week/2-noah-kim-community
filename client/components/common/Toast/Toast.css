@@ -18,3 +18,7 @@
 .toast.fade-out {
   opacity: 0;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}

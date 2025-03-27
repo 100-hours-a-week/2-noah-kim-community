@@ -11,8 +11,10 @@ import community.vaniila.domain.post.dto.response.post.PostDetailResponse;
 import community.vaniila.domain.post.service.CommentService;
 import community.vaniila.domain.post.service.LikeService;
 import community.vaniila.domain.post.service.PostService;
+import community.vaniila.domain.user.dto.response.CreateResponse;
 import community.vaniila.domain.utils.response.CommonResponse;
 import community.vaniila.domain.utils.security.JwtUtils;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,15 +41,16 @@ public class PostController {
 
   /** 게시글 생성 */
   @PostMapping
-  public ResponseEntity<Void> createPost(
+  public ResponseEntity<CommonResponse<CreateResponse>> createPost(
       @RequestHeader("Authorization") String authHeader,
-      @RequestBody PostCreateRequest request
+      @RequestBody @Valid PostCreateRequest request
   ) {
     String token = authHeader.replace("Bearer ", "").trim();
     Long userId = jwtUtils.getId(token);
 
-    postService.createPost(userId, request);
-    return ResponseEntity.noContent().build();  // 204 No Content
+    CreateResponse response = postService.createPost(userId, request);
+
+    return ResponseEntity.ok(CommonResponse.success("게시글 상세 조회 완료", response));
   }
 
   /** 단일 게시글 조회 */
@@ -59,7 +62,7 @@ public class PostController {
     Long userId = null;
     if (authHeader != null && authHeader.startsWith("Bearer ")) {
       String token = authHeader.replace("Bearer ", "").trim();
-      userId = jwtUtils.getId(token);  // ✅ 유효한 경우만 추출
+      userId = jwtUtils.getId(token);
     }
 
     PostDetailResponse response = postService.getPostDetail(postId, userId);
@@ -71,7 +74,7 @@ public class PostController {
   public ResponseEntity<Void> updatePost(
       @RequestHeader("Authorization") String authHeader,
       @PathVariable Long postId,
-      @RequestBody PostModifyRequest request
+      @RequestBody @Valid PostModifyRequest request
   ) {
     String token = authHeader.replace("Bearer ", "").trim();
     Long userId = jwtUtils.getId(token);
@@ -93,7 +96,7 @@ public class PostController {
     return ResponseEntity.noContent().build();  // 204 No Content
   }
 
-  /** 게시글 목록  */
+  /** 게시글 목록 */
   @GetMapping("/list")
   public ResponseEntity<CommonResponse<PostListResponse>> getPostList(
       @RequestParam("currentPage") int currentPage,
@@ -108,7 +111,7 @@ public class PostController {
   public ResponseEntity<CommonResponse<CommentCreateResponse>> createComment(
       @RequestHeader("Authorization") String authHeader,
       @PathVariable Long postId,
-      @RequestBody CommentCreateRequest request
+      @RequestBody @Valid CommentCreateRequest request
   ) {
     String token = authHeader.replace("Bearer ", "").trim();
     Long userId = jwtUtils.getId(token);
@@ -124,7 +127,7 @@ public class PostController {
       @RequestHeader("Authorization") String authHeader,
       @PathVariable Long postId,
       @PathVariable Long commentId,
-      @RequestBody CommentUpdateRequest request
+      @RequestBody @Valid CommentUpdateRequest request
   ) {
     System.out.println("entered post comment updatee");
     String token = authHeader.replace("Bearer ", "").trim();

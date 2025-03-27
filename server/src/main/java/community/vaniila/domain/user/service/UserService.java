@@ -7,6 +7,7 @@ import community.vaniila.domain.post.repository.LikeRepository;
 import community.vaniila.domain.post.repository.PostRepository;
 import community.vaniila.domain.user.dto.request.LoginRequest;
 import community.vaniila.domain.user.dto.response.LoginResponse;
+import community.vaniila.domain.user.dto.response.UserDataResponse;
 import community.vaniila.domain.user.entity.User;
 import community.vaniila.domain.user.repository.UserRepository;
 import community.vaniila.domain.utils.response.CustomException;
@@ -38,6 +39,9 @@ public class UserService {
       throw new CustomException(AuthErrorCode.AUTH_EMAIL_ALREADY_EXISTS);
     }
 
+    /** 중복 닉네임 검사 */
+    checkNicknameDuplication(nickname);
+
     // 비밀번호 해싱
     String hashedPassword = PasswordUtils.hashPassword(password);
 
@@ -49,12 +53,9 @@ public class UserService {
 
   @Transactional
   public LoginResponse loginUser(LoginRequest request) {
-    /**
-     * 예외 처리
-     * 회원가입된 이메일이 없는 경우
-     */
-    User user = userRepository.findByEmail(request.getEmail())
-        .orElseThrow(() ->new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+    /** 회원가입된 이메일이 없는 경우 */
+    User user = userRepository.findByEmailAndDeletedAtIsNull(request.getEmail())
+        .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
     if (!PasswordUtils.matches(request.getPassword(), user.getPassword())) {
       throw new CustomException(AuthErrorCode.AUTH_INVALID_PASSWORD);
@@ -66,13 +67,30 @@ public class UserService {
   }
 
   @Transactional
-  public void modifyUser(Long userId, String nickname, String imageUrl) {
-    if (nickname == null || imageUrl == null || nickname.isBlank() || imageUrl.isBlank()) {
-      throw new CustomException(AuthErrorCode.AUTH_INVALID_UPDATE_DATA);  // auth-004
-    }
-
+  public UserDataResponse getUser(Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+
+    return new UserDataResponse(
+        user.getId(),
+        user.getEmail(),
+        user.getNickname(),
+        user.getImageUrl()
+    );
+  }
+
+  @Transactional
+  public void modifyUser(Long userId, String nickname, String imageUrl) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+
+    /** 이미 회원 탈퇴한 유저인 경우 */
+    if (user.getDeletedAt() != null) {
+      throw new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND);
+    }
+
+    /** 중복 닉네임 검사 */
+    checkNicknameDuplication(nickname);
 
     user.updateInfo(nickname, imageUrl);
   }
@@ -81,6 +99,12 @@ public class UserService {
   public void unregisterUser(Long userId) {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+
+    // 이미 삭제된 유저
+    if (user.getDeletedAt() != null) {
+      throw new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND);
+    }
+
 
     // 1. 게시글 소프트 딜리트
     List<Post> posts = postRepository.findByUserIdAndDeletedAtIsNull(userId);
@@ -99,5 +123,11 @@ public class UserService {
 
     // 4. 유저 소프트 딜리트
     user.setDeletedAt(LocalDateTime.now());
+  }
+
+  public void checkNicknameDuplication(String nickname) {
+    if (userRepository.existsByNickname(nickname)) {
+      throw new CustomException(AuthErrorCode.AUTH_NICKNAME_DUPLICATED);
+    }
   }
 }

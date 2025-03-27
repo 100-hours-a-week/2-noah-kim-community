@@ -10,13 +10,13 @@ import community.vaniila.domain.post.entity.Post;
 import community.vaniila.domain.post.repository.CommentRepository;
 import community.vaniila.domain.post.repository.LikeRepository;
 import community.vaniila.domain.post.repository.PostRepository;
+import community.vaniila.domain.user.dto.response.CreateResponse;
 import community.vaniila.domain.user.entity.User;
 import community.vaniila.domain.user.repository.UserRepository;
 import community.vaniila.domain.utils.response.CustomException;
 import community.vaniila.domain.utils.response.errorcode.AuthErrorCode;
 import community.vaniila.domain.utils.response.errorcode.CommentErrorCode;
 import community.vaniila.domain.utils.response.errorcode.PostErrorCode;
-import community.vaniila.domain.utils.security.JwtUtils;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,30 +35,26 @@ public class PostService {
   private final UserRepository userRepository;
   private final CommentRepository commentRepository;
   private final LikeRepository likeRepository;
-  private final JwtUtils jwtUtils;
 
   /** 게시글 생성 */
   @Transactional
-  public void createPost(Long userId, PostCreateRequest request) {
-    if (request.isInvalid()) {
-      throw new CustomException(PostErrorCode.POST_INVALID_DATA);
-    }
+  public CreateResponse createPost(Long userId, PostCreateRequest request) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
 
-    Post post = new Post(userId, request.getTitle(), request.getContent(), request.getImageUrl());
-    postRepository.save(post);
+    Post post = new Post(user, request.getTitle(), request.getContent(), request.getImageUrl());
+    Post savedPost = postRepository.save(post);
+
+    return new CreateResponse(savedPost.getId());
   }
 
   /** 게시글 수정 */
   @Transactional
   public void updatePost(Long userId, Long postId, PostModifyRequest request) {
-    if (request.isInvalid()) {
-      throw new CustomException(PostErrorCode.POST_INVALID_DATA);
-    }
-
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
-    if (!post.getUserId().equals(userId)) {
+    if (!post.getUser().getId().equals(userId)) {
       throw new CustomException(PostErrorCode.POST_FORBIDDEN);
     }
 
@@ -66,29 +62,36 @@ public class PostService {
   }
 
   /** 단일 게시글 조회 */
-  @Transactional(readOnly = true)
+  @Transactional()
   public PostDetailResponse getPostDetail(Long postId,Long userId) {
-    /**  게시글이 없음 */
+    /** 게시글이 없음 */
     Post post = postRepository.findById(postId)
         .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
 
-    /**  삭제된 게시글임 */
+    /** 삭제된 게시글임 */
     if (post.getDeletedAt() != null) {
       throw new CustomException(PostErrorCode.POST_NOT_FOUND);
     }
 
-    /**  게시글이 없음 (작성자의 회원탈퇴) */
-    User writer = userRepository.findById(post.getUserId())
-        .orElseThrow(() -> new CustomException(PostErrorCode.POST_NOT_FOUND));
+    /** 게시글이 없음 (작성자의 회원탈퇴) */
+    User writer = post.getUser();
+    if (writer.getDeletedAt() != null) {
+      throw new CustomException(PostErrorCode.POST_NOT_FOUND);
+    }
 
-    List<Comment> comments = commentRepository.findByPostIdAndDeletedAtIsNullOrderByCreatedAtDesc(postId);
+    List<Comment> comments = commentRepository.findByPostAndDeletedAtIsNullOrderByCreatedAtAsc(post);
     List<CommentData> commentData = comments.stream()
         .map(comment -> {
-          User commentUser = userRepository.findById(comment.getUserId())
-              .orElseThrow(() -> new CustomException(CommentErrorCode.COMMENT_DELETED));
+          User commentUser = comment.getUser();
+          if (commentUser.getDeletedAt() != null) {
+            throw new CustomException(CommentErrorCode.COMMENT_DELETED); // 또는 null 처리
+          }
+
+
           return new PostDetailResponse.CommentData(
               comment.getId(),
               commentUser.getId(),
+              commentUser.getNickname(),
               commentUser.getImageUrl(),
               comment.getContent(),
               comment.getCreatedAt()
@@ -97,8 +100,13 @@ public class PostService {
 
     boolean isLiked = false;
     if (userId != null) {
-      isLiked = likeRepository.existsByPostIdAndUserId(postId, userId);
+      User loginUser = userRepository.findById(userId)
+          .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+      isLiked = likeRepository.existsByUserAndPost(loginUser, post);
     }
+
+    // 조회수 증가
+    post.increaseViewCount();
 
     PostDetailResponse.PostData postData = new PostDetailResponse.PostData(
         post.getId(),
@@ -118,6 +126,8 @@ public class PostService {
         writer.getImageUrl()
     );
 
+
+
     return new PostDetailResponse(postData, userData);
   }
 
@@ -131,16 +141,16 @@ public class PostService {
       throw new CustomException(PostErrorCode.POST_NOT_FOUND);
     }
 
-    if (!post.getUserId().equals(userId)) {
+    if (!post.getUser().getId().equals(userId)) {
       throw new CustomException(PostErrorCode.POST_FORBIDDEN);
     }
 
-    List<Comment> comments = commentRepository.findByPostIdAndDeletedAtIsNull(postId);
+    List<Comment> comments = commentRepository.findByPostAndDeletedAtIsNull(post);
     for (Comment comment : comments) {
       comment.softDelete();
     }
 
-    likeRepository.deleteByPostId(postId);
+    likeRepository.deleteByPost(post);
 
     post.softDelete();
   }
@@ -149,12 +159,12 @@ public class PostService {
   @Transactional(readOnly = true)
   public PostListResponse getPostList(int currentPage, int pageSize) {
     Pageable pageable = PageRequest.of(currentPage, pageSize, Sort.by(Sort.Direction.DESC, "createdAt"));
-    Page<Post> postPage = postRepository.findByDeletedAtIsNull(pageable);
+    Page<Post> postPage = postRepository.findByDeletedAtIsNullAndUser_DeletedAtIsNull(pageable);
 
     List<PostListResponse.PostSummary> content = postPage.getContent().stream()
+        .filter(post -> post.getUser().getDeletedAt() == null)
         .map(post -> {
-          User user = userRepository.findById(post.getUserId())
-              .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+          User user = post.getUser();
 
           return new PostListResponse.PostSummary(
               new PostListResponse.PostData(

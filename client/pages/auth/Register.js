@@ -1,5 +1,6 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
+import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
 import {
   validateEmailInput,
@@ -9,7 +10,8 @@ import {
 } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
-import register from '../../service/user/registerUser.js'
+import { registerUser } from '../../service/userService.js'
+
 class Register extends Component {
   setup() {
     /** 상태 정의 */
@@ -19,8 +21,7 @@ class Register extends Component {
       passwordConfirm: '',
       nickname: '',
       /** TODO: 프로필 이미지를 S3에 업로드하고 이를 저장하기 */
-      profileImage: 'test-image',
-      isFormValid: false,
+      profileImage: 'https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg',
     }
 
     /** 스타일 로드 */
@@ -38,46 +39,39 @@ class Register extends Component {
         <form id="register-form">
           <!-- 프로필 사진 업로드 -->
           <div class="form-field" id="profile">
-            <label>프로필 사진</label>
+            <label for="profile-val">프로필 사진</label>
             <div class="error-message" id="profile-error">* helper text</div>
 
-            <input type="file" id="profile-val" accept="image/*" hidden />
+            <input
+              type="file"
+              id="profile-val"
+              accept="image/*"
+              hidden 
+            />
             <div id="profile-preview">
-              <img id="profile-image" src="" alt="프로필 이미지" />
+              <img id="profile-image" src="${this.$state.profileImage}" alt="프로필 이미지" />
               <span id="profile-placeholder">+</span>
             </div>
           </div>
 
           <!-- 이메일 -->
           <div class="form-field" id="email">
-            <label for="email">이메일*</label>
-            <input
-              type="email"
-              id="email-val"
-              placeholder="이메일을 입력하세요"
-            />
+            <label for="email-val">이메일*</label>
+            <input id="email-val" />
             <div class="error-message" id="email-error">* helper text</div>
           </div>
 
           <!-- 비밀번호 -->
           <div class="form-field" id="password">
-            <label for="password">비밀번호*</label>
-            <input
-              type="password"
-              id="password-val"
-              placeholder="비밀번호를 입력하세요"
-            />
+            <label for="password-val">비밀번호*</label>
+            <input id="password-val" />
             <div class="error-message" id="password-error">* helper text</div>
           </div>
 
           <!-- 비밀번호 확인 -->
           <div class="form-field" id="password-confirm">
-            <label for="password-confirm">비밀번호 확인*</label>
-            <input
-              type="password"
-              id="password-confirm-val"
-              placeholder="비밀번호를 한번 더 입력하세요"
-            />
+            <label for="password-confirm-val">비밀번호 확인*</label>
+            <input id="password-confirm-val" />
             <div class="error-message" id="password-confirm-error">
               * helper text
             </div>
@@ -85,12 +79,8 @@ class Register extends Component {
 
           <!-- 닉네임 -->
           <div class="form-field" id="nickname">
-            <label for="nickname">닉네임*</label>
-            <input
-              type="text"
-              id="nickname-val"
-              placeholder="닉네임을 입력하세요"
-            />
+            <label for="nickname-val">닉네임*</label>
+            <input id="nickname-val" />
             <div class="error-message" id="nickname-error">* helper text</div>
           </div>
 
@@ -130,6 +120,53 @@ class Register extends Component {
     }
 
     // 자식 요소 정의
+    new TextInput(this.$elements.emailInput, {
+      id: 'email-val',
+      type: 'text',
+      value: this.$state.email,
+      placeholder: '이메일을 입력하세요',
+      changeHandler: value => this.setState({ email: value }),
+      callback: () => {
+        this.validateEmail()
+        this.validateForm()
+      },
+    })
+
+    new TextInput(this.$elements.passwordInput, {
+      id: 'password-val',
+      type: 'password',
+      value: this.$state.password,
+      placeholder: '비밀번호를 입력하세요',
+      changeHandler: value => this.setState({ password: value }),
+      callback: () => {
+        this.validatePassword()
+        this.validateForm()
+      },
+    })
+    new TextInput(this.$elements.passwordConfirmInput, {
+      id: 'password-confirm-val',
+      type: 'password',
+      value: this.$state.passwordConfirm,
+      placeholder: '비밀번호를 한번 더 입력하세요',
+      changeHandler: value => this.setState({ passwordConfirm: value }),
+      callback: () => {
+        this.validatePasswordConfirm()
+        this.validateForm()
+      },
+    })
+
+    new TextInput(this.$elements.nicknameInput, {
+      id: 'nickname-val',
+      type: 'text',
+      value: this.$state.nickname,
+      placeholder: '닉네임을 입력하세요',
+      changeHandler: value => this.setState({ nickname: value }),
+      callback: () => {
+        this.validateNickname()
+        this.validateForm()
+      },
+    })
+
     new Button(this.$elements.registerButton, {
       text: '회원가입',
       onClick: this.registerHandler.bind(this),
@@ -151,27 +188,6 @@ class Register extends Component {
     this.addEvent(this.$elements.profileInput, 'change', this.profileChangeHandler.bind(this))
 
     this.addEvent(this.$elements.profilePreview, 'click', this.getProfileImage.bind(this))
-    // 입력 이벤트
-    this.addEvent(this.$elements.emailInput, 'input', event => {
-      this.setState({ email: event.target.value })
-      this.validateEmail()
-      this.validateForm()
-    })
-    this.addEvent(this.$elements.passwordInput, 'input', event => {
-      this.setState({ password: event.target.value })
-      this.validatePassword()
-      this.validateForm()
-    })
-    this.addEvent(this.$elements.passwordConfirmInput, 'input', event => {
-      this.setState({ passwordConfirm: event.target.value })
-      this.validatePasswordConfirm()
-      this.validateForm()
-    })
-    this.addEvent(this.$elements.nicknameInput, 'input', event => {
-      this.setState({ nickname: event.target.value })
-      this.validateNickname()
-      this.validateForm()
-    })
   }
 
   // 이미지가 입력받아지면 수행할 일
@@ -276,23 +292,23 @@ class Register extends Component {
     navigateTo(ROUTES.AUTH.LOGIN.url)
   }
 
-  async registerHandler() {
-    try {
-      const response = await register({
-        email: this.$state.email,
-        password: this.$state.password,
-        nickname: this.$state.nickname,
-        image_url: this.$state.profileImage,
-      })
+  async registerHandler(event) {
+    event.preventDefault()
 
-      if (response.success) {
-        new Toast({ message: '회원가입 성공!' })
-        navigateTo(ROUTES.AUTH.LOGIN.url)
-      } else {
-        new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
-      }
-    } catch (error) {
-      new Toast({ message: '서버 오류 발생. 잠시 후 다시 시도해주세요.' })
+    const body = {
+      email: this.$state.email,
+      password: this.$state.password,
+      nickname: this.$state.nickname,
+      imageUrl: `https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg`,
+    }
+
+    const response = await registerUser(body)
+
+    if (response.success) {
+      navigateTo(ROUTES.AUTH.LOGIN.url)
+      new Toast({ message: '회원가입 성공!' })
+    } else {
+      new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
     }
   }
 }

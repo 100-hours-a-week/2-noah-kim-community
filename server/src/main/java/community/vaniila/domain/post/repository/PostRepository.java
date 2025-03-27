@@ -10,6 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
   List<Post> findByUserIdAndDeletedAtIsNull(Long userId);
-  void deleteByUserId(Long userId);
-  Page<Post> findByDeletedAtIsNull(Pageable pageable);
+  Page<Post> findByDeletedAtIsNullAndUser_DeletedAtIsNull(Pageable pageable);
 }
