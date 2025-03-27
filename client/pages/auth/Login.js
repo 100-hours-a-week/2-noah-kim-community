@@ -2,17 +2,15 @@ import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
-import { validateEmailInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
+import { validateEmailInputTwo, validatePasswordInputTwo } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 import { loginUser } from '../../service/userService.js'
 class Login extends Component {
   setup() {
     /** 상태 정의 */
-    this.$state = {
-      email: '',
-      password: '',
-    }
+    this.useState('email', 'abc')
+    this.useState('password', 'cde')
 
     this.loadStyles()
   }
@@ -45,6 +43,16 @@ class Login extends Component {
   }
 
   mounted() {
+    this.useEffect(() => {
+      this.validateEmail()
+      this.validateForm()
+    }, [this.email])
+
+    this.useEffect(() => {
+      this.validatePassword()
+      this.validateForm()
+    }, [this.password])
+
     // DOM 요소 저장
     this.$elements = {
       emailInput: this.$target.querySelector('#email-input'),
@@ -59,25 +67,19 @@ class Login extends Component {
     new TextInput(this.$elements.emailInput, {
       id: 'email-input',
       type: 'text',
-      value: this.$state.email,
+      value: this.email,
       placeholder: '이메일을 입력하세요',
-      changeHandler: value => this.setState({ email: value }),
-      callback: () => {
-        this.validateEmail()
-        this.validateForm()
-      },
+      changeHandler: this.setEmail,
+      // callback: () => this.validateEmail(),
     })
 
     new TextInput(this.$elements.passwordInput, {
       id: 'password-input',
       type: 'password',
-      value: this.$state.password,
+      value: this.password,
       placeholder: '비밀번호를 입력하세요',
-      changeHandler: value => this.setState({ password: value }),
-      callback: () => {
-        this.validatePassword()
-        this.validateForm()
-      },
+      changeHandler: this.setPassword,
+      // callback: () => this.validatePassword(),
     })
 
     new Button(this.$elements.loginButton, {
@@ -93,29 +95,14 @@ class Login extends Component {
     })
   }
 
-  setEvent() {
-    this.addEvent(this.$elements.emailInput, 'input', event => {
-      this.setState({ email: event.target.value })
-      this.validateEmail()
-      this.validateForm()
-    })
-    this.addEvent(this.$elements.passwordInput, 'input', event => {
-      this.setState({ password: event.target.value })
-      this.validatePassword()
-      this.validateForm()
-    })
-    this.addEvent(this.$elements.loginButton, 'click', this.loginHandler.bind(this))
-    this.addEvent(this.$elements.registerButton, 'click', this.navigateToRegister.bind(this))
-  }
-
   /** 이메일 유효성 검사 */
   validateEmail() {
-    return validateEmailInput(this.$elements.emailInput, this.$elements.emailErrorText)
+    return validateEmailInputTwo(this.email, this.$elements.emailErrorText)
   }
 
   /** 비밀번호 유효성 검사 */
   validatePassword() {
-    return validatePasswordInput(this.$elements.passwordInput, this.$elements.passwordErrorText)
+    return validatePasswordInputTwo(this.password, this.$elements.passwordErrorText)
   }
 
   /** 폼 전체 유효성 검사 */
@@ -124,23 +111,18 @@ class Login extends Component {
 
     const isFormValid = this.validateEmail() && this.validatePassword()
 
-    if (!isFormValid) {
-      loginButton.style.backgroundColor = '#ACA0EB' // 비활성화 색상 (기본)
-      loginButton.disabled = true // 버튼 비활성화
-    } else {
-      loginButton.style.backgroundColor = '#7F6AEE' // 활성화 색상
-      loginButton.disabled = false // 버튼 활성화
-    }
+    loginButton.style.backgroundColor = isFormValid ? '#7F6AEE' : '#ACA0EB'
+    loginButton.disabled = !isFormValid
   }
 
   async loginHandler(event) {
     event.preventDefault()
 
     const body = {
-      email: this.$state.email,
-      password: this.$state.password,
-      nickname: this.$state.nickname,
-      imageUrl: this.$state.profileImage,
+      email: this.email,
+      password: this.password,
+      nickname: this.nickname,
+      imageUrl: this.profileImage,
     }
 
     const response = await loginUser(body)

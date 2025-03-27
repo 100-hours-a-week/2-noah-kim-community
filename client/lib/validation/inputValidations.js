@@ -16,10 +16,43 @@ const validateEmailInput = (targetElement, errorTextElement) => {
   // 유효성 검사
   let isValid = true
   let errorText = ''
+
   if (!email) {
     errorText = '* 이메일을 입력해주세요.'
     isValid = false
   } else if (!emailRegex.test(email)) {
+    errorText = '* 올바른 이메일 주소 형식을 입력해주세요.'
+    isValid = false
+  }
+
+  // UI 업데이트
+  if (!isValid) {
+    errorTextElement.style.visibility = 'visible'
+    errorTextElement.textContent = errorText
+  } else {
+    errorTextElement.style.visibility = 'hidden'
+  }
+  return isValid
+}
+
+/**
+ * 이메일 유효성 검사
+ * (False) 이메일 형식이 아닌 경우, 입력값이 없는 경우
+ * @param {*} targetValue 인풋 요소값
+ * @param {*} errorTextElement 에러 텍스트
+ * @returns 유효성 검사 여부 (Boolean)
+ */
+const validateEmailInputTwo = (targetValue, errorTextElement) => {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+  // 유효성 검사
+  let isValid = true
+  let errorText = ''
+
+  if (!targetValue) {
+    errorText = '* 이메일을 입력해주세요.'
+    isValid = false
+  } else if (!emailRegex.test(targetValue)) {
     errorText = '* 올바른 이메일 주소 형식을 입력해주세요.'
     isValid = false
   }
@@ -55,6 +88,41 @@ const validatePasswordInput = (targetElement, errorTextElement) => {
   }
   // (2) 유효성 검증
   else if (!passwordRegex.test(targetElement.value)) {
+    errorText = '* 비밀번호 형식이 올바르지 않습니다. (8~20자, 대문자, 소문자, 숫자, 특수문자 최소 1개 이상)'
+    isValid = false
+  }
+
+  // UI 업데이트
+  if (!isValid) {
+    errorTextElement.style.visibility = 'visible'
+    errorTextElement.textContent = errorText
+  } else {
+    errorTextElement.style.visibility = 'hidden'
+  }
+  return isValid
+}
+
+/**
+ * 비밀번호 유효성 검사
+ * (조건) 8자 이상, 20자 이하, 대문자 소문자 숫자 특수문자를 각 1개 이상 포함
+ * (False) 입력값이 없는 경우
+ * @param {*} passwordValue 인풋 요소
+ * @param {*} errorTextElement 에러 텍스트
+ * @returns 유효성 검사 여부 (Boolean)
+ */
+const validatePasswordInputTwo = (passwordValue, errorTextElement) => {
+  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,20}$/
+
+  // 유효성 검사
+  let isValid = true
+  let errorText = ''
+
+  if (!passwordValue) {
+    errorText = '* 비밀번호를 입력해주세요.'
+    isValid = false
+  }
+  // (2) 유효성 검증
+  else if (!passwordRegex.test(passwordValue)) {
     errorText = '* 비밀번호 형식이 올바르지 않습니다. (8~20자, 대문자, 소문자, 숫자, 특수문자 최소 1개 이상)'
     isValid = false
   }
@@ -133,4 +201,11 @@ const validateNicknameInput = (targetElement, errorTextElement) => {
   return isValid
 }
 
-export { validateEmailInput, validateNicknameInput, validatePasswordConfirmInput, validatePasswordInput }
+export {
+  validateEmailInput,
+  validateEmailInputTwo,
+  validateNicknameInput,
+  validatePasswordConfirmInput,
+  validatePasswordInput,
+  validatePasswordInputTwo,
+}
