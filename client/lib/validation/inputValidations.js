@@ -168,6 +168,36 @@ const validatePasswordConfirmInput = (targetElement, confirmElement, errorTextEl
 }
 
 /**
+ * 비밀번호 재확인 유효성 검사
+ * (False) 입력값 없을 때, 비밀번호와 다를 때
+ * @param {*} passwordValue 인풋 요소
+ * @param {*} passwordConfirmValue 인풀 검사 요소
+ * @param {*} errorTextElement 에러 텍스트
+ * @returns 유효성 검사 여부 (Boolean)
+ */
+const validatePasswordConfirmInputTwo = (passwordValue, passwordConfirmValue, errorTextElement) => {
+  // 유효성 검사
+  let isValid = true
+  let errorText = ''
+  if (!passwordConfirmValue) {
+    errorText = '* 비밀번호를 한번더 입력해주세요.'
+    isValid = false
+  } else if (passwordConfirmValue !== passwordValue) {
+    errorText = '* 비밀번호가 다릅니다.'
+    isValid = false
+  }
+
+  // UI 업데이트
+  if (!isValid) {
+    errorTextElement.style.visibility = 'visible'
+    errorTextElement.textContent = errorText
+  } else {
+    errorTextElement.style.visibility = 'hidden'
+  }
+  return isValid
+}
+
+/**
  * 닉네임 유효성 검사
  * (조건) 띄어쓰기 불가, 10글자 이내
  * (False) 입력값 없을 때, 띄어쓰기 존재, 길이 11자 이상
@@ -201,11 +231,47 @@ const validateNicknameInput = (targetElement, errorTextElement) => {
   return isValid
 }
 
+/**
+ * 닉네임 유효성 검사
+ * (조건) 띄어쓰기 불가, 10글자 이내
+ * (False) 입력값 없을 때, 띄어쓰기 존재, 길이 11자 이상
+ * @param {*} nicknameValue 인풋 요소
+ * @param {*} errorTextElement 에러 텍스트
+ * @returns 유효성 검사 여부 (Boolean)
+ */
+const validateNicknameInputTwo = (nicknameValue, errorTextElement) => {
+  // 유효성 검사
+  let isValid = true
+  let errorText = ''
+  if (!nicknameValue) {
+    errorText = '* 닉네임을 입력해주세요.'
+    isValid = false
+  } else if (nicknameValue.includes(' ')) {
+    errorText = '* 띄어쓰기를 없애주세요.'
+    isValid = false
+  } else if (nicknameValue.length > 10) {
+    errorText = '* 닉네임은 최대 10자까지 작성 가능합니다.'
+    isValid = false
+  }
+  // TODO: 닉네임 중복 검사 API (회원가입)
+
+  // UI 업데이트
+  if (!isValid) {
+    errorTextElement.style.visibility = 'visible'
+    errorTextElement.textContent = errorText
+  } else {
+    errorTextElement.style.visibility = 'hidden'
+  }
+  return isValid
+}
+
 export {
   validateEmailInput,
   validateEmailInputTwo,
   validateNicknameInput,
+  validateNicknameInputTwo,
   validatePasswordConfirmInput,
+  validatePasswordConfirmInputTwo,
   validatePasswordInput,
   validatePasswordInputTwo,
 }

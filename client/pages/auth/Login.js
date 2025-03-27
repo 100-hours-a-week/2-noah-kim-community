@@ -9,8 +9,8 @@ import { loginUser } from '../../service/userService.js'
 class Login extends Component {
   setup() {
     /** 상태 정의 */
-    this.useState('email', 'abc')
-    this.useState('password', 'cde')
+    this.useState('email', '')
+    this.useState('password', '')
 
     this.loadStyles()
   }
