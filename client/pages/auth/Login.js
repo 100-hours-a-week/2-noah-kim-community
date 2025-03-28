@@ -140,7 +140,7 @@ class Login extends Component {
 
       navigateTo(ROUTES.POST.MAIN.url)
     } else {
-      new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
+      new Toast({ message: '로그인 실패. 다시 시도해주세요.' })
     }
   }
 

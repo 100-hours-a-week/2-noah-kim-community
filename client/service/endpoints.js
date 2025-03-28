@@ -21,7 +21,7 @@ const AuthEndpoints = {
   LOGIN: { method: HTTPMethods.POST, url: `${AUTH_BASE}/login` },
   MODIFY: { method: HTTPMethods.PATCH, url: `${AUTH_BASE}/modify` },
   UNREGISTER: { method: HTTPMethods.DELETE, url: `${AUTH_BASE}/unregister` },
-  UPLOAD_PROFILE_IMAGE: { method: HTTPMethods.POST, url: `${AUTH_BASE}/profile/image` },
+  MODIFY_PASSWORD: { method: HTTPMethods.PATCH, url: `${AUTH_BASE}/password` },
 }
 
 const PostEndpoints = {
@@ -36,6 +36,10 @@ const CommentEndpoints = {
   CREATE: postId => ({ method: HTTPMethods.POST, url: `${POST_BASE}/${postId}${COMMENT_BASE}` }),
   MODIFY: (postId, commentId) => ({ method: HTTPMethods.PATCH, url: `${POST_BASE}/${postId}${COMMENT_BASE}/${commentId}` }),
   DELETE: (postId, commentId) => ({ method: HTTPMethods.DELETE, url: `${POST_BASE}/${postId}${COMMENT_BASE}/${commentId}` }),
+}
+
+const CommonEndpoints = {
+  UPLOAD_PROFILE_IMAGE: { method: HTTPMethods.POST, url: `/image_upload` },
 }
 
 const LikeEndpoints = {

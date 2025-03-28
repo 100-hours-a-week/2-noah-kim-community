@@ -39,3 +39,12 @@ export const unregisterUser = async () => {
   const response = await Fetch(ENDPOINT, { auth: true })
   return response
 }
+
+export const modifyPasswordUser = async ({ password }) => {
+  const ENDPOINT = APIEndpoints.AUTH.MODIFY_PASSWORD
+
+  const body = { password }
+
+  const response = await Fetch(ENDPOINT, { body, auth: true })
+  return response
+}

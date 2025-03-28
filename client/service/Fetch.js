@@ -27,6 +27,9 @@ export const Fetch = async (endpoint, options = {}) => {
   // AT가 있다면 Authorization 헤더 추가
   if (auth) {
     const accessToken = getAccessToken()
+    if (!accessToken) {
+      return { success: false, error: '유저 인증 실패' }
+    }
     fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
   }
 
