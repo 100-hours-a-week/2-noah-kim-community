@@ -45,13 +45,15 @@ class Login extends Component {
   mounted() {
     this.useEffect(() => {
       this.validateEmail()
-      this.validateForm()
     }, [this.email])
 
     this.useEffect(() => {
       this.validatePassword()
-      this.validateForm()
     }, [this.password])
+
+    this.useEffect(() => {
+      this.validateForm()
+    }, [this.email, this.password])
 
     // DOM 요소 저장
     this.$elements = {
@@ -70,7 +72,6 @@ class Login extends Component {
       value: this.email,
       placeholder: '이메일을 입력하세요',
       changeHandler: this.setEmail,
-      // callback: () => this.validateEmail(),
     })
 
     new TextInput(this.$elements.passwordInput, {
@@ -79,7 +80,6 @@ class Login extends Component {
       value: this.password,
       placeholder: '비밀번호를 입력하세요',
       changeHandler: this.setPassword,
-      // callback: () => this.validatePassword(),
     })
 
     new Button(this.$elements.loginButton, {

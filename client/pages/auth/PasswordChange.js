@@ -47,13 +47,15 @@ class PasswordChange extends Component {
   mounted() {
     this.useEffect(() => {
       this.validatePassword()
-      this.validateForm()
     }, [this.password])
 
     this.useEffect(() => {
       this.validatePasswordConfirm()
-      this.validateForm()
     }, [this.passwordConfirm])
+
+    this.useEffect(() => {
+      this.validateForm()
+    }, [this.password, this.passwordConfirm])
 
     // DOM 요소 저장
     this.$elements = {

@@ -93,28 +93,27 @@ class Register extends Component {
   mounted() {
     this.useEffect(() => {
       this.validateProfile()
-      this.validateForm()
     }, [this.profileImage])
 
     this.useEffect(() => {
       this.validateEmail()
-      this.validateForm()
     }, [this.email])
 
     this.useEffect(() => {
       this.validatePassword()
-      this.validateForm()
     }, [this.password])
 
     this.useEffect(() => {
       this.validatePasswordConfirm()
-      this.validateForm()
     }, [this.passwordConfirm])
 
     this.useEffect(() => {
       this.validateNickname()
-      this.validateForm()
     }, [this.nickname])
+
+    this.useEffect(() => {
+      this.validateForm()
+    }, [this.profileImage, this.email, this.password, this.passwordConfirm, this.nickname])
 
     // DOM 요소 저장
     this.$elements = {

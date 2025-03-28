@@ -137,10 +137,10 @@ class PostModify extends Component {
     const postId = this.postId
     const { title, content, imageUrl } = this.formData
     const response = await modifyPost({
-      postId: postId,
-      title: title,
-      content: content,
-      imageUrl: imageUrl,
+      postId,
+      title,
+      content,
+      imageUrl,
     })
     if (response.success) {
       navigateTo(ROUTES.POST.DETAIL.url(postId))

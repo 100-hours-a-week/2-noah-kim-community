@@ -107,7 +107,7 @@ const validatePasswordConfirmInput = (passwordValue, passwordConfirmValue, error
  * @param {*} errorTextElement 에러 텍스트
  * @returns 유효성 검사 여부 (Boolean)
  */
-const validateNicknameInputTwo = (nicknameValue, errorTextElement) => {
+const validateNicknameInput = (nicknameValue, errorTextElement) => {
   // 유효성 검사
   let isValid = true
   let errorText = ''
@@ -133,4 +133,4 @@ const validateNicknameInputTwo = (nicknameValue, errorTextElement) => {
   return isValid
 }
 
-export { validateEmailInput, validateNicknameInputTwo, validatePasswordConfirmInput, validatePasswordInput }
+export { validateEmailInput, validateNicknameInput, validatePasswordConfirmInput, validatePasswordInput }
