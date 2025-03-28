@@ -62,33 +62,6 @@ class BaseComponent {
   /** #3 컴포넌트에서 필요한 이벤트 설정 */
   setEvent() {}
 
-  setState(newState) {
-    const activeElement = document.activeElement
-
-    const isInput = activeElement && ['INPUT', 'TEXTAREA'].includes(activeElement.tagName) && activeElement.type !== 'file'
-    const inputId = activeElement?.id
-    const cursorPos = activeElement?.selectionStart
-
-    this.$state = { ...this.$state, ...newState }
-    this.render()
-    this.setEvent()
-
-    const SUPPORTED_SELECTION_TYPES = ['text', 'search', 'url', 'tel', 'password']
-
-    // 입력 위치 복원
-    if (isInput && inputId && SUPPORTED_SELECTION_TYPES.includes(activeElement?.type)) {
-      const inputElement = document.getElementById(inputId)
-      requestAnimationFrame(() => {
-        const inputElement = document.getElementById(inputId)
-        if (inputElement) {
-          inputElement.focus()
-          const len = inputElement.value.length
-          inputElement.setSelectionRange(cursorPos ?? len, cursorPos ?? len)
-        }
-      })
-    }
-  }
-
   /** 이벤트 등록 추상화 */
   /** 이벤트 등록 추상화 (이제 selector 대신 요소를 직접 받음) */
   addEvent(element, eventType, callback) {

@@ -99,7 +99,6 @@ class PostModify extends Component {
     })
     this.addEvent(this.$elements.imageInput, 'input', event => {
       // TODO: 이미지 업로드 처리 로직 구현
-      // this.setState({ imageInput: event.target.files[0] })
       this.setFormData({ ...this.formData, imageUrl: `https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg` })
     })
   }

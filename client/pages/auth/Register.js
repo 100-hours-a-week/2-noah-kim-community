@@ -92,6 +92,11 @@ class Register extends Component {
 
   mounted() {
     this.useEffect(() => {
+      this.validateProfile()
+      this.validateForm()
+    }, [this.profileImage])
+
+    this.useEffect(() => {
       this.validateEmail()
       this.validateForm()
     }, [this.email])
@@ -183,9 +188,7 @@ class Register extends Component {
 
   setEvent() {
     this.addEvent(this.$elements.profileInput, 'input', event => {
-      this.setState({ profileImage: event.target.files[0] })
-      this.validateProfile()
-      this.validateForm()
+      this.setProfileImage(event.target.files[0])
     })
     this.addEvent(this.$elements.profileInput, 'change', this.profileChangeHandler.bind(this))
 

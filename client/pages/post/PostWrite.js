@@ -149,11 +149,6 @@ class PostWrite extends Component {
       new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
     }
   }
-
-  setState(newState) {
-    super.setState(newState)
-    this.validateForm()
-  }
 }
 
 export default PostWrite

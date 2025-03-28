@@ -35,8 +35,6 @@ export class StateManager {
     // 자동 this 바인딩
     this.component[key] = this.states[index]
     this.component[`set${this.capitalize(key)}`] = setValue
-
-    return [this.states[index], setValue]
   }
 
   resetCursor() {
