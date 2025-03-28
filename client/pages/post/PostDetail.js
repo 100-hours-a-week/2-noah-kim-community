@@ -1,6 +1,7 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import Modal from '../../components/common/Modal/Modal.js'
+import Textarea from '../../components/common/Textarea/Textarea.js'
 import Toast from '../../components/common/Toast/Toast.js'
 import Comment from '../../components/pages/post/Comment.js'
 import { parseISOToFullString } from '../../lib/utils/date.js'
@@ -29,18 +30,17 @@ export const defaultUser = {
 
 class PostDetail extends Component {
   setup() {
+    this.postId = this.$props.params.postId
     /** 상태 정의 */
-    this.$state = {
-      postData: null,
+    this.useState('postData', {
+      data: null,
       userData: null,
+    })
+    this.useState('commentInput', null)
+    this.useState('editingCommentId', null)
 
-      commentInput: null,
-      editingCommentId: null,
-
-      postId: this.$props.params.postId,
-    }
     /** 특정 게시물을 타겟하지 않은 경우 */
-    if (!this.$state.postId) {
+    if (!this.postId) {
       navigateTo(ROUTES.POST.MAIN.url)
     }
 
@@ -62,8 +62,8 @@ class PostDetail extends Component {
       comments,
       createdAt,
       liked,
-    } = this.$state.postData ?? defaultPost
-    const { userId, name, imageUrl: userImageUrl } = this.$state.userData ?? defaultUser
+    } = this.postData.data ?? defaultPost
+    const { userId, name, imageUrl: userImageUrl } = this.postData.userData ?? defaultUser
 
     return `
     <main id="main-content">
@@ -104,7 +104,7 @@ class PostDetail extends Component {
       </section>  
 
       <section id="comment-box">
-        <textarea placeholder="댓글을 남겨주세요!" id="comment-input">${this.$state.commentInput ? this.$state.commentInput : ''}</textarea>
+        <textarea id="comment-input"></textarea>
         <button id="comment-button"></button>
       </section>
 
@@ -113,6 +113,10 @@ class PostDetail extends Component {
   }
 
   mounted() {
+    this.useEffect(() => {
+      this.validateComment()
+    }, [this.commentInput])
+
     // DOM 요소 저장
     this.$elements = {
       modifyPostButton: this.$target.querySelector('#modify-post'),
@@ -139,6 +143,14 @@ class PostDetail extends Component {
       idName: 'delete-post',
     })
 
+    new Textarea(this.$elements.commentInput, {
+      id: 'comment-input',
+      type: 'text',
+      value: this.commentInput ?? '',
+      placeholder: '댓글을 남겨주세요!',
+      changeHandler: this.setCommentInput,
+    })
+
     // 댓글 추가 버튼
     const createCommentProps = {
       text: '댓글 등록',
@@ -147,13 +159,13 @@ class PostDetail extends Component {
     }
     const modifyCommentProps = {
       text: '댓글 수정',
-      onClick: () => this.modifyCommentHandler(this.$state.editingCommentId),
+      onClick: () => this.modifyCommentHandler(this.editingCommentId),
       idName: 'comment-button',
     }
-    new Button(this.$elements.commentAddButton, !this.$state.editingCommentId ? createCommentProps : modifyCommentProps)
+    new Button(this.$elements.commentAddButton, !this.editingCommentId ? createCommentProps : modifyCommentProps)
 
     // 댓글들
-    const comments = this.$state.postData?.comments ?? []
+    const comments = this.postData.data?.comments ?? []
     comments.forEach(comment => {
       const commentWrapper = document.createElement('div')
       this.$elements.commentList.appendChild(commentWrapper)
@@ -167,19 +179,14 @@ class PostDetail extends Component {
   }
 
   setEvent() {
-    this.addEvent(this.$elements.commentInput, 'input', event => {
-      this.setState({ commentInput: event.target.value })
-      this.validateComment()
-    })
-
     this.addEvent(this.$elements.likeButton, 'click', event => {
-      this.likeClickHandler(this.$state.postData.postId)
+      this.likeClickHandler(this.postId)
     })
   }
 
   // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
   navigateToModifyPost() {
-    navigateTo(ROUTES.POST.MODIFY.url(this.$state.postData.postId))
+    navigateTo(ROUTES.POST.MODIFY.url(this.postData.data.postId))
   }
 
   openDeleteModal() {
@@ -219,19 +226,20 @@ class PostDetail extends Component {
 
   // 댓글 수정 클릭
   modifyClickHandler(commentId, content) {
-    this.setState({ commentInput: content, editingCommentId: commentId })
+    this.setEditingCommentId(commentId)
+    this.setCommentInput(content)
   }
 
   /** 게시글 정보 가져오기 API */
   async fetchPostData() {
-    const response = await getPost({ postId: this.$state.postId })
+    const response = await getPost({ postId: this.postId })
     if (response.success) {
       const { message, data } = response.data
       const { postData, userData } = data
 
-      this.setState({
-        postData,
-        userData,
+      this.setPostData({
+        data: postData,
+        userData: userData,
       })
     } else {
       new Toast({ message: '게시글 정보 가져오기 실패' })
@@ -240,7 +248,7 @@ class PostDetail extends Component {
 
   /** 게시글 정보 가져오기 API */
   async deletePostHandler() {
-    const response = await deletePost({ postId: this.$state.postId })
+    const response = await deletePost({ postId: this.postId })
     if (response.success) {
       navigateTo(ROUTES.POST.MAIN.url)
       new Toast({ message: '게시글 삭제 완료' })
@@ -251,18 +259,22 @@ class PostDetail extends Component {
 
   /** 댓글 생성 API */
   async createCommentHandler() {
-    const response = await createComment({ content: this.$state.commentInput, postId: this.$state.postId })
+    const response = await createComment({ content: this.commentInput, postId: this.postId })
     if (response.success) {
       const { message, data } = response.data
       const newComment = data
 
-      const currentComment = this.$state.postData.comments
+      const currentComment = this.postData.data.comments
       currentComment.push(newComment)
 
-      this.setState({
-        postData: { ...this.$state.postData, comments: currentComment },
-        commentInput: null,
+      this.setPostData({
+        ...this.postData,
+        data: {
+          ...this.postData.data,
+          comments: currentComment,
+        },
       })
+      this.setCommentInput(null)
     } else {
       new Toast({ message: '댓글 추가 실패' })
     }
@@ -271,15 +283,15 @@ class PostDetail extends Component {
   /** 댓글 수정 API */
   async modifyCommentHandler(commentId) {
     const response = await modifyComment({
-      postId: this.$state.postId,
+      postId: this.postId,
       commentId: commentId,
-      content: this.$state.commentInput,
+      content: this.commentInput,
     })
     if (response.success) {
       const { message, data } = response.data
       const { commentId, content, updatedAt } = data
 
-      const modifiedComment = this.$state.postData.comments.map(comment => {
+      const modifiedComment = this.postData.data.comments.map(comment => {
         if (comment.commentId === commentId) {
           return {
             ...comment,
@@ -290,11 +302,16 @@ class PostDetail extends Component {
         }
       })
 
-      this.setState({
-        postData: { ...this.$state.postData, comments: modifiedComment },
-        commentInput: null,
-        editingCommentId: null,
+      this.setPostData({
+        ...this.postData,
+        data: {
+          ...this.postData.data,
+          comments: modifiedComment,
+        },
       })
+
+      this.setCommentInput(null)
+      this.setEditingCommentId(null)
     } else {
       new Toast({ message: '댓글 추가 실패' })
     }
@@ -302,19 +319,22 @@ class PostDetail extends Component {
   /** 댓글 수정 API */
   async deleteCommentHandler(commentId) {
     const response = await deleteComment({
-      postId: this.$state.postId,
+      postId: this.postId,
       commentId: commentId,
     })
     if (response.success) {
-      const modifiedComments = this.$state.postData.comments.filter(comment => {
+      const modifiedComments = this.postData.data.comments.filter(comment => {
         if (comment.commentId === commentId) {
           return false
         }
         return true
       })
-
-      this.setState({
-        postData: { ...this.$state.postData, comments: modifiedComments },
+      this.setPostData({
+        ...this.postData,
+        data: {
+          ...this.postData.data,
+          comments: modifiedComments,
+        },
       })
       new Toast({ message: '댓글이 삭제되었습니다' })
     } else {
@@ -323,7 +343,7 @@ class PostDetail extends Component {
   }
 
   likeClickHandler(postId) {
-    if (this.$state.postData.liked) {
+    if (this.postData.data.liked) {
       this.deleteLikeHandler(postId)
     } else {
       this.createLikeHandler(postId)
@@ -335,8 +355,13 @@ class PostDetail extends Component {
       postId,
     })
     if (response.success) {
-      this.setState({
-        postData: { ...this.$state.postData, liked: true, likeCount: this.$state.postData.likeCount + 1 },
+      this.setPostData({
+        ...this.postData,
+        data: {
+          ...this.postData.data,
+          liked: true,
+          likeCount: this.postData.data.likeCount + 1,
+        },
       })
     } else {
       new Toast({ message: '좋아요 추가 실패' })
@@ -349,8 +374,13 @@ class PostDetail extends Component {
       postId,
     })
     if (response.success) {
-      this.setState({
-        postData: { ...this.$state.postData, liked: false, likeCount: this.$state.postData.likeCount - 1 },
+      this.setPostData({
+        ...this.postData,
+        data: {
+          ...this.postData.data,
+          liked: false,
+          likeCount: this.postData.data.likeCount - 1,
+        },
       })
     } else {
       new Toast({ message: '좋아요 삭제 실패' })
