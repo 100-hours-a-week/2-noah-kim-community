@@ -37,5 +37,5 @@
 .vscode/
 
 
-server/src/main/resources/application.properties
-server/src/main/resources/application-private.properties
+**/application-private.properties
+**/application.properties
