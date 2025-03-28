@@ -1,5 +1,7 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
+import Textarea from '../../components/common/Textarea/Textarea.js'
+import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
@@ -7,13 +9,14 @@ import { getPost, modifyPost } from '../../service/postService.js'
 class PostModify extends Component {
   setup() {
     /** 상태 정의 */
-    this.$state = {
-      postId: this.$props.params.postId,
+    this.postId = this.$props.params.postId
 
-      titleInput: null,
-      contentInput: null,
-      imageInput: null,
-    }
+    this.useState('formData', {
+      title: '',
+      content: '',
+      imageUrl: '',
+    })
+
     this.loadStyles()
     this.fetchPostData()
   }
@@ -29,21 +32,12 @@ class PostModify extends Component {
         <form>
           <div id="post-title">
             <label>제목*</label>
-            <input
-              id="title-input"
-              type="title"
-              value="${this.$state.titleInput ? this.$state.titleInput : ''}"
-              placeholder="제목을 입력하세요"
-            />
+            <input id="title-input" />
           </div>
 
           <div id="post-content">
             <label>내용*</label>
-            <textarea
-              id="content-input"
-              type="content"
-              placeholder="내용을 입력하세요"
-            >${this.$state.contentInput ? this.$state.contentInput : ''}</textarea>
+            <textarea id="content-input"></textarea>
           </div>
 
           <div id="post-image">
@@ -57,6 +51,10 @@ class PostModify extends Component {
   }
 
   mounted() {
+    this.useEffect(() => {
+      this.sliceTitle()
+    }, [this.formData.title])
+
     // DOM 요소 저장
     this.$elements = {
       // 인풋 요소
@@ -74,44 +72,60 @@ class PostModify extends Component {
       onClick: this.modifyPostHandler.bind(this),
       idName: 'modify-button',
     })
+
+    new TextInput(this.$elements.titleInput, {
+      id: 'title-input',
+      type: 'text',
+      value: this.formData.title ?? '',
+      placeholder: '제목을 입력하세요',
+      changeHandler: value => this.setFormData({ ...this.formData, title: value }),
+    })
+
+    new Textarea(this.$elements.contentInput, {
+      id: 'content-input',
+      type: 'text',
+      value: this.formData.content ?? '',
+      placeholder: '내용을 입력하세요',
+      changeHandler: value => this.setFormData({ ...this.formData, content: value }),
+    })
   }
 
   setEvent() {
     this.addEvent(this.$elements.titleInput, 'input', event => {
-      this.sliceTitle.bind(this)
-      this.setState({ titleInput: event.target.value })
+      this.setFormData({ ...this.formData, title: event.target.value })
     })
     this.addEvent(this.$elements.contentInput, 'input', event => {
-      this.setState({ contentInput: event.target.value })
+      this.setFormData({ ...this.formData, content: event.target.value })
     })
     this.addEvent(this.$elements.imageInput, 'input', event => {
       // TODO: 이미지 업로드 처리 로직 구현
-      // this.setState({ imageInput: event.target.files[0] })
-      this.setState({ imageInput: `https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg` })
+      this.setFormData({ ...this.formData, imageUrl: `https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg` })
     })
   }
 
   /** 제목은 최대 26자 */
+
   sliceTitle() {
-    const titleInput = this.$elements.titleInput
+    const title = this.formData.title || ''
 
     // 자르기
-    if (titleInput.value.length > 26) {
-      titleInput.value = titleInput.value.slice(0, 26)
+    if (this.formData.title.length > 26) {
+      this.setFormData({ ...this.formData, title: title.slice(0, 26) })
+      new Toast({ message: '제목이 최대 26자로 설정됩니다.' })
     }
   }
 
   /** 게시글 정보 가져오기 API */
   async fetchPostData() {
-    const response = await getPost({ postId: this.$state.postId })
+    const response = await getPost({ postId: this.postId })
     if (response.success) {
       const { message, data } = response.data
       const { postData, userData } = data
 
-      this.setState({
-        titleInput: postData.title,
-        contentInput: postData.content,
-        imageInput: postData.imageUrl,
+      this.setFormData({
+        title: postData.title,
+        content: postData.content,
+        imageUrl: postData.imageUrl,
       })
     } else {
       new Toast({ message: '게시글 정보 가져오기 실패' })
@@ -120,12 +134,13 @@ class PostModify extends Component {
 
   /** 게시글 정보 가져오기 API */
   async modifyPostHandler() {
-    const { postId, titleInput, contentInput, imageInput } = this.$state
+    const postId = this.postId
+    const { title, content, imageUrl } = this.formData
     const response = await modifyPost({
-      postId: postId,
-      title: titleInput,
-      content: contentInput,
-      imageUrl: imageInput,
+      postId,
+      title,
+      content,
+      imageUrl,
     })
     if (response.success) {
       navigateTo(ROUTES.POST.DETAIL.url(postId))

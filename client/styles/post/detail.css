@@ -159,3 +159,7 @@
   background-color: white;
   border-radius: 10px;
 }
+
+#comment-input {
+  margin-top: 0;
+}

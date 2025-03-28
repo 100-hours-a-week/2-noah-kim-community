@@ -22,13 +22,11 @@ class TextInput extends InlineComponent {
   }
 
   setEvent() {
+    const { changeHandler } = this.$props
+
     this.addEvent(this.$target, 'blur', () => {
-      const { changeHandler, callback } = this.$props
-
       const value = this.$target?.value ?? ''
-
       changeHandler(value)
-      callback()
     })
   }
 }

@@ -33,7 +33,7 @@ class Textarea extends InlineComponent {
 
   setEvent() {
     this.addEvent(this.$target, 'blur', () => {
-      const { changeHandler, callback } = this.$props
+      const { changeHandler } = this.$props
 
       const value = this.$target?.value ?? ''
       changeHandler(value)

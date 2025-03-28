@@ -1,9 +1,14 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
+import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
 import { validatePasswordConfirmInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
+import { modifyPasswordUser } from '../../service/userService.js'
 class PasswordChange extends Component {
   setup() {
+    this.useState('password', '')
+    this.useState('passwordConfirm', '')
+
     this.loadStyles()
   }
   loadStyles() {
@@ -19,22 +24,14 @@ class PasswordChange extends Component {
           <!-- 비밀번호 -->
           <div class="form-field" id="password">
             <label for="password">비밀번호</label>
-            <input
-              type="password"
-              id="password-val"
-              placeholder="비밀번호를 입력하세요"
-            />
+            <input id="password-val" />
             <div class="error-message" id="password-error">* helper text</div>
           </div>
 
           <!-- 비밀번호 확인 -->
           <div class="form-field" id="password-confirm">
             <label for="password-confirm">비밀번호 확인</label>
-            <input
-              type="password"
-              id="password-confirm-val"
-              placeholder="비밀번호를 한번 더 입력하세요"
-            />
+            <input id="password-confirm-val" />
             <div class="error-message" id="password-confirm-error">
               * helper text
             </div>
@@ -48,6 +45,18 @@ class PasswordChange extends Component {
   }
 
   mounted() {
+    this.useEffect(() => {
+      this.validatePassword()
+    }, [this.password])
+
+    this.useEffect(() => {
+      this.validatePasswordConfirm()
+    }, [this.passwordConfirm])
+
+    this.useEffect(() => {
+      this.validateForm()
+    }, [this.password, this.passwordConfirm])
+
     // DOM 요소 저장
     this.$elements = {
       registerForm: this.$target.querySelector('#password-change-form'),
@@ -70,31 +79,32 @@ class PasswordChange extends Component {
       onClick: this.modifyHandler.bind(this),
       idName: 'submit-button',
     })
-  }
 
-  setEvent() {
-    this.addEvent(this.$elements.passwordInput, 'input', event => {
-      this.validatePassword()
-      this.validateForm()
+    new TextInput(this.$elements.passwordInput, {
+      id: 'password-val',
+      type: 'password',
+      value: this.password,
+      placeholder: '비밀번호를 입력하세요',
+      changeHandler: this.setPassword,
     })
-    this.addEvent(this.$elements.passwordConfirmInput, 'input', event => {
-      this.validatePasswordConfirm()
-      this.validateForm()
+
+    new TextInput(this.$elements.passwordConfirmInput, {
+      id: 'password-confirm-val',
+      type: 'password',
+      value: this.passwordConfirm,
+      placeholder: '비밀번호를 한번 더 입력하세요',
+      changeHandler: this.setPasswordConfirm,
     })
   }
 
   /** 비밀번호 유효성 검사 */
   validatePassword() {
-    return validatePasswordInput(this.$elements.passwordInput, this.$elements.passwordErrorText)
+    return validatePasswordInput(this.password, this.$elements.passwordErrorText)
   }
 
   /** 비밀번호 확인 유효성 검사 */
   validatePasswordConfirm() {
-    return validatePasswordConfirmInput(
-      this.$elements.passwordInput,
-      this.$elements.passwordConfirmInput,
-      this.$elements.passwordConfirmErrorText,
-    )
+    return validatePasswordConfirmInput(this.password, this.passwordConfirm, this.$elements.passwordConfirmErrorText)
   }
 
   validateForm() {
@@ -111,12 +121,21 @@ class PasswordChange extends Component {
     }
   }
 
-  // TODO: 수정하기 API
   modifyHandler(event) {
     event.preventDefault()
-    new Toast({
-      message: '수정 완료',
-    })
+    this.modifyPassword()
+  }
+
+  /** 회원탈퇴 */
+  async modifyPassword() {
+    const response = await modifyPasswordUser({ password: this.password })
+    if (response.success) {
+      new Toast({ message: '수정 완료' })
+      this.setPassword('')
+      this.setPasswordConfirm('')
+    } else {
+      new Toast({ message: '비밀번호 변경 실패' })
+    }
   }
 }
 

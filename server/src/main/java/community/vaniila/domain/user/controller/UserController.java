@@ -2,6 +2,7 @@ package community.vaniila.domain.user.controller;
 
 import community.vaniila.domain.user.dto.request.LoginRequest;
 import community.vaniila.domain.user.dto.request.ModifyRequest;
+import community.vaniila.domain.user.dto.request.PasswordModifyRequest;
 import community.vaniila.domain.user.dto.request.RegisterRequest;
 import community.vaniila.domain.user.dto.response.LoginResponse;
 import community.vaniila.domain.user.dto.response.UserDataResponse;
@@ -82,5 +83,19 @@ public class UserController {
     userService.unregisterUser(userId);
 
     return ResponseEntity.noContent().build(); // 204 No Content
+  }
+
+  @PatchMapping("/password")
+  public ResponseEntity<Void> updatePassword(
+      @RequestHeader("Authorization") String authHeader,
+      @RequestBody @Valid PasswordModifyRequest request
+  ) {
+    String token = authHeader.replace("Bearer ", "").trim();
+    Long userId = jwtUtils.getId(token);
+
+
+    userService.updatePassword(userId, request.getPassword());
+
+    return ResponseEntity.noContent().build();  // 204 No Content
   }
 }

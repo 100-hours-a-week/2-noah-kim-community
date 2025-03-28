@@ -15,14 +15,12 @@ import { registerUser } from '../../service/userService.js'
 class Register extends Component {
   setup() {
     /** 상태 정의 */
-    this.$state = {
-      email: '',
-      password: '',
-      passwordConfirm: '',
-      nickname: '',
-      /** TODO: 프로필 이미지를 S3에 업로드하고 이를 저장하기 */
-      profileImage: 'https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg',
-    }
+    this.useState('email', '')
+    this.useState('password', '')
+    this.useState('passwordConfirm', '')
+    this.useState('nickname', '')
+    /** TODO: 프로필 이미지를 S3에 업로드하고 이를 저장하기 */
+    this.useState('profileImage', 'https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg')
 
     /** 스타일 로드 */
     this.loadStyles()
@@ -49,7 +47,7 @@ class Register extends Component {
               hidden 
             />
             <div id="profile-preview">
-              <img id="profile-image" src="${this.$state.profileImage}" alt="프로필 이미지" />
+              <img id="profile-image" src="${this.profileImage}" alt="프로필 이미지" />
               <span id="profile-placeholder">+</span>
             </div>
           </div>
@@ -93,6 +91,30 @@ class Register extends Component {
   }
 
   mounted() {
+    this.useEffect(() => {
+      this.validateProfile()
+    }, [this.profileImage])
+
+    this.useEffect(() => {
+      this.validateEmail()
+    }, [this.email])
+
+    this.useEffect(() => {
+      this.validatePassword()
+    }, [this.password])
+
+    this.useEffect(() => {
+      this.validatePasswordConfirm()
+    }, [this.passwordConfirm])
+
+    this.useEffect(() => {
+      this.validateNickname()
+    }, [this.nickname])
+
+    this.useEffect(() => {
+      this.validateForm()
+    }, [this.profileImage, this.email, this.password, this.passwordConfirm, this.nickname])
+
     // DOM 요소 저장
     this.$elements = {
       // 인풋 요소
@@ -123,48 +145,32 @@ class Register extends Component {
     new TextInput(this.$elements.emailInput, {
       id: 'email-val',
       type: 'text',
-      value: this.$state.email,
+      value: this.email,
       placeholder: '이메일을 입력하세요',
-      changeHandler: value => this.setState({ email: value }),
-      callback: () => {
-        this.validateEmail()
-        this.validateForm()
-      },
+      changeHandler: this.setEmail,
     })
 
     new TextInput(this.$elements.passwordInput, {
       id: 'password-val',
       type: 'password',
-      value: this.$state.password,
+      value: this.password,
       placeholder: '비밀번호를 입력하세요',
-      changeHandler: value => this.setState({ password: value }),
-      callback: () => {
-        this.validatePassword()
-        this.validateForm()
-      },
+      changeHandler: this.setPassword,
     })
     new TextInput(this.$elements.passwordConfirmInput, {
       id: 'password-confirm-val',
       type: 'password',
-      value: this.$state.passwordConfirm,
+      value: this.passwordConfirm,
       placeholder: '비밀번호를 한번 더 입력하세요',
-      changeHandler: value => this.setState({ passwordConfirm: value }),
-      callback: () => {
-        this.validatePasswordConfirm()
-        this.validateForm()
-      },
+      changeHandler: this.setPasswordConfirm,
     })
 
     new TextInput(this.$elements.nicknameInput, {
       id: 'nickname-val',
       type: 'text',
-      value: this.$state.nickname,
+      value: this.nickname,
       placeholder: '닉네임을 입력하세요',
-      changeHandler: value => this.setState({ nickname: value }),
-      callback: () => {
-        this.validateNickname()
-        this.validateForm()
-      },
+      changeHandler: this.setNickname,
     })
 
     new Button(this.$elements.registerButton, {
@@ -181,9 +187,7 @@ class Register extends Component {
 
   setEvent() {
     this.addEvent(this.$elements.profileInput, 'input', event => {
-      this.setState({ profileImage: event.target.files[0] })
-      this.validateProfile()
-      this.validateForm()
+      this.setProfileImage(event.target.files[0])
     })
     this.addEvent(this.$elements.profileInput, 'change', this.profileChangeHandler.bind(this))
 
@@ -250,26 +254,22 @@ class Register extends Component {
   // TODO: 중복 이메일 검사 (회원가입)
   /** 이메일 유효성 검사 + 중복 이메일 검사 */
   validateEmail() {
-    return validateEmailInput(this.$elements.emailInput, this.$elements.emailErrorText)
+    return validateEmailInput(this.email, this.$elements.emailErrorText)
   }
 
   /** 비밀번호 유효성 검사 */
   validatePassword() {
-    return validatePasswordInput(this.$elements.passwordInput, this.$elements.passwordErrorText)
+    return validatePasswordInput(this.password, this.$elements.passwordErrorText)
   }
 
   /** 비밀번호 확인 유효성 검사 */
   validatePasswordConfirm() {
-    return validatePasswordConfirmInput(
-      this.$elements.passwordInput,
-      this.$elements.passwordConfirmInput,
-      this.$elements.passwordConfirmErrorText,
-    )
+    return validatePasswordConfirmInput(this.password, this.passwordConfirm, this.$elements.passwordConfirmErrorText)
   }
 
   /** 닉네임 유효성 검사 */
   validateNickname() {
-    return validateNicknameInput(this.$elements.nicknameInput, this.$elements.nicknameErrorText)
+    return validateNicknameInput(this.nickname, this.$elements.nicknameErrorText)
   }
 
   /** 폼 전체 유효성 검사 */
@@ -294,11 +294,18 @@ class Register extends Component {
 
   async registerHandler(event) {
     event.preventDefault()
+    const isFormValid =
+      this.validateEmail() && this.validatePassword() && this.validatePasswordConfirm() && this.validateNickname() && this.validateProfile()
+
+    if (!isFormValid) {
+      new Toast({ message: '정보를 알맞게 모두 입력해주세요' })
+      return
+    }
 
     const body = {
-      email: this.$state.email,
-      password: this.$state.password,
-      nickname: this.$state.nickname,
+      email: this.email,
+      password: this.password,
+      nickname: this.nickname,
       imageUrl: `https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg`,
     }
 

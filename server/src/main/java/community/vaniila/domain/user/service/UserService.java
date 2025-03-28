@@ -125,6 +125,25 @@ public class UserService {
     user.setDeletedAt(LocalDateTime.now());
   }
 
+  @Transactional
+  public void updatePassword(Long userId, String newPassword) {
+    if (newPassword == null || newPassword.isBlank()) {
+      throw new CustomException(AuthErrorCode.AUTH_INVALID_UPDATE_DATA);  // 비밀번호 유효성 검사
+    }
+
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
+
+    if (user.getDeletedAt() != null) {
+      throw new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND); // 탈퇴 유저
+    }
+
+    String hashedPassword = PasswordUtils.hashPassword(newPassword);
+
+    // 비밀번호 암호화 후 저장
+    user.setPassword(hashedPassword);
+  }
+
   public void checkNicknameDuplication(String nickname) {
     if (userRepository.existsByNickname(nickname)) {
       throw new CustomException(AuthErrorCode.AUTH_NICKNAME_DUPLICATED);

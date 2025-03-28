@@ -1,3 +1,6 @@
+import { EffectManager } from './EffectManager.js'
+import { StateManager } from './StateManager.js'
+
 class BaseComponent {
   $target
   $props
@@ -13,6 +16,13 @@ class BaseComponent {
       this.$target = $targetOrProps
       this.$props = $props
     }
+
+    // Hook 시스템 초기화
+    this._stateManager = new StateManager(this)
+    this.useState = this._stateManager.useState.bind(this._stateManager)
+
+    this._effectManager = new EffectManager(this)
+    this.useEffect = this._effectManager.useEffect.bind(this._effectManager)
 
     this.setup() // #1
     this.render() // #2
@@ -37,7 +47,9 @@ class BaseComponent {
   }
 
   /** #2 템플릿을 실제 요소로 변환  */
-  render() {}
+  render() {
+    this._stateManager.resetCursor?.()
+  }
 
   /** #2 HTML 템플릿 저장 */
   template() {
@@ -49,33 +61,6 @@ class BaseComponent {
 
   /** #3 컴포넌트에서 필요한 이벤트 설정 */
   setEvent() {}
-
-  setState(newState) {
-    const activeElement = document.activeElement
-
-    const isInput = activeElement && ['INPUT', 'TEXTAREA'].includes(activeElement.tagName) && activeElement.type !== 'file'
-    const inputId = activeElement?.id
-    const cursorPos = activeElement?.selectionStart
-
-    this.$state = { ...this.$state, ...newState }
-    this.render()
-    this.setEvent()
-
-    const SUPPORTED_SELECTION_TYPES = ['text', 'search', 'url', 'tel', 'password']
-
-    // 입력 위치 복원
-    if (isInput && inputId && SUPPORTED_SELECTION_TYPES.includes(activeElement?.type)) {
-      const inputElement = document.getElementById(inputId)
-      requestAnimationFrame(() => {
-        const inputElement = document.getElementById(inputId)
-        if (inputElement) {
-          inputElement.focus()
-          const len = inputElement.value.length
-          inputElement.setSelectionRange(cursorPos ?? len, cursorPos ?? len)
-        }
-      })
-    }
-  }
 
   /** 이벤트 등록 추상화 */
   /** 이벤트 등록 추상화 (이제 selector 대신 요소를 직접 받음) */

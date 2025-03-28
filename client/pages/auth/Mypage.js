@@ -1,6 +1,7 @@
 import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import Modal from '../../components/common/Modal/Modal.js'
+import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
 import { validateNicknameInput } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
@@ -9,13 +10,15 @@ import { getUser, modifyUser, unregisterUser } from '../../service/userService.j
 class Mypage extends Component {
   setup() {
     /** 상태 정의 */
-    this.$state = {
-      /** TODO: 실제 프로필 이미지 저장하기 */
+    /** TODO: 실제 프로필 이미지 저장하기 */
+
+    this.useState('userData', {
       profileImage: '',
       email: '',
       nickname: '',
-      nicknameInput: '',
-    }
+    })
+
+    this.useState('nicknameInput', '')
 
     this.loadStyles()
     this.fetchUserData()
@@ -45,7 +48,7 @@ class Mypage extends Component {
         <!-- 이메일 -->
         <div class="data" id="email">
           <span class="data-title">이메일</span>
-          <span id="data-email">${this.$state.email}</span>
+          <span id="data-email">${this.userData.email}</span>
         </div>
 
         <!-- 닉네임 -->
@@ -54,7 +57,7 @@ class Mypage extends Component {
           <input
             type="text"
             id="nickname-val"
-            value="${this.$state.nicknameInput}"
+            value="${this.nicknameInput}"
             placeholder="닉네임을 입력하세요"
           />
           <div class="error-message" id="nickname-error">* helper text</div>
@@ -67,6 +70,10 @@ class Mypage extends Component {
   }
 
   mounted() {
+    this.useEffect(() => {
+      this.validateNickname()
+    }, [this.nicknameInput])
+
     // DOM 요소 저장
     this.$elements = {
       nicknameInput: this.$target.querySelector('#nickname-val'),
@@ -88,26 +95,25 @@ class Mypage extends Component {
       onClick: this.unregisterHandler.bind(this),
       idName: 'unregister-button',
     })
-  }
 
-  setEvent() {
-    this.addEvent(this.$elements.nicknameInput, 'input', event => {
-      event.preventDefault()
-      event.stopPropagation()
-      this.setState({ nicknameInput: event.target.value })
-      this.validateNickname
+    new TextInput(this.$elements.nicknameInput, {
+      id: 'nickname-val',
+      type: 'text',
+      value: this.nicknameInput,
+      placeholder: this.userData.nickname || '닉네임을 입력하세요',
+      changeHandler: this.setNicknameInput,
     })
   }
 
   /** 닉네임 유효성 검사 */
   validateNickname() {
-    return validateNicknameInput(this.$elements.nicknameInput, this.$elements.nicknameErrorText)
+    return validateNicknameInput(this.userData.nickname, this.$elements.nicknameErrorText)
   }
 
   /** 수정하기 로직 */
   async modifyHandler(event) {
-    const nickname = this.$state.nickname
-    const nicknameInput = this.$state.nicknameInput
+    const nickname = this.userData.nickname
+    const nicknameInput = this.nicknameInput
     event.preventDefault() // 기본 동작 방지
 
     /** 닉네임이 기존과 바뀐게 없는 경우 */
@@ -124,9 +130,11 @@ class Mypage extends Component {
 
     if (response.success) {
       // 바뀐 닉네임 최신화
-      this.setState({
-        nickname,
+      this.setUserData({
+        ...this.userData,
+        nickname: nicknameInput,
       })
+      this.setNicknameInput('')
 
       new Toast({ message: '수정 완료' })
     } else {
@@ -152,7 +160,7 @@ class Mypage extends Component {
       const { message, data } = response.data
       const { userId, email, nickname, imageUrl } = data
 
-      this.setState({
+      this.setUserData({
         profileImage: imageUrl,
         email: email,
         nickname: nickname,

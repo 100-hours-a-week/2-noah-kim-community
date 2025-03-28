@@ -46,3 +46,17 @@ textarea {
 button {
   width: 354px;
 }
+
+#post-title {
+  overflow-x: hidden;
+}
+
+#title-input {
+  background-color: inherit;
+  margin-left: 0;
+}
+
+#image-input {
+  background-color: inherit;
+  margin-left: 0;
+}

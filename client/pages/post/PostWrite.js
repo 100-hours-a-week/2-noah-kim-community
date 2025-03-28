@@ -11,11 +11,9 @@ class PostWrite extends Component {
 
   setup() {
     /** 상태 정의 */
-    this.$state = {
-      title: '',
-      content: '',
-      imageUrl: '',
-    }
+    this.useState('title', '')
+    this.useState('content', '')
+    this.useState('imageUrl', '')
 
     /** 스타일 로드 */
     this.loadStyles()
@@ -53,6 +51,14 @@ class PostWrite extends Component {
   }
 
   mounted() {
+    this.useEffect(() => {
+      this.validateTitle()
+    }, [this.title])
+
+    this.useEffect(() => {
+      this.validateForm()
+    }, [this.title, this.content, this.imageUrl])
+
     // DOM 요소 저장
     this.$elements = {
       // 인풋 요소
@@ -77,19 +83,17 @@ class PostWrite extends Component {
     new TextInput(this.$elements.titleInput, {
       id: 'title-input',
       type: 'text',
-      value: this.$state.title,
+      value: this.title,
       placeholder: '제목을 입력하세요. (최대 26글자)',
-      changeHandler: value => this.setState({ title: value }),
-      callback: this.validateTitle.bind(this),
+      changeHandler: this.setTitle,
     })
 
     new Textarea(this.$elements.textareaInput, {
       id: 'content-input',
       type: 'text',
-      value: this.$state.content,
+      value: this.content,
       placeholder: '내용을 입력하세요',
-      changeHandler: value => this.setState({ content: value }),
-      callback: this.validateTitle.bind(this),
+      changeHandler: this.setContent,
     })
   }
 
@@ -97,22 +101,19 @@ class PostWrite extends Component {
     this.addEvent(this.$elements.imageInput, 'input', event => {
       const file = event.target.files[0]
       // TODO: 이미지 업로드 및 경로로 저장
-      this.setState({ imageUrl: `https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg` })
+      this.setImageUrl(`https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg`)
     })
   }
 
   get isFormValid() {
-    const { title, content, imageUrl } = this.$state
-    return title !== '' && content !== '' && imageUrl !== ''
+    return this.title !== '' && this.content !== '' && this.imageUrl !== ''
   }
 
   /** 제목은 최대 26자 */
   validateTitle() {
-    const titleInput = this.$elements.titleInput
-
-    // UI 업데이트
-    if (titleInput.value.length > 26) {
-      titleInput.value = titleInput.value.slice(0, 26)
+    if (this.title.length > 26) {
+      this.setTitle(this.title.slice(0, 26))
+      new Toast({ message: '제목이 최대 26자로 설정됩니다.' })
     }
   }
 
@@ -134,9 +135,9 @@ class PostWrite extends Component {
   /** 수정하러 가기 */
   async createPostHandler() {
     const body = {
-      title: this.$state.title,
-      content: this.$state.content,
-      imageUrl: this.$state.imageUrl,
+      title: this.title,
+      content: this.content,
+      imageUrl: this.imageUrl,
     }
     const response = await createPost(body)
     if (response.success) {
@@ -147,11 +148,6 @@ class PostWrite extends Component {
     } else {
       new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
     }
-  }
-
-  setState(newState) {
-    super.setState(newState)
-    this.validateForm()
   }
 }
 
