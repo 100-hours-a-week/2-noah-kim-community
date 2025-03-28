@@ -41,7 +41,6 @@ class PostList extends Component {
     // DOM 요소 저장
     this.$elements = {
       writePostButton: this.$target.querySelector('#write-button'),
-
       postList: this.$target.querySelector('#posts'),
     }
 

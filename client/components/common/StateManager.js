@@ -13,6 +13,7 @@ export class StateManager {
   useState(key, initialValue) {
     const index = this.cursor++
 
+    /** useState(초기값) 에서 초기값은 최초 한번만 states에 적용된다. 이후에는 원래 값을 사용한다. */
     if (this.states[index] === undefined) {
       this.states[index] = initialValue
       this.keys[index] = key
@@ -28,7 +29,7 @@ export class StateManager {
 
       this.component.render()
       this.component.setEvent()
-      this.component.runEffects?.()
+      // this.component.runEffects?.()
     }
 
     // 자동 this 바인딩

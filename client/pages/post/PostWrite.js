@@ -111,11 +111,9 @@ class PostWrite extends Component {
 
   /** 제목은 최대 26자 */
   validateTitle() {
-    const titleInput = this.$elements.titleInput
-
-    // UI 업데이트
-    if (titleInput.value.length > 26) {
-      titleInput.value = titleInput.value.slice(0, 26)
+    if (this.title.length > 26) {
+      this.setTitle(this.title.slice(0, 26))
+      new Toast({ message: '제목이 최대 26자로 설정됩니다.' })
     }
   }
 
