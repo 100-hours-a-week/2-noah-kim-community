@@ -3,10 +3,10 @@ import Component from '../../components/common/Component.js'
 import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
 import {
-  validateEmailInputTwo,
-  validateNicknameInputTwo,
-  validatePasswordConfirmInputTwo,
-  validatePasswordInputTwo,
+  validateEmailInput,
+  validateNicknameInput,
+  validatePasswordConfirmInput,
+  validatePasswordInput,
 } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
@@ -255,22 +255,22 @@ class Register extends Component {
   // TODO: 중복 이메일 검사 (회원가입)
   /** 이메일 유효성 검사 + 중복 이메일 검사 */
   validateEmail() {
-    return validateEmailInputTwo(this.email, this.$elements.emailErrorText)
+    return validateEmailInput(this.email, this.$elements.emailErrorText)
   }
 
   /** 비밀번호 유효성 검사 */
   validatePassword() {
-    return validatePasswordInputTwo(this.password, this.$elements.passwordErrorText)
+    return validatePasswordInput(this.password, this.$elements.passwordErrorText)
   }
 
   /** 비밀번호 확인 유효성 검사 */
   validatePasswordConfirm() {
-    return validatePasswordConfirmInputTwo(this.password, this.passwordConfirm, this.$elements.passwordConfirmErrorText)
+    return validatePasswordConfirmInput(this.password, this.passwordConfirm, this.$elements.passwordConfirmErrorText)
   }
 
   /** 닉네임 유효성 검사 */
   validateNickname() {
-    return validateNicknameInputTwo(this.nickname, this.$elements.nicknameErrorText)
+    return validateNicknameInput(this.nickname, this.$elements.nicknameErrorText)
   }
 
   /** 폼 전체 유효성 검사 */

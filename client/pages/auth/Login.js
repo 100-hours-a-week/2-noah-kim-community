@@ -2,7 +2,7 @@ import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
-import { validateEmailInputTwo, validatePasswordInputTwo } from '../../lib/validation/inputValidations.js'
+import { validateEmailInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 import { loginUser } from '../../service/userService.js'
@@ -97,12 +97,12 @@ class Login extends Component {
 
   /** 이메일 유효성 검사 */
   validateEmail() {
-    return validateEmailInputTwo(this.email, this.$elements.emailErrorText)
+    return validateEmailInput(this.email, this.$elements.emailErrorText)
   }
 
   /** 비밀번호 유효성 검사 */
   validatePassword() {
-    return validatePasswordInputTwo(this.password, this.$elements.passwordErrorText)
+    return validatePasswordInput(this.password, this.$elements.passwordErrorText)
   }
 
   /** 폼 전체 유효성 검사 */

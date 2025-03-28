@@ -107,7 +107,7 @@ class Mypage extends Component {
 
   /** 닉네임 유효성 검사 */
   validateNickname() {
-    return validateNicknameInput(this.$elements.nicknameInput, this.$elements.nicknameErrorText)
+    return validateNicknameInput(this.userData.nickname, this.$elements.nicknameErrorText)
   }
 
   /** 수정하기 로직 */

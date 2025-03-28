@@ -2,7 +2,7 @@ import Button from '../../components/common/Button/Button.js'
 import Component from '../../components/common/Component.js'
 import TextInput from '../../components/common/TextInput/TextInput.js'
 import Toast from '../../components/common/Toast/Toast.js'
-import { validatePasswordConfirmInputTwo, validatePasswordInputTwo } from '../../lib/validation/inputValidations.js'
+import { validatePasswordConfirmInput, validatePasswordInput } from '../../lib/validation/inputValidations.js'
 import { modifyPasswordUser } from '../../service/userService.js'
 class PasswordChange extends Component {
   setup() {
@@ -97,12 +97,12 @@ class PasswordChange extends Component {
 
   /** 비밀번호 유효성 검사 */
   validatePassword() {
-    return validatePasswordInputTwo(this.password, this.$elements.passwordErrorText)
+    return validatePasswordInput(this.password, this.$elements.passwordErrorText)
   }
 
   /** 비밀번호 확인 유효성 검사 */
   validatePasswordConfirm() {
-    return validatePasswordConfirmInputTwo(this.password, this.passwordConfirm, this.$elements.passwordConfirmErrorText)
+    return validatePasswordConfirmInput(this.password, this.passwordConfirm, this.$elements.passwordConfirmErrorText)
   }
 
   validateForm() {
