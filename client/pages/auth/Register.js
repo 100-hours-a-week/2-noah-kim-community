@@ -315,7 +315,7 @@ class Register extends Component {
       navigateTo(ROUTES.AUTH.LOGIN.url)
       new Toast({ message: '회원가입 성공!' })
     } else {
-      new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
+      new Toast({ message: response.error || '회원가입 실패. 다시 시도해주세요.' })
     }
   }
 }

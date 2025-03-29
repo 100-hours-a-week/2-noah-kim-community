@@ -134,7 +134,7 @@ class PasswordChange extends Component {
       this.setPassword('')
       this.setPasswordConfirm('')
     } else {
-      new Toast({ message: '비밀번호 변경 실패' })
+      new Toast({ message: response.error || '비밀번호 변경 실패' })
     }
   }
 }

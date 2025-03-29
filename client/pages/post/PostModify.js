@@ -128,7 +128,7 @@ class PostModify extends Component {
         imageUrl: postData.imageUrl,
       })
     } else {
-      new Toast({ message: '게시글 정보 가져오기 실패' })
+      new Toast({ message: response.error || '게시글 정보 가져오기 실패' })
     }
   }
 
@@ -146,7 +146,7 @@ class PostModify extends Component {
       navigateTo(ROUTES.POST.DETAIL.url(postId))
       new Toast({ message: '게시글 수정 완료' })
     } else {
-      new Toast({ message: '게시글 수정 실패' })
+      new Toast({ message: response.error || '게시글 수정 실패' })
     }
   }
 }

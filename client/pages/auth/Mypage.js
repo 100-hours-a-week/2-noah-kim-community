@@ -138,7 +138,7 @@ class Mypage extends Component {
 
       new Toast({ message: '수정 완료' })
     } else {
-      new Toast({ message: '유저 정보 가져오기에 실패하였습니다' })
+      new Toast({ message: response.error || '유저 정보 가져오기에 실패하였습니다' })
     }
   }
 

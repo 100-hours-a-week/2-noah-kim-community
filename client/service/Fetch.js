@@ -10,7 +10,9 @@ import { API_BASE_URL } from './endpoints.js'
 export const Fetch = async (endpoint, options = {}) => {
   const { method, url } = endpoint
 
-  const { params = {}, body, headers = {}, auth = false } = options
+  const { params = {}, body, headers = {}, auth = {} } = options
+
+  const { token = false, required = true } = auth
 
   // 쿼리 파라미터 처리
   const queryString = new URLSearchParams(params).toString()
@@ -25,10 +27,10 @@ export const Fetch = async (endpoint, options = {}) => {
   }
 
   // AT가 있다면 Authorization 헤더 추가
-  if (auth) {
+  if (token && required) {
     const accessToken = getAccessToken()
     if (!accessToken) {
-      return { success: false, error: '유저 인증 실패' }
+      return { success: false, error: '로그인이 필요합니다' }
     }
     fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
   }

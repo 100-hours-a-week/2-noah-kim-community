@@ -146,7 +146,7 @@ class PostWrite extends Component {
       navigateTo(ROUTES.POST.DETAIL.url(postId))
       new Toast({ message: '게시글 생성 성공!' })
     } else {
-      new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
+      new Toast({ message: response.error || '회원가입 실패. 다시 시도해주세요.' })
     }
   }
 }

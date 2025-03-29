@@ -242,7 +242,7 @@ class PostDetail extends Component {
         userData: userData,
       })
     } else {
-      new Toast({ message: '게시글 정보 가져오기 실패' })
+      new Toast({ message: response.error || '게시글 정보 가져오기 실패' })
     }
   }
 
@@ -253,7 +253,7 @@ class PostDetail extends Component {
       navigateTo(ROUTES.POST.MAIN.url)
       new Toast({ message: '게시글 삭제 완료' })
     } else {
-      new Toast({ message: '게시글 정보 가져오기 실패' })
+      new Toast({ message: response.error || '게시글 정보 가져오기 실패' })
     }
   }
 
@@ -276,7 +276,7 @@ class PostDetail extends Component {
       })
       this.setCommentInput(null)
     } else {
-      new Toast({ message: '댓글 추가 실패' })
+      new Toast({ message: response.error || '댓글 추가 실패' })
     }
   }
 
@@ -313,7 +313,7 @@ class PostDetail extends Component {
       this.setCommentInput(null)
       this.setEditingCommentId(null)
     } else {
-      new Toast({ message: '댓글 추가 실패' })
+      new Toast({ message: response.error || '댓글 추가 실패' })
     }
   }
   /** 댓글 수정 API */
@@ -338,7 +338,7 @@ class PostDetail extends Component {
       })
       new Toast({ message: '댓글이 삭제되었습니다' })
     } else {
-      new Toast({ message: '댓글 삭제 실패' })
+      new Toast({ message: response.error || '댓글 삭제 실패' })
     }
   }
 
@@ -364,7 +364,9 @@ class PostDetail extends Component {
         },
       })
     } else {
-      new Toast({ message: '좋아요 추가 실패' })
+      console.log(response)
+
+      new Toast({ message: response.error || '좋아요 추가 실패' })
     }
   }
 
@@ -383,7 +385,7 @@ class PostDetail extends Component {
         },
       })
     } else {
-      new Toast({ message: '좋아요 삭제 실패' })
+      new Toast({ message: response.error || '좋아요 삭제 실패' })
     }
   }
 }
