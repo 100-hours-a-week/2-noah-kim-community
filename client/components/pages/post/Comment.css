@@ -63,6 +63,7 @@
 .comment #comment-buttons {
   position: absolute;
   right: 0;
+  top: 15px;
 }
 .comment #comment-buttons button {
   font-size: 12px;

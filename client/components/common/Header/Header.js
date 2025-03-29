@@ -43,7 +43,7 @@ class Header extends Component {
 
     const authData = getAuthData()
     this.useState('isLogin', authData ? true : false)
-    this.fetchUserData()
+    if (authData) this.fetchUserData()
 
     this.loadStyles()
   }
