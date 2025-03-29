@@ -31,13 +31,13 @@ export const Fetch = async (endpoint, options = {}) => {
     if (!accessToken) {
       return { success: false, error: '로그인이 필요합니다' }
     }
+    console.log('accessToken:', accessToken)
+
     fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
   }
 
   if (body) {
     const isFormData = body instanceof FormData
-    console.log(body)
-    console.log(isFormData)
 
     /** FormData 핸들링 */
     if (isFormData) {

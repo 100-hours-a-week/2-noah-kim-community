@@ -148,6 +148,10 @@ class PostModify extends Component {
   async modifyPostHandler() {
     const postId = this.postId
     const { title, content, imageUrl } = this.formData
+    console.log('modifyPostHandler')
+
+    console.log(title, content, imageUrl)
+
     const response = await modifyPost({
       postId,
       title,

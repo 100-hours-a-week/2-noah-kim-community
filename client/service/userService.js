@@ -29,7 +29,7 @@ export const modifyUser = async ({ nickname, imageUrl }) => {
 
   const body = { nickname, imageUrl }
 
-  const response = await Fetch(ENDPOINT, { body, auth: true })
+  const response = await Fetch(ENDPOINT, { body, auth: { token: true } })
   return response
 }
 

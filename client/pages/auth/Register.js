@@ -11,6 +11,7 @@ import {
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 import { registerUser } from '../../service/userService.js'
+import { deleteS3Image, uploadS3Image } from '../../service/utilService.js'
 
 class Register extends Component {
   setup() {
@@ -19,8 +20,7 @@ class Register extends Component {
     this.useState('password', '')
     this.useState('passwordConfirm', '')
     this.useState('nickname', '')
-    /** TODO: 프로필 이미지를 S3에 업로드하고 이를 저장하기 */
-    this.useState('profileImage', 'https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg')
+    this.useState('imageUrl', '')
 
     /** 스타일 로드 */
     this.loadStyles()
@@ -47,7 +47,7 @@ class Register extends Component {
               hidden 
             />
             <div id="profile-preview">
-              <img id="profile-image" src="${this.profileImage}" alt="프로필 이미지" />
+              <img id="profile-image" src="${this.imageUrl}" alt="프로필 이미지" />
               <span id="profile-placeholder">+</span>
             </div>
           </div>
@@ -91,9 +91,7 @@ class Register extends Component {
   }
 
   mounted() {
-    this.useEffect(() => {
-      this.validateProfile()
-    }, [this.profileImage])
+    console.log(this.imageUrl)
 
     this.useEffect(() => {
       this.validateEmail()
@@ -113,7 +111,7 @@ class Register extends Component {
 
     this.useEffect(() => {
       this.validateForm()
-    }, [this.profileImage, this.email, this.password, this.passwordConfirm, this.nickname])
+    }, [this.imageUrl, this.email, this.password, this.passwordConfirm, this.nickname])
 
     // DOM 요소 저장
     this.$elements = {
@@ -183,25 +181,49 @@ class Register extends Component {
       onClick: this.navigateToLoginRoute.bind(this),
       idName: 'login-button',
     })
+
+    const profileInput = this.$elements.profileInput
+    const profileImage = this.$elements.profileImage
+    const profilePlaceholder = this.$elements.profilePlaceholder
+
+    this.useEffect(() => {
+      this.validateProfile()
+      // 있는 경우
+      if (this.imageUrl) {
+        profileImage.src = this.imageUrl
+        profileImage.style.display = 'block'
+        profilePlaceholder.style.display = 'none'
+      }
+      // 없는 경우
+      else {
+      }
+    }, [this.imageUrl])
   }
 
   setEvent() {
-    this.addEvent(this.$elements.profileInput, 'input', event => {
-      this.setProfileImage(event.target.files[0])
-    })
+    // this.addEvent(this.$elements.profileInput, 'input', event => {
+    //   this.setImageUrl(event.target.files[0])
+    // })
     this.addEvent(this.$elements.profileInput, 'change', this.profileChangeHandler.bind(this))
 
     this.addEvent(this.$elements.profilePreview, 'click', this.getProfileImage.bind(this))
   }
 
   // 이미지가 입력받아지면 수행할 일
-  profileChangeHandler() {
+  profileChangeHandler(event) {
     const profileInput = this.$elements.profileInput
     const profileImage = this.$elements.profileImage
     const profilePlaceholder = this.$elements.profilePlaceholder
 
-    // 2. 새로운 이미지 받기
-    if (profileInput.files && profileInput.files[0]) {
+    const fileInput = event.target.files[0]
+    // 0. 기존 이미지 삭제 및 새로운 이미지 업로드
+    if (this.imageUrl) {
+      this.deleteImageHandler(this.imageUrl)
+    }
+    this.uploadImageHandler(fileInput)
+
+    // 1. 새로운 이미지 표시
+    if (fileInput) {
       const reader = new FileReader()
       reader.onload = function (e) {
         profileImage.src = e.target?.result
@@ -216,6 +238,7 @@ class Register extends Component {
     const profileInput = this.$elements.profileInput
     const profileImage = this.$elements.profileImage
     const profilePlaceholder = this.$elements.profilePlaceholder
+
     // 1. 새로운 이미지 입력 받기
     profileInput?.click()
 
@@ -235,7 +258,7 @@ class Register extends Component {
     // 유효성 검사
     let isValid = true
     let errorText = ''
-    if (!profileInput.files || profileInput.files.length === 0) {
+    if (!this.imageUrl) {
       errorText = '* 프로필 사진을 추가해주세요.'
       isValid = false
     }
@@ -306,7 +329,7 @@ class Register extends Component {
       email: this.email,
       password: this.password,
       nickname: this.nickname,
-      imageUrl: `https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg`,
+      imageUrl: this.imageUrl,
     }
 
     const response = await registerUser(body)
@@ -315,7 +338,32 @@ class Register extends Component {
       navigateTo(ROUTES.AUTH.LOGIN.url)
       new Toast({ message: '회원가입 성공!' })
     } else {
-      new Toast({ message: response.error || '회원가입 실패. 다시 시도해주세요.' })
+      new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
+    }
+  }
+
+  /** 이미지 삭제하기 */
+  async deleteImageHandler(imageUrl) {
+    const response = await deleteS3Image(imageUrl)
+    if (!response.success) {
+      new Toast({ message: '기존 이미지 삭제 실패' })
+    }
+  }
+
+  /** 이미지 업로드하기 */
+  async uploadImageHandler(imageFile) {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+
+    const response = await uploadS3Image(formData)
+    if (response.success) {
+      const { message, data } = response.data
+      const { imageUrl } = data
+      this.setImageUrl(imageUrl)
+
+      new Toast({ message: '이미지 업로드 성공' })
+    } else {
+      new Toast({ message: '회원가입 실패. 다시 시도해주세요.' })
     }
   }
 }
