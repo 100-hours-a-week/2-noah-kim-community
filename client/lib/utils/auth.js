@@ -9,7 +9,7 @@ export const getAuthData = () => {
 }
 
 export const getAccessToken = () => {
-  const { userId, accessToken } = getAuthData()
+  const { userId, accessToken } = getAuthData() ?? {}
   return accessToken ?? undefined
 }
 
