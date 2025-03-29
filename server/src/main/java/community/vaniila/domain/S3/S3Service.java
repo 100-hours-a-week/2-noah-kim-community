@@ -4,12 +4,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
-import community.vaniila.domain.S3.request.ImageDeleteRequest;
 import community.vaniila.domain.S3.response.ImageUploadResponse;
 import community.vaniila.domain.utils.response.CustomException;
 import community.vaniila.domain.utils.response.errorcode.S3ErrorCode;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -74,42 +71,32 @@ public class S3Service {
 
   /** 실제 이미지 업로드 메서드 */
   private String uploadImageToS3(MultipartFile image) throws IOException {
-    String originalFilename = image.getOriginalFilename(); //원본 파일 명
-    String extention = originalFilename.substring(originalFilename.lastIndexOf(".") + 1);
-
-    String s3FileName = UUID.randomUUID().toString().substring(0, 10) + originalFilename; //변경된 파일 명
-
-    InputStream is = image.getInputStream();
-    byte[] bytes = IOUtils.toByteArray(is);
+    String originalFilename = image.getOriginalFilename();
+    String ext = originalFilename.substring(originalFilename.lastIndexOf(".") + 1).toLowerCase();
+    String s3FileName = UUID.randomUUID().toString().substring(0, 10) + originalFilename;
 
     ObjectMetadata metadata = new ObjectMetadata();
-    metadata.setContentType("image/" + extention.toLowerCase());
-    metadata.setContentLength(bytes.length);
-    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+    metadata.setContentType("image/" + ext);
+    metadata.setContentLength(image.getSize()); // 여기 중요!
 
-    try{
-      PutObjectRequest putObjectRequest =
-          new PutObjectRequest(bucketName, s3FileName, byteArrayInputStream, metadata);
-      amazonS3.putObject(putObjectRequest); // put image to S3
-    }catch (Exception e){
-      log.error("S3 이미지 업로드 실패", e); // 추가
+    try (InputStream inputStream = image.getInputStream()) {
+      PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, s3FileName, inputStream, metadata);
+      amazonS3.putObject(putObjectRequest);
+    } catch (Exception e) {
+      log.error("S3 이미지 업로드 실패", e);
       throw new CustomException(S3ErrorCode.PUT_OBJECT_EXCEPTION);
-    }finally {
-      byteArrayInputStream.close();
-      is.close();
     }
 
     return amazonS3.getUrl(bucketName, s3FileName).toString();
   }
 
   /** 이미지의 public url을 이용하여 S3에서 해당 이미지를 제거하는 메서드 */
-  public void deleteImage(ImageDeleteRequest request){
-    String imageUrl = request.getImageUrl();
-
+  public void deleteImage(String imageUrl){
     String key = getKeyFromImageAddress(imageUrl);
     try{
       amazonS3.deleteObject(new DeleteObjectRequest(bucketName, key));
     }catch (Exception e){
+      log.error(e.getMessage());
       throw new CustomException(S3ErrorCode.IO_EXCEPTION_ON_IMAGE_DELETE);
     }
   }

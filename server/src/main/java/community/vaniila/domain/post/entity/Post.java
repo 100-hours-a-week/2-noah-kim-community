@@ -36,7 +36,7 @@ public class Post {
   @Column(nullable = false, columnDefinition = "TEXT")
   private String content;
 
-  @Column(name = "thumbnail_url", length = 255)
+  @Column(name = "thumbnail_url", length = 512)
   private String thumbnailUrl;
 
   @Column(name = "like_count", nullable = false)

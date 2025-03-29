@@ -28,7 +28,7 @@ public class User {
   @Column(nullable = false, length = 128)
   private String password;
 
-  @Column(name = "image_url", nullable = false, length = 255)
+  @Column(name = "image_url", nullable = false, length = 512)
   private String imageUrl;
 
   @Column(nullable = false,unique = true, length = 31)
