@@ -76,3 +76,13 @@ input {
   color: red;
   font-size: small;
 }
+
+.file-label {
+  border-bottom: 0px;
+  padding: 12px;
+  font-size: small;
+  text-underline-offset: 2px;
+  text-decoration: underline;
+  font-weight: 400;
+  cursor: pointer;
+}

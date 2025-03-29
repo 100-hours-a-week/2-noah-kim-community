@@ -6,6 +6,7 @@ import Toast from '../../components/common/Toast/Toast.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 import { getPost, modifyPost } from '../../service/postService.js'
+import { deleteS3Image, uploadS3Image } from '../../service/utilService.js'
 class PostModify extends Component {
   setup() {
     /** 상태 정의 */
@@ -16,6 +17,7 @@ class PostModify extends Component {
       content: '',
       imageUrl: '',
     })
+    this.useState('fileName', '')
 
     this.loadStyles()
     this.fetchPostData()
@@ -42,7 +44,9 @@ class PostModify extends Component {
 
           <div id="post-image">
             <label>이미지</label>
-            <input type="file" id="image-input" accept="image/*" />
+            <label for="image-input" class="file-label">파일 업로드하기</label>
+            <input type="file" id="image-input" accept="image/*" style="display: none;" />
+            ${this.fileName ? `<div class="file-name">${this.fileName}</div>` : ''}
           </div>
         </form>
         <button id="modify-button"></button>
@@ -97,9 +101,17 @@ class PostModify extends Component {
     this.addEvent(this.$elements.contentInput, 'input', event => {
       this.setFormData({ ...this.formData, content: event.target.value })
     })
-    this.addEvent(this.$elements.imageInput, 'input', event => {
-      // TODO: 이미지 업로드 처리 로직 구현
-      this.setFormData({ ...this.formData, imageUrl: `https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg` })
+    this.addEvent(this.$elements.imageInput, 'change', event => {
+      const imageFile = event.target.files[0]
+      if (imageFile) {
+        this.setFileName(imageFile.name)
+        // #1. 기존 이미지 삭제
+        if (this.formData.imageUrl) {
+          this.deleteImageHandler(this.formData.imageUrl)
+        }
+        // #2. 새로운 이미지 삽입
+        this.uploadImageHandler(imageFile)
+      }
     })
   }
 
@@ -147,6 +159,34 @@ class PostModify extends Component {
       new Toast({ message: '게시글 수정 완료' })
     } else {
       new Toast({ message: response.error || '게시글 수정 실패' })
+    }
+  }
+
+  /** 이미지 삭제하기 */
+  async deleteImageHandler(imageUrl) {
+    const response = await deleteS3Image(imageUrl)
+    if (!response.success) {
+      new Toast({ message: response.error || '기존 이미지 삭제 실패' })
+    }
+  }
+
+  /** 이미지 업로드하기 */
+  async uploadImageHandler(imageFile) {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+
+    const response = await uploadS3Image(formData)
+    if (response.success) {
+      const { message, data } = response.data
+      const { imageUrl } = data
+      this.setFormData({
+        ...this.formData,
+        imageUrl: imageUrl,
+      })
+
+      new Toast({ message: '이미지 업로드 성공' })
+    } else {
+      new Toast({ message: response.error || '회원가입 실패. 다시 시도해주세요.' })
     }
   }
 }

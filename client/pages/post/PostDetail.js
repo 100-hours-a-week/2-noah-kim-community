@@ -82,7 +82,7 @@ class PostDetail extends Component {
       </section>
 
       <section id="post-content">
-        <div id="image"></div>
+        <img src=${postImageUrl} id="post-image"></img>
         <span>
           ${content}
         </span>

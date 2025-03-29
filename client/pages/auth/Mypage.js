@@ -177,7 +177,7 @@ class Mypage extends Component {
       navigateTo(ROUTES.AUTH.LOGIN.url)
       new Toast({ message: '회원탈퇴 성공!' })
     } else {
-      new Toast({ message: '유저 정보 가져오기에 실패하였습니다.' })
+      new Toast({ message: response.error || '유저 정보 가져오기에 실패하였습니다.' })
     }
   }
 }

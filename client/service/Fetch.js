@@ -21,7 +21,6 @@ export const Fetch = async (endpoint, options = {}) => {
   const fetchOptions = {
     method,
     headers: {
-      'Content-Type': 'application/json',
       ...headers,
     },
   }
@@ -36,7 +35,19 @@ export const Fetch = async (endpoint, options = {}) => {
   }
 
   if (body) {
-    fetchOptions.body = JSON.stringify(body)
+    const isFormData = body instanceof FormData
+    console.log(body)
+    console.log(isFormData)
+
+    /** FormData 핸들링 */
+    if (isFormData) {
+      fetchOptions.body = body
+
+      // Content-Type은 설정하지 않음 → 브라우저가 자동으로 boundary 포함하여 설정
+    } else {
+      fetchOptions.headers['Content-Type'] = 'application/json'
+      fetchOptions.body = JSON.stringify(body)
+    }
   }
 
   try {

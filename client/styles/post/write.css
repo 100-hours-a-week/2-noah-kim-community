@@ -40,3 +40,10 @@ button {
   background: inherit;
   border: none;
 }
+
+.file-name {
+  margin-top: 8px;
+  padding: 8px 10px;
+  color: #666;
+  font-size: 0.9rem;
+}

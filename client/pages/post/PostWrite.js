@@ -6,6 +6,7 @@ import Toast from '../../components/common/Toast/Toast.js'
 import { ROUTES } from '../../public/data/routes.js'
 import { navigateTo } from '../../router.js'
 import { createPost } from '../../service/postService.js'
+import { uploadS3Image } from '../../service/utilService.js'
 class PostWrite extends Component {
   isComposing = false
 
@@ -14,6 +15,7 @@ class PostWrite extends Component {
     this.useState('title', '')
     this.useState('content', '')
     this.useState('imageUrl', '')
+    this.useState('fileName', '')
 
     /** 스타일 로드 */
     this.loadStyles()
@@ -42,7 +44,9 @@ class PostWrite extends Component {
           <span class="error-message"></span>
           <div id="post-image">
             <label>이미지</label>
-            <input type="file" id="image-input" accept="image/*" />
+            <label for="image-input" class="file-label">파일 업로드하기</label>
+            <input type="file" id="image-input" accept="image/*" style="display: none;" />
+            ${this.fileName ? `<div class="file-name">${this.fileName}</div>` : ''}
           </div>
         </form>
         <button type="button" id="submit-button" ${this.isFormValid ? '' : 'disabled'}></button>
@@ -98,10 +102,12 @@ class PostWrite extends Component {
   }
 
   setEvent() {
-    this.addEvent(this.$elements.imageInput, 'input', event => {
-      const file = event.target.files[0]
-      // TODO: 이미지 업로드 및 경로로 저장
-      this.setImageUrl(`https://babpat-thumbnails.s3.ap-northeast-2.amazonaws.com/thumbnails/p150.jpg`)
+    this.addEvent(this.$elements.imageInput, 'change', event => {
+      const imageFile = event.target.files[0]
+      if (imageFile) {
+        this.setFileName(imageFile.name)
+        this.uploadImageHandler(imageFile)
+      }
     })
   }
 
@@ -145,6 +151,24 @@ class PostWrite extends Component {
       const { postId } = data
       navigateTo(ROUTES.POST.DETAIL.url(postId))
       new Toast({ message: '게시글 생성 성공!' })
+    } else {
+      new Toast({ message: response.error || '회원가입 실패. 다시 시도해주세요.' })
+    }
+  }
+
+  /** 이미지 업로드하기 */
+  async uploadImageHandler(imageFile) {
+    const formData = new FormData()
+    formData.append('image', imageFile)
+
+    const response = await uploadS3Image(formData)
+    if (response.success) {
+      const { message, data } = response.data
+      const { imageUrl } = data
+
+      this.setImageUrl(imageUrl)
+      // TODO: Toast 지우기
+      new Toast({ message: '이미지 업로드 성공' })
     } else {
       new Toast({ message: response.error || '회원가입 실패. 다시 시도해주세요.' })
     }
