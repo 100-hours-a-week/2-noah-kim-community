@@ -45,6 +45,6 @@ export const modifyPasswordUser = async ({ password }) => {
 
   const body = { password }
 
-  const response = await Fetch(ENDPOINT, { body, auth: true })
+  const response = await Fetch(ENDPOINT, { body, auth: { token: true } })
   return response
 }

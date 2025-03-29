@@ -91,8 +91,6 @@ class Register extends Component {
   }
 
   mounted() {
-    console.log(this.imageUrl)
-
     this.useEffect(() => {
       this.validateEmail()
     }, [this.email])

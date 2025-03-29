@@ -184,7 +184,6 @@ class PostDetail extends Component {
     })
   }
 
-  // TODO: 게시글 수정 라우팅 구현 (데이터도 같이 전송)
   navigateToModifyPost() {
     navigateTo(ROUTES.POST.MODIFY.url(this.postData.data.postId))
   }
@@ -259,6 +258,8 @@ class PostDetail extends Component {
 
   /** 댓글 생성 API */
   async createCommentHandler() {
+    console.log('executed create comment')
+
     const response = await createComment({ content: this.commentInput, postId: this.postId })
     if (response.success) {
       const { message, data } = response.data
@@ -364,8 +365,6 @@ class PostDetail extends Component {
         },
       })
     } else {
-      console.log(response)
-
       new Toast({ message: response.error || '좋아요 추가 실패' })
     }
   }

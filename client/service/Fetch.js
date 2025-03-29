@@ -26,14 +26,13 @@ export const Fetch = async (endpoint, options = {}) => {
   }
 
   // AT가 있다면 Authorization 헤더 추가
-  if (token && required) {
+  if (token) {
     const accessToken = getAccessToken()
-    if (!accessToken) {
+    if (required || (!required && accessToken)) {
+      fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
+    } else {
       return { success: false, error: '로그인이 필요합니다' }
     }
-    console.log('accessToken:', accessToken)
-
-    fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
   }
 
   if (body) {
