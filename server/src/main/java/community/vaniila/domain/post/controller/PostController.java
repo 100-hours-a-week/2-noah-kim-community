@@ -64,7 +64,6 @@ public class PostController {
       String token = authHeader.replace("Bearer ", "").trim();
       userId = jwtUtils.getId(token);
     }
-
     PostDetailResponse response = postService.getPostDetail(postId, userId);
     return ResponseEntity.ok(CommonResponse.success("게시글 상세 조회 완료", response));
   }
