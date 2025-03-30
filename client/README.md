@@ -1,22 +1,16 @@
-# 프로젝트 설명
-
-바닐라 자바스크립트를 이용하여 커뮤니티 서비스를 제작하는 개인 프로젝트입니다. <br />
-바닐라 자바스크립트로 SPA (Single Page Application) 아키텍쳐를 사용하여 구현되었으며, 서버와 데이터베이스 추가 설정부터 리액트로의 마이그레이션까지 진행될 프로젝트입니다.
-
 ## 실행 방법
 
 VSCode의 Live Server로 실행됩니다.
 
 다만, Live Server는 폴더 구조로 라우팅을 구현하므로, 이에 대한 설정을 바꿔 항상 루트에 위치한 `index.html`로 라우팅되도록 구현해야 합니다.
 
-1.  `ctrl + shift + p`를 누른 뒤, settings "Preferences: Open User Settings(JSON)"을 열어주세요.
-2.  `"liveServer.settings.file": "index.html"`를 그대로 추가해주세요. 해당 설정은 라우팅시 파일을 루트에 위치한 `index.html`로 고정하는 역할을 합니다.
-3.  Live Server를 실행시키면 프로젝트에 위치한 `router.js`로 자동 라우팅됩니다.
+1. `ctrl + shift + p`를 누른 뒤, settings **"Preferences: Open User Settings(JSON)"**을 열어주세요.
+2. `"liveServer.settings.file": "index.html"`를 그대로 추가해주세요. 해당 설정은 라우팅시 파일을 루트에 위치한 `index.html`로 고정하는 역할을 합니다.
+3. Live Server를 실행시키면 프로젝트에 위치한 `router.js`로 자동 라우팅됩니다.
 
 ## 주요 개념
 
 - 프로젝트 루프에 위치한 `index.html`의 화면에 내용을 구성하며, 라우팅간 페이지 구성요소를 교체하는 SPA 방식으로 작동합니다. <br/>
-
 - 3️⃣ `router.js`를 토대로 라우팅이 진행됩니다. <br />
   브라우저로 요청된 URL을 토대로 알맞는 컴포넌트를 토대로 2️⃣의 구성요소를 교체하는 방식입니다. <br />
 
@@ -26,60 +20,85 @@ VSCode의 Live Server로 실행됩니다.
     <div id="app"></div>                // 2️⃣ 핵심 로직 구현 영역
     <script type="module" src="/router.js"></script> // 3️⃣ SPA 라우팅 구현 함수
   </body>
+
 ```
 
-- `Component.js`는 app에 위치하는 컴포넌트를 구현하기 위한 클래스입니다.
-- `InlineComponent.js`는 지정된 요소가 아닌 태그에 컴포넌트를 위치시키기 위한 클래스입니다.
+- ✅ `BaseComponent.js`는 아래 모든 종류의 컴포넌트의 상위 클래스입니다.
+  - 1️⃣ `Component.js`는 **특정 요소**에 원하는 요소를 **자식으로 추가**하는 컴포넌트입니다.
+  - 2️⃣ `InlineComponent.js` 는 **특정 요소를 대체**하는 컴포넌트입니다.
+  - 3️⃣ `PortalComponent.js`는 모달과 같이 **Portal에 적용**하기 위한 컴포넌트입니다.
+- 💡`StateMangaer.js` 는 useState 상태 관리 로직을 제공하는 클래스입니다.
+- 🔧 `EffectManager.js` 는 useEffect 로직을 제공하는 클래스입니다.
 
 ## 폴더 구조
 
 ```
 ├── README.md
-├── components (공통 컴포넌트)
-│   └── common
-│       ├── Component.js (페이지 컴포넌트)
-│       ├── InlineComponent.js (인라인 컴포넌트)
-│       ├── Button
-│       │   ├── Button.css
-│       │   └── Button.js
-│       ├── Header
-│       │   ├── Header.css
-│       │   └── Header.js
-│       ├── Modal
-│       │   ├── Modal.css
-│       │   └── Modal.js
-│       └── Toast
-│           ├── Toast.css
-│           └── Toast.js
-├── index.html (프로젝트 유일 페이지)
-├── lib (라이브러리 함수)
-│   ├── utils (유틸 함수)
-│   │   ├── date.js
-│   │   └── number.js
-│   └── validation (유효성 검사)
-│       ├── inputValidations.js
-│       └── postValidations.js
-├── pages (라우팅간 컴포넌트)
+├── components
+│   ├── common
+│   │   ├── BaseComponent.js       // ✅
+│   │   ├── Component.js              // 1️⃣
+│   │   ├── InlineComponent.js     // 2️⃣
+│   │   ├── PortalComponent.js    // 3️⃣
+│   │   ├── StateManager.js          // 💡
+│   │   ├── EffectManager.js         // 🔧
+│   │   ├── Button
+│   │   │   ├── Button.css
+│   │   │   └── Button.js
+│   │   ├── Header
+│   │   │   ├── Header.css
+│   │   │   └── Header.js
+│   │   ├── Modal
+│   │   │   ├── Modal.css
+│   │   │   └── Modal.js
+│   │   ├── TextInput
+│   │   │   ├── TextInput.css
+│   │   │   └── TextInput.js
+│   │   ├── Textarea
+│   │   │   ├── Textarea.css
+│   │   │   └── Textarea.js
+│   │   └── Toast
+│   │       ├── Toast.css
+│   │       └── Toast.js
+│   └── pages                 // 라우트간 공용 컴포넌트
+│       └── post
+│           ├── Comment.css
+│           ├── Comment.js
+│           ├── PostCard.css
+│           └── PostCard.js
+├── index.html
+├── lib                                       // 유틸함수
+│   ├── utils
+│   │   ├── auth.js                   // 유저 인증 관련
+│   │   ├── date.js                   // 시간 처리 관련
+│   │   └── number.js              // 숫자 처리 관련
+│   └── validation
+│       ├── inputValidations.js   // 인풋 태그 유효성 검사 관련
+│       └── postValidations.js    // 게시글 유효성 검사 관련
+├── pages
 │   ├── auth
-│   │   ├── Login.js
-│   │   ├── Mypage.js
-│   │   ├── PasswordChange.js
-│   │   └── Register.js
+│   │   ├── Login.js                      // 로그인 페이지
+│   │   ├── Mypage.js                  // 회원정보 수정 페이지
+│   │   ├── PasswordChange.js   // 비밀번호 수정 페이지
+│   │   └── Register.js                // 회원가입 페이지
 │   └── post
-│       ├── PostDetail.js
-│       ├── PostList.js
-│       ├── PostModify.js
-│       └── PostWrite.js
-├── public (정적 데이터)
+│       ├── PostDetail.js               // 게시글 디테일 페이지
+│       ├── PostList.js                  // 게시글 목록 페이지
+│       ├── PostModify.js             // 게시글 수정 페이지
+│       └── PostWrite.js               // 게시글 작성 페이지
+├── public
 │   ├── data
-│   │   ├── dummy_posts.js
-│   │   └── routes.js (프로젝트 라우트)
-│   └── images
-│       └── header_image.jpeg
-├── reset.css (기본 스타일 리셋)
-├── router.js (라우팅 구현 함수)
+│   │   └── routes.js         // 라우트 정보
+├── reset.css
+├── router.js
+├── service
+│   ├── Fetch.js                 // 기본 페칭 함수
+│   ├── endpoints.js          // 엔드포인트 상수
+│   ├── postService.js       // 게시글 관련 API
+│   ├── userService.js       // 유저 관련 API
+│   └── utilService.js        // 이미지 업로드 등 서비스 미특정 API
 ├── style.css
-└── styles (스타일링 코드)
+└── styles
     ├── auth
     │   ├── login.css
     │   ├── mypage.css
@@ -91,11 +110,6 @@ VSCode의 Live Server로 실행됩니다.
         ├── modify.css
         └── write.css
 ```
-
-## 회고 통합 저장소
-
-  <details>
-  <summary>📌 SPA 회고 (바닐라 자바스크립트)</summary>
 
 ### 회고
 
@@ -113,38 +127,20 @@ SPA를 구현하면서도 순탄하지만은 않았습니다. _(아직 해결하
 
 - 클래스 vs 함수형 컴포넌트 중에 **클래스 컴포넌트를 선택한 이유**
   리액트는 클래스 → 함수형 컴포넌트로 더 편리하도록 진화하였는데 그 과정을 몸소 느껴보고자 클래스 컴포넌트로 구현하였습니다.
-  다만, 역시나 클래스 컴포넌트는 불편한 점들이 많았습니다.
+  다만, 역시나 클래스 컴포넌트는 불편한 점들이 많았습니다. 1. `this 바인딩`이 필요하다. (생명주기 메소드) 2. 상속이 된다는 점이 오히려 불편하게 다가왔다.
+  함수형 컴포넌트에서는 각 컴포넌트가 독립적으로 존재해서 사용할 수 있어 자유도가 높았던 반면, 클래스형 컴포넌트는 부모 컴포넌트 아래 구현되다 보니 생명주기, 메소드 등 신경써야 했던 부분들이 많았습니다.
 
-  1. `this 바인딩`이 필요하다. (생명주기 메소드)
-  2. 상속이 된다는 점이 오히려 불편하게 다가왔다.
-
-     함수형 컴포넌트에서는 각 컴포넌트가 독립적으로 존재해서 사용할 수 있어 자유도가 높았던 반면, 클래스형 컴포넌트는 부모 컴포넌트 아래 구현되다 보니 생명주기, 메소드 등 신경써야 했던 부분들이 많았습니다.
-
-- 폴더 구조 정리 (리팩토링)
-
+- **폴더 구조** 정리 (리팩토링)
   개발을 깔끔하게 해서 동료가(kevin) 코드를 이해하는데 1초의 시간도 걸리지 않도록 코드 및 프로젝트를 관리하는 것도 개발자에게 중요한 능력중 하나라고 생각합니다.
-
   오늘 `kevin`의 강의에서 **“폴더 및 파일 구조는 같이 봐야하는 코드끼리 모아놓아져 있어야 한다”**는 말씀을 토대로 최대한 관심사가 비슷한 코드들끼리 구조화하려고 노력했습니다.
-
   cf) `Next.js`의 폴더 구조를 비슷하게 따라해았습니다. (Page Router)
-
   혹시라도 추후에 바닐라 JS → React → Next.js 로 마이그레이션 할 수 있다고 생각했기 때문이기도 합니다.
-
-- 셀프리뷰 (PR)
-
-  저는 **코드리뷰**에 대한 ⭐️**환상**⭐️이 있습니다.
-
-  혼자 개발하면 **항상 쓰던 코드에 매몰**된다는 생각에 코드리뷰를 통해서 객관적 시선으로 코드를 바라봐야 한다고 생각합니다.
-
-  이번에도 코드리뷰에 대한 고민이 있었는데 `Kevin`이 수업에서 **“셀프 리뷰를 해서 자신만의 코드 기준을 찾아보고 이를 자신의 코드에 적용해보는 시간을 가지는 것도 좋은 방법입니다..”** 라고 하셔서 바로 쉬는시간에 메인 푸시 불가 설정을 해두고 이슈-PR을 작성하도록 하였습니다.
-
-    <br />
-    
-    [PR링크](https://github.com/100-hours-a-week/2-noah-kim-community/pull/3)
-
-  _(사실 실수로 머지를 위한 리뷰어수를 제한해두지 않아서 무의식적으로 머지해버렸습니다. 다음부터 셀프리뷰 하겠습니다)_
-
-  해당 PR은 리펙토링 PR이고, Chore한 사항들이 많아서 설명이 부실합니다.. 앞으로 코드리뷰 잘 작성하는 법도 체득해 나가고 싶습니다.
+- **개인 코드 리뷰 및 기록 남기기**
+  1. 바닐라 JS로 useState, useEffect 훅 개발 https://github.com/100-hours-a-week/2-noah-kim-community/pull/14
+  2. S3 이미지 업로드 기능 https://github.com/100-hours-a-week/2-noah-kim-community/pull/17
+     수정해야할 사항들을 리뷰후에 반영하는 방식으로 연습해서 현업에 나가서도 코드 리뷰하는 습관을 들이도록 노력했습니다.
+     단, 아직은 제가 만든 코드를 제가 보는거라 **사소한 에러들 밖에 보이지 않습니다.**
+     경험이 쌓이고 실력이 쌓이면 코드 구조 혹은 효율적으로 변경할 수 있는 눈이 생기기를 기대해봅니다..
 
 ### 신기했던 것 / 불편했던 점들
 
