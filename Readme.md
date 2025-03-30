@@ -274,13 +274,13 @@ VSCode의 Live Server로 실행됩니다.
 
   </details>
     
-    
 
 
 ### BE 프로젝트 설명 (README.md링크)
 
  <details>
   <summary>BE 설명 토글</summary>
+  
 ## 실행 방법
 
 1. 비밀키를 추가해야 합니다. _(당연히 비공개입니다.)_
