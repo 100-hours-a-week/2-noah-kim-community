@@ -199,9 +199,6 @@ class Register extends Component {
   }
 
   setEvent() {
-    // this.addEvent(this.$elements.profileInput, 'input', event => {
-    //   this.setImageUrl(event.target.files[0])
-    // })
     this.addEvent(this.$elements.profileInput, 'change', this.profileChangeHandler.bind(this))
 
     this.addEvent(this.$elements.profilePreview, 'click', this.getProfileImage.bind(this))

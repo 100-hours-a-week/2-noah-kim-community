@@ -258,8 +258,6 @@ class PostDetail extends Component {
 
   /** 댓글 생성 API */
   async createCommentHandler() {
-    console.log('executed create comment')
-
     const response = await createComment({ content: this.commentInput, postId: this.postId })
     if (response.success) {
       const { message, data } = response.data
