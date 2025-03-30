@@ -1,18 +1,18 @@
-## FOODY
+# FOODY
 
 자신이 먹었던 음식 사진을 올리며 당시의 기분을 작성하는 커뮤니티 프로젝트입니다.
 
-### Stacks
+## Stacks
 
 - FE : Vanillia JS를 이용한 SPA 직접 구현 (useState, useEffect 포함)
 - BE : Java Spring(JDK 21), MySQL, JPA, Amazon S3
 
-### 개발 기간 및 인원
+## 개발 기간 및 인원
 
 기간 : 25.01 ~ 25.03 (3개월)
 인원 : 1인 프로젝트이며, FE, BE 모두 담당하였습니다
 
-### FE 프로젝트 설명 (README.md링크)
+## FE 프로젝트 설명 (README.md링크)
 
   <details>
   <summary>FE 설명 토글</summary>
@@ -277,7 +277,7 @@ VSCode의 Live Server로 실행됩니다.
     
 
 
-### BE 프로젝트 설명 (README.md링크)
+## BE 프로젝트 설명 (README.md링크)
 
  <details>
   <summary>BE 설명 토글</summary>
