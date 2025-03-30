@@ -6,10 +6,8 @@ import InlineComponent from '../../common/InlineComponent.js'
 
 class PostCard extends InlineComponent {
   setup() {
-    this.$state = {
-      postData: this.$props.postData,
-      userData: this.$props.userData,
-    }
+    this.postData = this.$props.postData
+    this.userData = this.$props.userData
 
     this.loadStyles()
   }
@@ -18,8 +16,8 @@ class PostCard extends InlineComponent {
   }
 
   template() {
-    const { postId, title, content, likeCount, viewCount, commentCount, createdAt } = this.$state.postData
-    const { userId, nickname, imageUrl } = this.$state.userData
+    const { postId, title, content, likeCount, viewCount, commentCount, createdAt } = this.postData
+    const { userId, nickname, imageUrl } = this.userData
 
     return `
       <li class='post'>
@@ -49,7 +47,7 @@ class PostCard extends InlineComponent {
   }
 
   navigateToDetails() {
-    navigateTo(ROUTES.POST.DETAIL.url(this.$state.postData.postId))
+    navigateTo(ROUTES.POST.DETAIL.url(this.postData.postId))
   }
 }
 

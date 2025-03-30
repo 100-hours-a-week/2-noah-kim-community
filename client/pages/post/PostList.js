@@ -74,7 +74,9 @@ class PostList extends Component {
   /** 게시글 정보 가져오기 API */
   async fetchPostListData() {
     const { posts, currentPage } = this.postData
+
     const response = await getPostList({ currentPage: currentPage, pageSize: PAGE_SIZE })
+
     if (response.success) {
       const { message, data } = response.data
       const { page, content } = data
@@ -86,7 +88,7 @@ class PostList extends Component {
         totalPages: totalPages,
       })
     } else {
-      new Toast({ message: '게시글 목록 가져오기 실패' })
+      new Toast({ message: response.error || '게시글 목록 가져오기 실패' })
     }
   }
 

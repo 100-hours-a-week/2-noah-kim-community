@@ -20,7 +20,7 @@ export const loginUser = async ({ email, password }) => {
 export const getUser = async () => {
   const ENDPOINT = APIEndpoints.AUTH.GET_USER
 
-  const response = await Fetch(ENDPOINT, { auth: true })
+  const response = await Fetch(ENDPOINT, { auth: { token: true } })
   return response
 }
 
@@ -29,14 +29,14 @@ export const modifyUser = async ({ nickname, imageUrl }) => {
 
   const body = { nickname, imageUrl }
 
-  const response = await Fetch(ENDPOINT, { body, auth: true })
+  const response = await Fetch(ENDPOINT, { body, auth: { token: true } })
   return response
 }
 
 export const unregisterUser = async () => {
   const ENDPOINT = APIEndpoints.AUTH.UNREGISTER
 
-  const response = await Fetch(ENDPOINT, { auth: true })
+  const response = await Fetch(ENDPOINT, { auth: { token: true } })
   return response
 }
 
@@ -45,6 +45,6 @@ export const modifyPasswordUser = async ({ password }) => {
 
   const body = { password }
 
-  const response = await Fetch(ENDPOINT, { body, auth: true })
+  const response = await Fetch(ENDPOINT, { body, auth: { token: true } })
   return response
 }

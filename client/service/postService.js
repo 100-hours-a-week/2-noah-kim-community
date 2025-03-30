@@ -9,7 +9,7 @@ export const createPost = async ({ title, content, imageUrl }) => {
 
   const body = { title, content, imageUrl }
 
-  const response = await Fetch(ENDPOINT, { body, auth: true })
+  const response = await Fetch(ENDPOINT, { body, auth: { token: true } })
   return response
 }
 
@@ -19,7 +19,7 @@ export const modifyPost = async ({ postId, title, content, imageUrl }) => {
 
   const body = { title, content, imageUrl }
 
-  const response = await Fetch(ENDPOINT, { body, auth: true })
+  const response = await Fetch(ENDPOINT, { body, auth: { token: true } })
   return response
 }
 
@@ -27,7 +27,7 @@ export const modifyPost = async ({ postId, title, content, imageUrl }) => {
 export const deletePost = async ({ postId }) => {
   const ENDPOINT = APIEndpoints.POST.DELETE(postId)
 
-  const response = await Fetch(ENDPOINT, { auth: true })
+  const response = await Fetch(ENDPOINT, { auth: { token: true } })
   return response
 }
 
@@ -35,7 +35,7 @@ export const deletePost = async ({ postId }) => {
 export const getPost = async ({ postId }) => {
   const ENDPOINT = APIEndpoints.POST.DETAILS(postId)
 
-  const response = await Fetch(ENDPOINT, { auth: true })
+  const response = await Fetch(ENDPOINT, { auth: { token: true, required: false } })
   return response
 }
 
@@ -48,7 +48,7 @@ export const getPostList = async ({ currentPage, pageSize }) => {
     pageSize,
   }
 
-  const response = await Fetch(ENDPOINT, { params, auth: true })
+  const response = await Fetch(ENDPOINT, { params })
   return response
 }
 
@@ -61,7 +61,7 @@ export const createComment = async ({ postId, content }) => {
 
   const body = { content }
 
-  const response = await Fetch(ENDPOINT, { body, auth: true })
+  const response = await Fetch(ENDPOINT, { body, auth: { token: true } })
   return response
 }
 
@@ -71,7 +71,7 @@ export const modifyComment = async ({ postId, commentId, content }) => {
 
   const body = { content }
 
-  const response = await Fetch(ENDPOINT, { body, auth: true })
+  const response = await Fetch(ENDPOINT, { body, auth: { token: true } })
   return response
 }
 
@@ -79,7 +79,7 @@ export const modifyComment = async ({ postId, commentId, content }) => {
 export const deleteComment = async ({ postId, commentId }) => {
   const ENDPOINT = APIEndpoints.COMMENT.DELETE(postId, commentId)
 
-  const response = await Fetch(ENDPOINT, { auth: true })
+  const response = await Fetch(ENDPOINT, { auth: { token: true } })
   return response
 }
 
@@ -90,7 +90,7 @@ export const deleteComment = async ({ postId, commentId }) => {
 export const createLikes = async ({ postId }) => {
   const ENDPOINT = APIEndpoints.LIKE.CREATE(postId)
 
-  const response = await Fetch(ENDPOINT, { auth: true })
+  const response = await Fetch(ENDPOINT, { auth: { token: true } })
   return response
 }
 
@@ -98,6 +98,6 @@ export const createLikes = async ({ postId }) => {
 export const deleteLikes = async ({ postId }) => {
   const ENDPOINT = APIEndpoints.LIKE.DELETE(postId)
 
-  const response = await Fetch(ENDPOINT, { auth: true })
+  const response = await Fetch(ENDPOINT, { auth: { token: true } })
   return response
 }

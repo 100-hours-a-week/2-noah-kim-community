@@ -36,7 +36,7 @@ public class Post {
   @Column(nullable = false, columnDefinition = "TEXT")
   private String content;
 
-  @Column(name = "thumbnail_url", length = 255)
+  @Column(name = "thumbnail_url", length = 512)
   private String thumbnailUrl;
 
   @Column(name = "like_count", nullable = false)
@@ -85,6 +85,14 @@ public class Post {
 
   public void decreaseCommentCount() {
     this.commentCount -= 1;
+  }
+
+  public void increaseLikeCount() {
+    this.likeCount += 1;
+  }
+
+  public void decreaseLikeCount() {
+    this.likeCount -= 1;
   }
 
 }

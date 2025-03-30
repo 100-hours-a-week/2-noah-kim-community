@@ -1,6 +1,5 @@
-package community.vaniila.domain.utils.security;
+package community.vaniila.domain.utils.response.errorcode;
 
-import community.vaniila.domain.utils.response.errorcode.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

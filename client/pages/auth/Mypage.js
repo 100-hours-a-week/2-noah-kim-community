@@ -13,7 +13,7 @@ class Mypage extends Component {
     /** TODO: 실제 프로필 이미지 저장하기 */
 
     this.useState('userData', {
-      profileImage: '',
+      imageUrl: '',
       email: '',
       nickname: '',
     })
@@ -28,8 +28,6 @@ class Mypage extends Component {
   }
 
   template() {
-    // TODO: 실제 페칭해온 데이터로 바꾸기
-    const ImageSrc = `../../public/images/header_image.jpeg`
     return `
     <main id="main-content">
       <div id="title">회원정보수정</div>
@@ -40,7 +38,7 @@ class Mypage extends Component {
           <span class="data-title">프로필 사진*</span>
           <img
             id="profile-image"
-            src=${ImageSrc}
+            src=${this.userData.imageUrl}
             alt="프로필 이미지"
           />
         </div>
@@ -112,9 +110,9 @@ class Mypage extends Component {
 
   /** 수정하기 로직 */
   async modifyHandler(event) {
+    event.preventDefault() // 기본 동작 방지
     const nickname = this.userData.nickname
     const nicknameInput = this.nicknameInput
-    event.preventDefault() // 기본 동작 방지
 
     /** 닉네임이 기존과 바뀐게 없는 경우 */
     if (!nicknameInput || nickname === nicknameInput) {
@@ -124,7 +122,7 @@ class Mypage extends Component {
 
     const body = {
       nickname: nicknameInput,
-      imageUrl: `../../public/images/header_image`,
+      imageUrl: this.userData.imageUrl, // TODO : 이미지 입력받긴 해야하는데..
     }
     const response = await modifyUser(body)
 
@@ -138,7 +136,7 @@ class Mypage extends Component {
 
       new Toast({ message: '수정 완료' })
     } else {
-      new Toast({ message: '유저 정보 가져오기에 실패하였습니다' })
+      new Toast({ message: response.error || '유저 정보 가져오기에 실패하였습니다' })
     }
   }
 
@@ -161,7 +159,7 @@ class Mypage extends Component {
       const { userId, email, nickname, imageUrl } = data
 
       this.setUserData({
-        profileImage: imageUrl,
+        imageUrl: imageUrl,
         email: email,
         nickname: nickname,
       })
@@ -177,7 +175,7 @@ class Mypage extends Component {
       navigateTo(ROUTES.AUTH.LOGIN.url)
       new Toast({ message: '회원탈퇴 성공!' })
     } else {
-      new Toast({ message: '유저 정보 가져오기에 실패하였습니다.' })
+      new Toast({ message: response.error || '유저 정보 가져오기에 실패하였습니다.' })
     }
   }
 }

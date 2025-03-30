@@ -5,6 +5,7 @@ const AUTH_BASE = '/auth'
 const POST_BASE = '/post'
 const COMMENT_BASE = '/comment'
 const LIKE_BASE = '/like'
+const S3_BASE = '/s3'
 
 const HTTPMethods = {
   GET: 'GET',
@@ -38,13 +39,14 @@ const CommentEndpoints = {
   DELETE: (postId, commentId) => ({ method: HTTPMethods.DELETE, url: `${POST_BASE}/${postId}${COMMENT_BASE}/${commentId}` }),
 }
 
-const CommonEndpoints = {
-  UPLOAD_PROFILE_IMAGE: { method: HTTPMethods.POST, url: `/image_upload` },
-}
-
 const LikeEndpoints = {
   CREATE: postId => ({ method: HTTPMethods.POST, url: `${POST_BASE}/${postId}${LIKE_BASE}` }),
   DELETE: postId => ({ method: HTTPMethods.DELETE, url: `${POST_BASE}/${postId}${LIKE_BASE}` }),
+}
+
+const CommonEndpoints = {
+  UPLOAD_IMAGE: { method: HTTPMethods.POST, url: `${S3_BASE}/image` },
+  DELETE_IMAGE: { method: HTTPMethods.DELETE, url: `${S3_BASE}/image` },
 }
 
 // 최종 API 객체
@@ -53,4 +55,5 @@ export const APIEndpoints = {
   POST: PostEndpoints,
   COMMENT: CommentEndpoints,
   LIKE: LikeEndpoints,
+  COMMON: CommonEndpoints,
 }

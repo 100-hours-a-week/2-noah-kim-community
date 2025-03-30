@@ -40,8 +40,9 @@ public class LikeService {
     Like like = new Like(user, post);
     likeRepository.save(like);
 
-    // 선택: post.likeCount 증가 (비즈니스 룰에 따라)
-    post.setLikeCount(post.getLikeCount() + 1);
+    post.increaseLikeCount();
+    postRepository.save(post);
+    postRepository.flush(); // 즉시 DB 반영
   }
 
   /** 좋아요 삭제하기 */
@@ -66,6 +67,6 @@ public class LikeService {
     likeRepository.deleteByUserAndPost(user, post);
 
     // 좋아요 수 감소 (최소 0 유지)
-    post.setLikeCount(Math.max(post.getLikeCount() - 1, 0));
+    post.decreaseLikeCount();
   }
 }

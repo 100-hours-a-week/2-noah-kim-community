@@ -10,7 +10,9 @@ import { API_BASE_URL } from './endpoints.js'
 export const Fetch = async (endpoint, options = {}) => {
   const { method, url } = endpoint
 
-  const { params = {}, body, headers = {}, auth = false } = options
+  const { params = {}, body, headers = {}, auth = {} } = options
+
+  const { token = false, required = true } = auth
 
   // 쿼리 파라미터 처리
   const queryString = new URLSearchParams(params).toString()
@@ -19,22 +21,39 @@ export const Fetch = async (endpoint, options = {}) => {
   const fetchOptions = {
     method,
     headers: {
-      'Content-Type': 'application/json',
       ...headers,
     },
   }
 
   // AT가 있다면 Authorization 헤더 추가
-  if (auth) {
+  if (token) {
     const accessToken = getAccessToken()
-    if (!accessToken) {
-      return { success: false, error: '유저 인증 실패' }
+
+    if (token) {
+      if (required) {
+        if (accessToken) {
+          fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
+        } else {
+          return { success: false, error: '로그인이 필요합니다' }
+        }
+      } else if (!required && accessToken) {
+        fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
+      }
     }
-    fetchOptions.headers['Authorization'] = `Bearer ${accessToken}`
   }
 
   if (body) {
-    fetchOptions.body = JSON.stringify(body)
+    const isFormData = body instanceof FormData
+
+    /** FormData 핸들링 */
+    if (isFormData) {
+      fetchOptions.body = body
+
+      // Content-Type은 설정하지 않음 → 브라우저가 자동으로 boundary 포함하여 설정
+    } else {
+      fetchOptions.headers['Content-Type'] = 'application/json'
+      fetchOptions.body = JSON.stringify(body)
+    }
   }
 
   try {
@@ -47,7 +66,7 @@ export const Fetch = async (endpoint, options = {}) => {
 
     const data = await response.json()
     if (!response.ok) {
-      return { success: false, error: data.message || 'API 요청 실패', status: response.status }
+      return { success: false, error: data.message || 'API 요청 실패' }
     }
 
     return { success: true, data }

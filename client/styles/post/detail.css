@@ -163,3 +163,8 @@
 #comment-input {
   margin-top: 0;
 }
+
+#post-image {
+  width: 200px;
+  height: 200px;
+}
