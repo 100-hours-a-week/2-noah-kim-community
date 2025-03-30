@@ -1,6 +1,7 @@
 package community.vaniila.domain.utils.security;
 
 import community.vaniila.domain.utils.response.CustomException;
+import community.vaniila.domain.utils.response.errorcode.JwtErrorCode;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

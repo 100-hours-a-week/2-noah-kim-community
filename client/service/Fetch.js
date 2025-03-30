@@ -66,7 +66,7 @@ export const Fetch = async (endpoint, options = {}) => {
 
     const data = await response.json()
     if (!response.ok) {
-      return { success: false, error: data.message || 'API 요청 실패', status: response.status }
+      return { success: false, error: data.message || 'API 요청 실패' }
     }
 
     return { success: true, data }

@@ -128,7 +128,6 @@ public class PostController {
       @PathVariable Long commentId,
       @RequestBody @Valid CommentUpdateRequest request
   ) {
-    System.out.println("entered post comment updatee");
     String token = authHeader.replace("Bearer ", "").trim();
     Long userId = jwtUtils.getId(token);
 

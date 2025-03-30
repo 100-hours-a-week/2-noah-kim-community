@@ -46,7 +46,7 @@ public class S3Service {
 
   /** 이미지를 S3에 업로드한다 */
   private String upload(MultipartFile image) {
-    this.validateImageFileExtention(image.getOriginalFilename());
+    this.validateImageFileExtension(image.getOriginalFilename());
     try {
       return this.uploadImageToS3(image);
     } catch (IOException e) {
@@ -55,16 +55,16 @@ public class S3Service {
   }
 
   /** 확장자 명이 올바른지 확인하는 메소드 */
-  private void validateImageFileExtention(String filename) {
+  private void validateImageFileExtension(String filename) {
     int lastDotIndex = filename.lastIndexOf(".");
     if (lastDotIndex == -1) {
       throw new CustomException(S3ErrorCode.NO_FILE_EXTENSION);
     }
 
-    String extention = filename.substring(lastDotIndex + 1).toLowerCase();
-    List<String> allowedExtentionList = Arrays.asList("jpg", "jpeg", "png", "gif");
+    String extension = filename.substring(lastDotIndex + 1).toLowerCase();
+    List<String> allowedExtensionList = Arrays.asList("jpg", "jpeg", "png", "gif");
 
-    if (!allowedExtentionList.contains(extention)) {
+    if (!allowedExtensionList.contains(extension)) {
       throw new CustomException(S3ErrorCode.INVALID_FILE_EXTENSION);
     }
   }
@@ -83,7 +83,6 @@ public class S3Service {
       PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, s3FileName, inputStream, metadata);
       amazonS3.putObject(putObjectRequest);
     } catch (Exception e) {
-      log.error("S3 이미지 업로드 실패", e);
       throw new CustomException(S3ErrorCode.PUT_OBJECT_EXCEPTION);
     }
 
@@ -96,7 +95,6 @@ public class S3Service {
     try{
       amazonS3.deleteObject(new DeleteObjectRequest(bucketName, key));
     }catch (Exception e){
-      log.error(e.getMessage());
       throw new CustomException(S3ErrorCode.IO_EXCEPTION_ON_IMAGE_DELETE);
     }
   }

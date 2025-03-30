@@ -100,7 +100,6 @@ public class PostService {
 
     boolean isLiked = false;
     if (userId != null) {
-      System.out.println("entered isliked logic");
       User loginUser = userRepository.findById(userId)
           .orElseThrow(() -> new CustomException(AuthErrorCode.AUTH_USER_NOT_FOUND));
       isLiked = likeRepository.existsByUserAndPost(loginUser, post);
