@@ -12,7 +12,7 @@
 기간 : 25.01 ~ 25.03 (3개월)
 인원 : 1인 프로젝트이며, FE, BE 모두 담당하였습니다
 
-## FE 프로젝트 설명 (README.md링크)
+## FE 프로젝트 설명 [(README.md링크)](https://github.com/100-hours-a-week/2-noah-kim-community/blob/main/client/README.md)
 
   <details>
   <summary>FE 설명 토글</summary>
@@ -277,7 +277,7 @@ VSCode의 Live Server로 실행됩니다.
     
 
 
-## BE 프로젝트 설명 (README.md링크)
+## BE 프로젝트 설명 [(README.md링크)](https://github.com/100-hours-a-week/2-noah-kim-community/blob/main/server/Readme.md)
 
  <details>
   <summary>BE 설명 토글</summary>
